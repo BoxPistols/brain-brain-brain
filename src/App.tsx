@@ -362,6 +362,12 @@ export default function App() {
                                             分析中…
                                         </div>
                                     )}
+                                    {error && !diving && (
+                                        <div className='mt-2 flex items-start gap-1.5 text-xs text-red-600 dark:text-red-400'>
+                                            <AlertCircle className='w-3 h-3 mt-0.5 shrink-0' />
+                                            {error}
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Deep dive output */}
