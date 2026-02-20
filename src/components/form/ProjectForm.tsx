@@ -101,23 +101,8 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
             return { ...p, issues: is }
         })
 
-    // HR/人材紹介文脈の検出: productService や既存issueテキストにキーワードがあればops系テンプレートを優先
-    const hrKeywords = /人材|採用|エージェント|CA\b|転職|求人|スカウト|人事|キャリア|リクルート/
-    const isHRContext =
-        hrKeywords.test(form.productService) ||
-        form.issues.some((iss) => hrKeywords.test(iss.text + iss.detail))
-
-    const issueTemplateKey =
-        isHRContext && !['ops', 'cx', 'growth'].includes(form.sessionType)
-            ? 'ops'
-            : form.sessionType
-
-    const issueTpl = isHRContext
-        ? [
-              ...(ISSUE_TPL['ops'] ?? []),
-              ...(ISSUE_TPL['cx'] ?? []).slice(0, 2),
-          ]
-        : (ISSUE_TPL[form.sessionType] ?? ISSUE_TPL.other)
+    const issueTemplateKey = form.sessionType
+    const issueTpl = ISSUE_TPL[form.sessionType] ?? ISSUE_TPL.other
 
     return (
         <>
@@ -323,21 +308,36 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                         分析深度
                     </label>
                     <div className='space-y-1'>
-                        {Object.entries(depTable).map(([k, v]) => (
-                            <button
-                                key={k}
-                                onClick={() => setDep(Number(k))}
-                                className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs border transition ${Number(k) === dep ? 'bg-slate-900 dark:bg-slate-700 border-slate-600 text-slate-100 font-medium' : `${T.btnGhost} border-slate-200 dark:border-slate-700/60`}`}
-                            >
-                                <span className='font-medium'>{v.label}</span>
-                                <span className='opacity-50'> · {v.desc}</span>
-                                <span
-                                    className={`ml-1 text-xs ${Number(k) === dep ? 'text-slate-400' : T.t3}`}
+                        {Object.entries(depTable).map(([k, v]) => {
+                            const isSelected = Number(k) === dep
+                            const isHighClass = Number(k) === 4
+                            const activeStyle = isHighClass
+                                ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-100 font-medium'
+                                : 'bg-slate-900 dark:bg-slate-700 border-slate-600 text-slate-100 font-medium'
+                            
+                            return (
+                                <button
+                                    key={k}
+                                    onClick={() => setDep(Number(k))}
+                                    className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs border transition ${isSelected ? activeStyle : `${T.btnGhost} border-slate-200 dark:border-slate-700/60`}`}
                                 >
-                                    {v.wait}
-                                </span>
-                            </button>
-                        ))}
+                                    <div className='flex items-center justify-between'>
+                                        <span className='font-medium flex items-center gap-1.5'>
+                                            {v.label}
+                                            {isHighClass && <span className="text-[10px] px-1 py-0.5 bg-amber-200 dark:bg-amber-800 rounded text-amber-900 dark:text-amber-100 leading-none">Pro</span>}
+                                        </span>
+                                        <span
+                                            className={`text-xs ${isSelected ? (isHighClass ? 'text-amber-700 dark:text-amber-300' : 'text-slate-400') : T.t3}`}
+                                        >
+                                            {v.wait}
+                                        </span>
+                                    </div>
+                                    <div className={`mt-0.5 text-[10px] ${isSelected ? (isHighClass ? 'text-amber-800/80 dark:text-amber-200/80' : 'opacity-70') : 'opacity-50'}`}>
+                                        {v.desc}
+                                    </div>
+                                </button>
+                            )
+                        })}
                     </div>
                 </div>
             </div>

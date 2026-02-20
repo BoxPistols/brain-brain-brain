@@ -59,8 +59,10 @@ export const useBrainstormForm = () => {
 
   const applySeed = useCallback(() => {
     const s = nextSeed();
+    const isPro = (localStorage.getItem('userApiKey') || '').trim().startsWith('sk-');
+    
     setSeedModelId(s.modelId);
-    setDep(s.dep);
+    setDep(isPro ? s.dep : Math.min(s.dep, 3));
     setForm(s.form);
     setSeedResults(s.results);
     setUsedName(s.form.projectName || autoN(s.form.productService, s.form.teamGoals));
