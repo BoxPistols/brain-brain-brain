@@ -64,6 +64,11 @@ export interface Settings {
   autoSave: boolean;
 }
 
+export interface ChatMessage {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+}
+
 export interface ModelInfo {
   id: string;
   label: string;
