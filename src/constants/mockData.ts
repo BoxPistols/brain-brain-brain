@@ -245,6 +245,37 @@ export const MOCK_SCENARIOS: MockScenario[] = [
     },
   },
   {
+    label: '求人メディア AIO転換',
+    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    form: {
+      projectName: 'Lattice-291',
+      productService: 'ITエンジニア向け転職メディア（月間PV 60万・記事数3,500本）',
+      teamGoals: 'AI検索流入の確立・コンテンツCV率0.3%→1.5%・ターゲット適合ユーザー比率向上',
+      sessionType: 'marketing',
+      customSession: '',
+      tlMode: 'period',
+      tlStart: '2025-10-01',
+      tlEnd: '2026-03-31',
+      tlDead: '',
+      issues: [
+        { text: 'SEO流入の質的低下', detail: 'PV維持もCV率0.3%→業界平均1.2%の1/4、ターゲット外流入が増加', sub: ['ボリューム優先でターゲット適合度を未計測', 'ネガティブ訴求記事が低意欲層を集めている'] },
+        { text: 'EEAT不足・AIO未対応', detail: '外注ライター中心でE(経験)/E(専門性)が担保されておらずAI検索からの流入がほぼゼロ', sub: ['著者情報・一次情報が皆無', '構造化データ（FAQ Schema等）未整備'] },
+        { text: 'ターゲットのメンタルモデル乖離', detail: '想定ユーザー（ハイスキルIT人材）と実来訪者（シニア・受け身層）が一致していない', sub: ['エンジニアの情報収集行動・意思決定フローの調査なし'] },
+      ],
+    },
+    results: {
+      understanding: `月間PV60万・記事3,500本でCV率0.3%は、量産SEOコンテンツが「転職に動かないユーザー」を大量に集めている構造的課題。人材紹介業界は市場縮小が続いており、旧来のSEO×量産モデルの費用対効果は今後さらに悪化する。AIO（AI Optimization）対応はChatGPT・Perplexityなど生成AI検索からの流入を獲得する新チャネルであり、同時にEEAT強化はGoogleのHelpful Content Updateへの対応でもある。技術的なHTML構造改善（構造化データ・Core Web Vitals）は即効性があり、短期施策として優先度が高い。ターゲット再定義はSEO施策の前提条件であり、エンジニアのジョブ理論（JTBD）調査なしにコンテンツ戦略を立てても改善は見込めない。`,
+      ideas: [
+        { title: 'FAQ/HowTo Schema大量実装', description: '既存3,500記事のうち「〜とは」「〜の方法」形式の記事にFAQ SchemaとHowTo Schemaを自動付与するスクリプトを実装。AI検索エンジンはSchemaを優先的に参照するため、AIO対応の最速施策。実装工数：エンジニア1人×2週間。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: 'エンジニア当事者コンテンツの新設', description: '現役エンジニア10名と業務委託契約し「転職判断の実体験」「年収交渉の実例」を月4本公開。著者プロフィールにGitHub/Zennリンクを掲載しEEATを技術的に担保。AI検索での引用率向上とターゲット層の信頼獲得を同時達成。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'ターゲットJTBD調査×コンテンツ戦略再設計', description: 'ハイスキルITエンジニア30名にインタビューし「転職を考え始めるトリガー」「情報収集の行動順序」「意思決定の最終判断基準」を特定。現行コンテンツのターゲット適合率を計測し、適合度の低いボリューム記事は更新停止または削除を判断。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'Core Web Vitals一括改善', description: 'LCP・CLS・INPを計測し上位流入200記事の技術改善を優先実施。画像のWebP変換・遅延読み込み・不要なJSの削除でLCP 2.5秒以内を達成。Googleの評価改善と直帰率低下（＝CV率改善）の両立。', priority: 'High', effort: 'Low', impact: 'Medium' },
+        { title: 'コンテンツアトリビューション計測基盤', description: 'GA4×Looker StudioでコンテンツごとのCV貢献度を可視化。「最終流入ページ」だけでなく「転職意向が上がった接点」をマルチタッチ計測し、ROIの高いコンテンツタイプを特定。量産継続か撤退かの意思決定基準を整備。', priority: 'Medium', effort: 'Medium', impact: 'High' },
+        { title: 'AIOランディングページ新設', description: 'AI検索で想定される質問「エンジニア転職 [スキル名]」「[年収帯] エンジニア キャリア」に対応したQ&A形式のLPを20本新設。各LPにFAQ Schema・著者Schemaを実装し生成AI検索での引用を狙う。既存SEO資産を活用したリライト中心で開発コスト最小化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+      ],
+    },
+  },
+  {
     label: 'プロダクト UXリデザイン',
     prov: 'openai', modelId: 'gpt-5-mini', dep: 2,
     form: {
