@@ -192,12 +192,16 @@ export default function App() {
                                 <span
                                     className='w-1.5 h-1.5 rounded-full bg-emerald-500'
                                     title={connStatus.msg}
+                                    role='status'
+                                    aria-label='接続正常'
                                 />
                             )}
                             {connStatus.status === 'error' && (
                                 <span
                                     className='w-1.5 h-1.5 rounded-full bg-red-500'
                                     title={connStatus.msg}
+                                    role='status'
+                                    aria-label='接続エラー'
                                 />
                             )}
                             {connStatus.status === 'testing' && (
@@ -238,6 +242,7 @@ export default function App() {
                             onClick={toggleTheme}
                             className={`p-1.5 rounded-lg ${T.btnGhost}`}
                             title={isDark ? 'ライトモード' : 'ダークモード'}
+                            aria-label={isDark ? 'ライトモードに切替' : 'ダークモードに切替'}
                         >
                             {isDark ? (
                                 <Sun className='w-3.5 h-3.5' />
@@ -249,12 +254,14 @@ export default function App() {
                             onClick={() => setShowLogs(true)}
                             className={`p-1.5 rounded-lg ${T.btnGhost}`}
                             title='ログ'
+                            aria-label='ログ管理を開く'
                         >
                             <Database className='w-3.5 h-3.5' />
                         </button>
                         <button
                             onClick={() => setShowCfg((s) => !s)}
                             className={`p-1.5 rounded-lg ${showCfg ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 text-blue-600 dark:text-blue-400' : T.btnGhost} rounded-lg border`}
+                            aria-label='設定パネルの開閉'
                         >
                             <Settings className='w-3.5 h-3.5' />
                         </button>
