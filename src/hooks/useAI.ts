@@ -243,9 +243,16 @@ ${commonConditions}。
           { title: 'ベンチマーク分析', description: `同業・異業種の成功事例を調査し${form.productService}に適用可能な施策を抽出。`, priority: 'Medium', effort: 'Medium', impact: 'High' },
           { title: '実行ロードマップ策定', description: '30-60-90日プランを策定し、各フェーズのマイルストーンと判断基準を明確化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
         ],
+        suggestions: [
+          `${form.productService}の最も重要なKPIは何ですか？`,
+          `${issues}の中で最も影響の大きい課題はどれですか？`,
+          `${form.teamGoals}を達成するための最大の障壁は？`,
+          `競合と比較した際の強み・弱みは？`,
+        ],
       });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [modelId]);
 
   const refine = useCallback(async (
@@ -263,16 +270,17 @@ ${commonConditions}。
       const raw = proMode
         ? await callAIWithKey(apiKey.trim(), modelId, h2, 4096)
         : await callAI(modelId, h2, 2000);
-      
+
       const newResults = { ...results, refinement: raw };
-      setResults(newResults); 
+      setResults(newResults);
       setHist([...h2, { role: 'assistant', content: raw }]);
-      
+
       onSuccess(newResults, reviewText);
-    } catch (e: any) { 
-      setError(`改善失敗: ${e.message}`); 
+    } catch (e: any) {
+      setError(`改善失敗: ${e.message}`);
+    } finally {
+      setRefining(false);
     }
-    setRefining(false);
   }, [reviewText, results, hist, modelId]);
 
   /** seedデータなど、APIが使えない場合のフォールバック深掘り回答を生成 */
@@ -308,13 +316,13 @@ ${commonConditions}。
     setDiving(true);
     setError(null);
     const proMode = apiKey.trim().startsWith('sk-');
+    const currentResults = results;
 
     try {
-      // hist全体を送るとトークン超過するため、状況分析+アイデアサマリーの軽量コンテキストのみ使用
-      const ideaSummary = results.ideas
+      const ideaSummary = currentResults.ideas
         .map((idea, i) => `${i + 1}. ${idea.title}: ${idea.description}`)
         .join('\n');
-      const context = `【状況分析】\n${results.understanding}\n\n【検討中の戦略アイデア】\n${ideaSummary}`;
+      const context = `【状況分析】\n${currentResults.understanding}\n\n【検討中の戦略アイデア】\n${ideaSummary}`;
       const msg = {
         role: 'user',
         content: `あなたは戦略コンサルタントです。以下の事業状況を踏まえ、質問に詳細回答してください。\n\n【事業状況】\n${context}\n\n【前提条件】現状批判ではなく「次の打ち手・改善機会」として建設的に回答すること。担当者（営業・マーケ・経営企画）が実行できる具体策を含めること。\n\n【質問】${q}\n\nMarkdown形式（見出し・テーブル・箇条書き活用）で詳細回答してください。`,
@@ -324,11 +332,16 @@ ${commonConditions}。
         : await callAI(modelId, [msg], 2000);
 
       setResults(p => p ? ({ ...p, deepDives: [...(p.deepDives || []), { question: q, answer: raw }] }) : p);
-    } catch {
-      const fallback = buildFallbackDeepDive(q, results);
-      setResults(p => p ? ({ ...p, deepDives: [...(p.deepDives || []), { question: q, answer: fallback }] }) : p);
+    } catch (e: any) {
+      try {
+        const fallback = buildFallbackDeepDive(q, currentResults);
+        setResults(p => p ? ({ ...p, deepDives: [...(p.deepDives || []), { question: q, answer: fallback }] }) : p);
+      } catch {
+        setError(`深掘り失敗: ${e?.message || '不明なエラー'}`);
+      }
+    } finally {
+      setDiving(false);
     }
-    setDiving(false);
   }, [results, modelId]);
 
   return {
