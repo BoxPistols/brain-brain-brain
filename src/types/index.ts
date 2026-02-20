@@ -9,6 +9,8 @@ export interface Issue {
   sub: string[];
 }
 
+export type IssueTemplate = Issue;
+
 export interface BrainstormForm {
   projectName: string;
   productService: string;
