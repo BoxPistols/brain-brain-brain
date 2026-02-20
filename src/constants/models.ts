@@ -11,6 +11,9 @@ const friendlyError = (status: number, body: string): string => {
 
 export const DEFAULT_MODEL_ID = 'gpt-5-nano';
 
+const API_PROXY = '/api/openai/v1/chat/completions';
+const API_DIRECT = 'https://api.openai.com/v1/chat/completions';
+
 export const MODELS: ModelInfo[] = [
   { id: DEFAULT_MODEL_ID, label: '5 Nano',   t: '最速',    cost: '$'  },
   { id: 'gpt-5-mini',   label: '5 Mini',   t: 'バランス', cost: '$$' },
@@ -22,7 +25,7 @@ export const testConn = async (modelId: string, apiKey = ''): Promise<string> =>
   const usesCompletionTokens = modelId.startsWith('gpt-5') || modelId.startsWith('o');
   const tokenParam = usesCompletionTokens ? { max_completion_tokens: 100 } : { max_tokens: 100 };
   const proMode = apiKey.trim().startsWith('sk-');
-  const url = proMode ? 'https://api.openai.com/v1/chat/completions' : '/api/openai/v1/chat/completions';
+  const url = proMode ? API_DIRECT : API_PROXY;
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (proMode) headers['Authorization'] = `Bearer ${apiKey.trim()}`;
   const r = await fetch(url, {
@@ -39,7 +42,7 @@ export const testConn = async (modelId: string, apiKey = ''): Promise<string> =>
 export const callAI = async (modelId: string, msgs: any[], maxTokens = 4096, jsonMode = false): Promise<string> => {
   const usesCompletionTokens = modelId.startsWith('gpt-5') || modelId.startsWith('o');
   const tokenParam = usesCompletionTokens ? { max_completion_tokens: maxTokens } : { max_tokens: maxTokens };
-  const r = await fetch('/api/openai/v1/chat/completions', {
+  const r = await fetch(API_PROXY, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -56,7 +59,7 @@ export const callAI = async (modelId: string, msgs: any[], maxTokens = 4096, jso
 export const callAIWithKey = async (apiKey: string, modelId: string, msgs: any[], maxTokens = 4096, jsonMode = false): Promise<string> => {
   const usesCompletionTokens = modelId.startsWith('gpt-5') || modelId.startsWith('o');
   const tokenParam = usesCompletionTokens ? { max_completion_tokens: maxTokens } : { max_tokens: maxTokens };
-  const r = await fetch('https://api.openai.com/v1/chat/completions', {
+  const r = await fetch(API_DIRECT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
     body: JSON.stringify({
