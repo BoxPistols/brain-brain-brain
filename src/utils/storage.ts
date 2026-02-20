@@ -13,10 +13,13 @@ export const loadLogs = (): LogEntry[] => {
   }
 };
 
-export const saveLogs = (l: LogEntry[]): void => {
+export const saveLogs = (l: LogEntry[]): boolean => {
   try {
     localStorage.setItem(STORE_KEY, JSON.stringify(l));
-  } catch {}
+    return true;
+  } catch {
+    return false;
+  }
 };
 
 export const loadSettings = (): Settings => {
@@ -33,7 +36,7 @@ export const saveSettings = (s: Settings): void => {
   } catch {}
 };
 
-export const exportJSON = (data: any, fn: string): void => {
+export const exportJSON = (data: unknown, fn: string): void => {
   const b = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
   const u = URL.createObjectURL(b);
   Object.assign(document.createElement('a'), { href: u, download: fn }).click();

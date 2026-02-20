@@ -10,7 +10,11 @@ export const useLogs = () => {
 
   const debouncedSave = useCallback((data: LogEntry[]) => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => saveLogs(data), 300);
+    saveTimer.current = setTimeout(() => {
+      if (!saveLogs(data)) {
+        console.warn('localStorage quota exceeded — logs may not be saved');
+      }
+    }, 300);
   }, []);
 
   const updateSettings = useCallback((s: Settings) => {
@@ -48,16 +52,19 @@ export const useLogs = () => {
     saveLogs([]);
   }, []);
 
-  const importLogs = useCallback((data: any) => {
+  const importLogs = useCallback((data: unknown) => {
     const arr = Array.isArray(data) ? data : [data];
-    const merged = [...arr.filter(d => d.id && d.timestamp), ...logs];
+    const valid = arr.filter((d): d is LogEntry => d != null && typeof d === 'object' && 'id' in d && 'timestamp' in d);
+    const merged = [...valid, ...logs];
     const unique = [...new Map(merged.map(x => [x.id, x])).values()]
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-      .slice(0, 500);
-      
+      .slice(0, 200);
+
     setLogs(unique);
-    debouncedSave(unique);
-  }, [logs, debouncedSave]);
+    if (!saveLogs(unique)) {
+      alert('ストレージ容量が不足しています。古いログを削除してください。');
+    }
+  }, [logs]);
 
   return {
     logs,
