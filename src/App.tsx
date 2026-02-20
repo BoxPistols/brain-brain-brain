@@ -113,6 +113,8 @@ export default function App() {
     const [showValidation, setShowValidation] = useState(false)
     const [isSeedData, setIsSeedData] = useState(false)
     const [progress, setProgress] = useState(0)
+    const [diveProgress, setDiveProgress] = useState(0)
+    const [refineProgress, setRefineProgress] = useState(0)
     const [seedOpen, setSeedOpen] = useState(false)
     const seedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
     const seedRef = useRef<HTMLDivElement | null>(null)
@@ -165,6 +167,30 @@ export default function App() {
         }, 300)
         return () => clearInterval(tick)
     }, [loading, dep, proMode])
+
+    // Deep dive progress (estimated ~30s for free, ~60s for pro)
+    useEffect(() => {
+        if (!diving) { setDiveProgress(0); return }
+        const estSec = proMode ? 60 : 30
+        const start = Date.now()
+        const tick = setInterval(() => {
+            const elapsed = (Date.now() - start) / 1000
+            setDiveProgress(Math.min(95, Math.round((1 - Math.exp(-2.5 * elapsed / estSec)) * 100)))
+        }, 300)
+        return () => clearInterval(tick)
+    }, [diving, proMode])
+
+    // Refine progress (estimated ~30s for free, ~60s for pro)
+    useEffect(() => {
+        if (!refining) { setRefineProgress(0); return }
+        const estSec = proMode ? 60 : 30
+        const start = Date.now()
+        const tick = setInterval(() => {
+            const elapsed = (Date.now() - start) / 1000
+            setRefineProgress(Math.min(95, Math.round((1 - Math.exp(-2.5 * elapsed / estSec)) * 100)))
+        }, 300)
+        return () => clearInterval(tick)
+    }, [refining, proMode])
 
     const cm = MODELS.find((m) => m.id === modelId) || MODELS[0]
     // AI生成サジェストがあればそちらを優先、なければstatic fallback
@@ -461,9 +487,14 @@ export default function App() {
                                         ))}
                                     </div>
                                     {diving && (
-                                        <div className={`mt-2 flex items-center gap-1.5 text-xs ${T.t3}`}>
-                                            <div className='w-3 h-3 border-2 border-slate-300 dark:border-slate-600 border-t-blue-500 rounded-full animate-spin' />
-                                            分析中…
+                                        <div className='mt-2 space-y-1.5'>
+                                            <div className={`flex items-center gap-1.5 text-xs ${T.t3}`}>
+                                                <div className='w-3 h-3 border-2 border-slate-300 dark:border-slate-600 border-t-blue-500 rounded-full animate-spin' />
+                                                深掘り分析中 {diveProgress}%
+                                            </div>
+                                            <div className='h-1 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
+                                                <div className='h-full bg-blue-500 rounded-full transition-all duration-300 ease-out' style={{ width: `${diveProgress}%` }} />
+                                            </div>
                                         </div>
                                     )}
                                     {error && !diving && (
@@ -517,23 +548,32 @@ export default function App() {
                                         placeholder='方向性修正、追加観点、深掘りポイント…'
                                         className={`${T.inp} resize-none mb-2`}
                                     />
-                                    <button
-                                        onClick={handleRefine}
-                                        disabled={refining || !reviewText.trim()}
-                                        className='flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 hover:bg-emerald-500 text-white disabled:opacity-30 transition'
-                                    >
-                                        {refining ? (
-                                            <>
-                                                <div className='w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin' />
-                                                処理中…
-                                            </>
-                                        ) : (
-                                            <>
-                                                <RefreshCw className='w-3 h-3' />
-                                                ブラッシュアップ
-                                            </>
-                                        )}
-                                    </button>
+                                    <div className='space-y-1.5'>
+                                        <button
+                                            onClick={handleRefine}
+                                            disabled={refining || !reviewText.trim()}
+                                            className='relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 hover:bg-emerald-500 text-white disabled:opacity-80 transition overflow-hidden'
+                                        >
+                                            {refining && (
+                                                <div className='absolute inset-0 bg-white/10'>
+                                                    <div className='h-full bg-white/20 transition-all duration-300 ease-out' style={{ width: `${refineProgress}%` }} />
+                                                </div>
+                                            )}
+                                            <span className='relative flex items-center gap-1.5'>
+                                                {refining ? (
+                                                    <>
+                                                        <div className='w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin' />
+                                                        分析中 {refineProgress}%
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <RefreshCw className='w-3 h-3' />
+                                                        ブラッシュアップ
+                                                    </>
+                                                )}
+                                            </span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         ) : (
