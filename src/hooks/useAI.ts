@@ -60,10 +60,10 @@ export const useAI = () => {
   const [diving, setDiving] = useState(false);
   const [hist, setHist] = useState<any[]>([]);
 
-  const runConnTest = useCallback(async () => {
+  const runConnTest = useCallback(async (apiKey = '') => {
     setConnStatus({ status: 'testing', msg: '' });
     try {
-      const model = await testConn(modelId);
+      const model = await testConn(modelId, apiKey);
       setConnStatus({ status: 'ok', msg: `OK: ${model}` });
     } catch (e: any) {
       setConnStatus({ status: 'error', msg: e.message });

@@ -12,7 +12,7 @@ interface SettingsModalProps {
         status: 'idle' | 'testing' | 'ok' | 'error'
         msg: string
     }) => void
-    runConnTest: () => void
+    runConnTest: (apiKey?: string) => void
     apiKey: string
     setApiKey: (key: string) => void
 }
@@ -142,46 +142,44 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     </div>
                 </div>
 
-                {/* Connection test (only relevant in free mode via proxy) */}
-                {!proMode && (
-                    <div className={`flex items-center gap-2 pt-2 border-t ${T.div}`}>
-                        <button
-                            onClick={runConnTest}
-                            disabled={connStatus.status === 'testing'}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium ${T.btnGhost} disabled:opacity-40`}
+                {/* Connection test */}
+                <div className={`flex items-center gap-2 pt-2 border-t ${T.div}`}>
+                    <button
+                        onClick={() => runConnTest(apiKey)}
+                        disabled={connStatus.status === 'testing'}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium ${T.btnGhost} disabled:opacity-40`}
+                    >
+                        {connStatus.status === 'testing' ? (
+                            <>
+                                <Loader className='w-3 h-3 animate-spin' />
+                                テスト中…
+                            </>
+                        ) : (
+                            <>
+                                <Wifi className='w-3 h-3' />
+                                接続テスト
+                            </>
+                        )}
+                    </button>
+                    {connStatus.status === 'ok' && (
+                        <span className='flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400'>
+                            <span className='w-1.5 h-1.5 rounded-full bg-emerald-500' />
+                            {connStatus.msg}
+                        </span>
+                    )}
+                    {connStatus.status === 'error' && (
+                        <span
+                            className='flex items-center gap-1 text-xs text-red-600 dark:text-red-400 max-w-xs truncate'
+                            title={connStatus.msg}
                         >
-                            {connStatus.status === 'testing' ? (
-                                <>
-                                    <Loader className='w-3 h-3 animate-spin' />
-                                    テスト中…
-                                </>
-                            ) : (
-                                <>
-                                    <Wifi className='w-3 h-3' />
-                                    接続テスト
-                                </>
-                            )}
-                        </button>
-                        {connStatus.status === 'ok' && (
-                            <span className='flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400'>
-                                <span className='w-1.5 h-1.5 rounded-full bg-emerald-500' />
-                                {connStatus.msg}
-                            </span>
-                        )}
-                        {connStatus.status === 'error' && (
-                            <span
-                                className='flex items-center gap-1 text-xs text-red-600 dark:text-red-400 max-w-xs truncate'
-                                title={connStatus.msg}
-                            >
-                                <WifiOff className='w-3 h-3 shrink-0' />
-                                {connStatus.msg}
-                            </span>
-                        )}
-                        <p className={`ml-auto text-xs ${T.t3}`}>
-                            サーバープロキシ経由
-                        </p>
-                    </div>
-                )}
+                            <WifiOff className='w-3 h-3 shrink-0' />
+                            {connStatus.msg}
+                        </span>
+                    )}
+                    <p className={`ml-auto text-xs ${T.t3}`}>
+                        {proMode ? 'OpenAI直接接続' : 'サーバープロキシ経由'}
+                    </p>
+                </div>
             </div>
 
             {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}

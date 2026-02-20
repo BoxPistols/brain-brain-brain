@@ -16,12 +16,16 @@ export const MODELS: ModelInfo[] = [
   { id: 'gpt-4.1-nano', label: '4.1 Nano', t: '最安',    cost: '$'  },
 ];
 
-export const testConn = async (modelId: string): Promise<string> => {
+export const testConn = async (modelId: string, apiKey = ''): Promise<string> => {
   const usesCompletionTokens = modelId.startsWith('gpt-5') || modelId.startsWith('o');
   const tokenParam = usesCompletionTokens ? { max_completion_tokens: 100 } : { max_tokens: 100 };
-  const r = await fetch('/api/openai/v1/chat/completions', {
+  const proMode = apiKey.trim().startsWith('sk-');
+  const url = proMode ? 'https://api.openai.com/v1/chat/completions' : '/api/openai/v1/chat/completions';
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (proMode) headers['Authorization'] = `Bearer ${apiKey.trim()}`;
+  const r = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({ model: modelId, ...tokenParam, messages: [{ role: 'user', content: 'Say exactly: OK' }] }),
   });
   const d = await r.json();
