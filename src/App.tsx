@@ -35,6 +35,7 @@ import { RichText } from './components/results/RichText'
 import { buildReportMd, dlFile } from './utils/report'
 import { T } from './constants/theme'
 import { MODELS } from './constants/models'
+import { FREE_DEPTH, PRO_DEPTH } from './constants/prompts'
 
 export default function App() {
     // Global hooks
@@ -111,6 +112,7 @@ export default function App() {
     const [showPrev, setShowPrev] = useState(false)
     const [showValidation, setShowValidation] = useState(false)
     const [isSeedData, setIsSeedData] = useState(false)
+    const [progress, setProgress] = useState(0)
     const [seedOpen, setSeedOpen] = useState(false)
     const seedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
     const seedRef = useRef<HTMLDivElement | null>(null)
@@ -145,6 +147,24 @@ export default function App() {
         document.addEventListener('keydown', handler)
         return () => document.removeEventListener('keydown', handler)
     }, [showLogs, showPrev, showCfg, seedOpen])
+
+    // Progress simulation during loading
+    useEffect(() => {
+        if (!loading) { setProgress(0); return }
+        const dc = proMode ? PRO_DEPTH[dep] : FREE_DEPTH[dep]
+        // Parse estimated seconds from wait string (e.g. "〜1分" → 60, "1-3分" → 120, "3-5分" → 240)
+        const waitStr = dc?.wait || '1-3分'
+        const nums = waitStr.match(/\d+/g)?.map(Number) || [60]
+        const estSec = (nums.length > 1 ? (nums[0] + nums[1]) / 2 : nums[0]) * 60
+        const start = Date.now()
+        const tick = setInterval(() => {
+            const elapsed = (Date.now() - start) / 1000
+            // Asymptotic curve: approaches 95% at estimated time, never reaches 100%
+            const pct = Math.min(95, (1 - Math.exp(-2.5 * elapsed / estSec)) * 100)
+            setProgress(Math.round(pct))
+        }, 300)
+        return () => clearInterval(tick)
+    }, [loading, dep, proMode])
 
     const cm = MODELS.find((m) => m.id === modelId) || MODELS[0]
     // AI生成サジェストがあればそちらを優先、なければstatic fallback
@@ -356,19 +376,26 @@ export default function App() {
                                         onClick={handleGenerate}
                                         disabled={loading}
                                         title='Cmd/Ctrl+Enter'
-                                        className={`flex items-center gap-1.5 px-5 py-2 rounded-lg font-semibold text-sm ${T.btnAccent} disabled:opacity-40 transition-all`}
+                                        className={`relative flex items-center gap-1.5 px-5 py-2 rounded-lg font-semibold text-sm ${T.btnAccent} disabled:opacity-90 transition-all overflow-hidden`}
                                     >
-                                        {loading ? (
-                                            <>
-                                                <div className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
-                                                分析中…
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Sparkles className='w-4 h-4' />
-                                                戦略アイデア生成
-                                            </>
+                                        {loading && (
+                                            <div className='absolute inset-0 bg-white/10'>
+                                                <div className='h-full bg-white/20 transition-all duration-300 ease-out' style={{ width: `${progress}%` }} />
+                                            </div>
                                         )}
+                                        <span className='relative flex items-center gap-1.5'>
+                                            {loading ? (
+                                                <>
+                                                    <div className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
+                                                    分析中 {progress}%
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Sparkles className='w-4 h-4' />
+                                                    戦略アイデア生成
+                                                </>
+                                            )}
+                                        </span>
                                     </button>
                                 </div>
                             </div>
