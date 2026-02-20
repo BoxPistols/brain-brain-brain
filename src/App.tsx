@@ -38,7 +38,7 @@ import { RichText } from './components/results/RichText'
 // Utils & Constants
 import { buildReportMd, dlFile } from './utils/report'
 import { T } from './constants/theme'
-import { MODELS } from './constants/models'
+import { MODELS, isProMode } from './constants/models'
 import { FREE_DEPTH, PRO_DEPTH } from './constants/prompts'
 import { usePanelResize, PRESETS } from './hooks/usePanelResize'
 
@@ -109,9 +109,9 @@ export default function App() {
         setApiKeyState(key)
         localStorage.setItem('userApiKey', key)
         // Clamp dep to free-mode max when switching to free
-        if (!key.trim().startsWith('sk-') && dep > 3) setDep(3)
+        if (!isProMode(key) && dep > 3) setDep(3)
     }
-    const proMode = apiKey.trim().startsWith('sk-')
+    const proMode = isProMode(apiKey)
 
     // Local UI state
     const [showCfg, setShowCfg] = useState(false)
@@ -462,7 +462,42 @@ export default function App() {
 
                     {/* ── RIGHT: Results pane ── */}
                     <div className='w-full lg:pl-2 min-w-0' style={{ flex: 1 }}>
-                        {results ? (
+                        {loading && !results ? (
+                            /* Loading skeleton */
+                            <div className='space-y-4 animate-pulse'>
+                                <div className={`${T.card} p-5`}>
+                                    <div className='h-3 w-24 rounded bg-slate-200 dark:bg-slate-700 mb-3' />
+                                    <div className='space-y-2'>
+                                        <div className='h-3 w-full rounded bg-slate-200 dark:bg-slate-700' />
+                                        <div className='h-3 w-4/5 rounded bg-slate-200 dark:bg-slate-700' />
+                                        <div className='h-3 w-3/5 rounded bg-slate-200 dark:bg-slate-700' />
+                                    </div>
+                                </div>
+                                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3'>
+                                    {[...Array(6)].map((_, i) => (
+                                        <div key={i} className={`${T.card} p-4`}>
+                                            <div className='h-3 w-3/4 rounded bg-slate-200 dark:bg-slate-700 mb-3' />
+                                            <div className='space-y-2'>
+                                                <div className='h-2.5 w-full rounded bg-slate-200 dark:bg-slate-700' />
+                                                <div className='h-2.5 w-2/3 rounded bg-slate-200 dark:bg-slate-700' />
+                                            </div>
+                                            <div className='flex gap-1.5 mt-3'>
+                                                <div className='h-4 w-12 rounded-full bg-slate-200 dark:bg-slate-700' />
+                                                <div className='h-4 w-12 rounded-full bg-slate-200 dark:bg-slate-700' />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className={`${T.cardFlat} p-3`}>
+                                    <div className='h-3 w-20 rounded bg-slate-200 dark:bg-slate-700 mb-2' />
+                                    <div className='flex gap-2'>
+                                        {[...Array(3)].map((_, i) => (
+                                            <div key={i} className='h-6 w-32 rounded-full bg-slate-200 dark:bg-slate-700' />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : results ? (
                             <div className='space-y-4'>
                                 {/* Understanding */}
                                 <div className={`${T.card} p-5`}>
