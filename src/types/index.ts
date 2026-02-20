@@ -32,11 +32,17 @@ export interface Idea {
   impact: Impact;
 }
 
+export interface DeepDiveEntry {
+  question: string;
+  answer: string;
+}
+
 export interface AIResults {
   understanding: string;
   ideas: Idea[];
   suggestions?: string[]; // AI生成の文脈に即した深掘り質問
   deepDive?: string;
+  deepDives?: DeepDiveEntry[];
   refinement?: string;
 }
 

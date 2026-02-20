@@ -384,13 +384,21 @@ export default function App() {
                                 </div>
 
                                 {/* Deep dive output */}
-                                {results.deepDive && (
-                                    <div className={`${T.card} p-5 border-l-2 border-l-blue-400 dark:border-l-blue-600`}>
-                                        <h4 className={`text-xs font-semibold ${T.accentTxt} mb-2 flex items-center gap-1`}>
-                                            <Search className='w-3.5 h-3.5' />
-                                            深掘り分析
-                                        </h4>
-                                        <RichText text={results.deepDive} />
+                                {results.deepDives && results.deepDives.length > 0 && (
+                                    <div className='space-y-3'>
+                                        <div className='flex items-center justify-between'>
+                                            <h4 className={`text-xs font-semibold ${T.accentTxt} flex items-center gap-1`}>
+                                                <Search className='w-3.5 h-3.5' />
+                                                深掘り分析（{results.deepDives.length}件）
+                                            </h4>
+                                            <button onClick={() => setResults(p => p ? { ...p, deepDives: [] } : p)} className={`text-xs ${T.t3} hover:text-red-500 transition`}>クリア</button>
+                                        </div>
+                                        {results.deepDives.map((dd, i) => (
+                                            <div key={i} className={`${T.card} p-5 border-l-2 border-l-blue-400 dark:border-l-blue-600`}>
+                                                <p className={`text-xs font-semibold ${T.t1} mb-2`}>{dd.question}</p>
+                                                <RichText text={dd.answer} />
+                                            </div>
+                                        ))}
                                     </div>
                                 )}
 

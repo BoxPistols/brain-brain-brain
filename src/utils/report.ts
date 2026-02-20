@@ -46,7 +46,12 @@ export const buildReportMd = (
     md += `---\n\n## ブラッシュアップ\n\n${results.refinement}\n`;
   }
   
-  if (results.deepDive) {
+  if (results.deepDives?.length) {
+    md += `---\n\n## 深掘り\n\n`;
+    results.deepDives.forEach((dd, i) => {
+      md += `### ${i + 1}. ${dd.question}\n\n${dd.answer}\n\n`;
+    });
+  } else if (results.deepDive) {
     md += `---\n\n## 深掘り\n\n${results.deepDive}\n`;
   }
   

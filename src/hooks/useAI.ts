@@ -323,11 +323,10 @@ ${commonConditions}。
         ? await callAIWithKey(apiKey.trim(), modelId, [msg], 4096)
         : await callAI(modelId, [msg], 2000);
 
-      setResults(p => p ? ({ ...p, deepDive: (p.deepDive ? p.deepDive + '\n\n---\n\n' : '') + `### ${q}\n\n${raw}` }) : p);
+      setResults(p => p ? ({ ...p, deepDives: [...(p.deepDives || []), { question: q, answer: raw }] }) : p);
     } catch {
-      // APIコール失敗時: seedデータのコンテキストからフォールバック回答を生成
       const fallback = buildFallbackDeepDive(q, results);
-      setResults(p => p ? ({ ...p, deepDive: (p.deepDive ? p.deepDive + '\n\n---\n\n' : '') + `### ${q}\n\n${fallback}` }) : p);
+      setResults(p => p ? ({ ...p, deepDives: [...(p.deepDives || []), { question: q, answer: fallback }] }) : p);
     }
     setDiving(false);
   }, [results, modelId]);
