@@ -366,6 +366,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                 {/* Issue template panel */}
                 <div className='mt-2'>
                     <button
+                        type='button'
                         onClick={() => setIssueTemplateOpen((o) => !o)}
                         className={`flex items-center gap-1 text-xs ${T.t3} hover:text-slate-600 dark:hover:text-slate-300`}
                     >
