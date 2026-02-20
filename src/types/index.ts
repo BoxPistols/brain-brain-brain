@@ -40,7 +40,9 @@ export interface DeepDiveEntry {
 export interface AIResults {
   understanding: string;
   ideas: Idea[];
-  suggestions?: string[]; // AI生成の文脈に即した深掘り質問
+  suggestions?: string[];
+  keyIssue?: string;
+  funnelStage?: string;
   deepDive?: string;
   deepDives?: DeepDiveEntry[];
   refinement?: string;

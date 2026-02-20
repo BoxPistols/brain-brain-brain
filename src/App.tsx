@@ -13,6 +13,7 @@ import {
     Sun,
     Moon,
     AlertCircle,
+    AlertTriangle,
     Zap,
 } from 'lucide-react'
 
@@ -385,6 +386,24 @@ export default function App() {
                                         AI 状況分析
                                         {isSeedData && <span className='ml-auto px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700/40'>Demo</span>}
                                     </h3>
+                                    {results.keyIssue && (
+                                        <div className='mb-3 p-3 rounded-lg bg-rose-50 dark:bg-rose-900/10 border border-rose-200 dark:border-rose-800/30'>
+                                            <div className='flex items-start gap-2'>
+                                                <AlertTriangle className='w-4 h-4 text-rose-600 dark:text-rose-400 mt-0.5 shrink-0' />
+                                                <div className='flex-1 min-w-0'>
+                                                    <div className='flex items-center gap-2 flex-wrap'>
+                                                        <span className='text-[10px] font-semibold text-rose-700 dark:text-rose-300'>最重要イシュー</span>
+                                                        {results.funnelStage && (
+                                                            <span className='px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700/40'>
+                                                                {results.funnelStage}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className='text-sm font-medium text-rose-800 dark:text-rose-200 mt-1 leading-relaxed'>{results.keyIssue}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                     <RichText text={results.understanding} />
                                 </div>
 

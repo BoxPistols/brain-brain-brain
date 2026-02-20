@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { isHRContext, getHRDomainContext } from '../constants/domainContext';
 
 /** JSONが途中で切れていても修復してパースする */
 function parseAIJson(raw: string): any {
@@ -115,6 +116,11 @@ export const useAI = () => {
 
     const rd = ROLE_DEFS[form.sessionType] ?? ROLE_DEFS['other'];
 
+    // ── HR ドメイン知識注入 ──
+    const issueTexts = form.issues.filter(x => x.text.trim()).map(x => x.text);
+    const hrDetected = isHRContext(form.productService, issueTexts);
+    const hrContext = hrDetected ? getHRDomainContext(proMode) : '';
+
     // ── 共通前提条件 ──
     const commonConditions = [
       '現状の取り組みを否定せず、強みを活かしながら「次に何をすべきか」を建設的・前向きに提案する',
@@ -158,6 +164,8 @@ export const useAI = () => {
       }
     }
 
+    const hrJson = hrDetected ? `"keyIssue":"最重要イシューを1文で特定","funnelStage":"ボトルネックのファネルステージ名",` : '';
+
     if (proMode) {
       return `【あなたの役割】
 ${roleDescription}
@@ -168,19 +176,19 @@ ${commonConditions}。
 
 【分析の視点】
 ${rd.lens}
-
+${hrContext ? `\n${hrContext}` : ''}
 【分析対象】
 プロジェクト: ${pn} / プロダクト・サービス: ${form.productService}
 タイムライン: ${tlStr} / チーム目標: ${form.teamGoals}${issueStr ? `\n現状課題: ${issueStr}` : ''}
 セッション: ${sesLabel} / 分析深度: ${dc.label}
 
 【出力形式】JSONのみ・コードブロック不要:
-{"understanding":"${dmap.understanding}","ideas":[${dc.ideas}個: {"title":"8語以内の行動起点タイトル","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High"}],"suggestions":["入力内容のプロダクト・課題・目標に直結する深掘り質問を5個。セッションタイプに縛られず実務担当者が次に考えるべき問いを設定すること"]}`;
+{"understanding":"${dmap.understanding}",${hrJson}"ideas":[${dc.ideas}個: {"title":"8語以内の行動起点タイトル","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High"}],"suggestions":["入力内容のプロダクト・課題・目標に直結する深掘り質問を5個。セッションタイプに縛られず実務担当者が次に考えるべき問いを設定すること"]}`;
     } else {
-      return `ビジネスコンサルとして建設的に分析。${rd.lens}の観点。
+      return `ビジネスコンサルとして建設的に分析。${rd.lens}の観点。${hrContext ? ` ${hrContext}` : ''}
 対象: ${form.productService} / 目標: ${form.teamGoals}${issueStr ? ` / 課題: ${issueStr}` : ''}
 JSONのみ回答:
-{"understanding":"${dmap.understanding}","ideas":[${dc.ideas}個: {"title":"6語以内","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High"}],"suggestions":["深掘り質問を4個"]}`;
+{"understanding":"${dmap.understanding}",${hrJson}"ideas":[${dc.ideas}個: {"title":"6語以内","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High"}],"suggestions":["深掘り質問を4個"]}`;
     }
   };
 
@@ -261,7 +269,7 @@ JSONのみ回答:
       const h2 = [...hist, msg];
       const raw = proMode
         ? await callAIWithKey(apiKey.trim(), modelId, h2, 4096)
-        : await callAI(modelId, h2, 2000);
+        : await callAI(modelId, h2, 4096);
 
       const newResults = { ...results, refinement: raw };
       setResults(newResults);
@@ -321,7 +329,7 @@ JSONのみ回答:
       };
       const raw = proMode
         ? await callAIWithKey(apiKey.trim(), modelId, [msg], 4096)
-        : await callAI(modelId, [msg], 2000);
+        : await callAI(modelId, [msg], 4096);
 
       setResults(p => p ? ({ ...p, deepDives: [...(p.deepDives || []), { question: q, answer: raw }] }) : p);
     } catch (e: any) {

@@ -36,6 +36,12 @@ export const buildReportMd = (
     md += '\n';
   }
   
+  if (results.keyIssue) {
+    md += `## 最重要イシュー\n\n`;
+    if (results.funnelStage) md += `**ボトルネック段階**: ${results.funnelStage}\n\n`;
+    md += `${results.keyIssue}\n\n`;
+  }
+
   md += `---\n\n## AI分析\n\n${results.understanding}\n\n---\n\n## 戦略アイデア\n\n`;
   
   results.ideas.forEach((d, i) => {
