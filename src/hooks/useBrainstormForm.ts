@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { BrainstormForm } from '../types';
 import { nextSeed } from '../constants/mockData';
-import { TYPES, SUGGEST } from '../constants/prompts';
+import { TYPES, getDeepDiveSuggestions } from '../constants/prompts';
 import { autoN } from '../utils/formatters';
 
 const initialFormState: BrainstormForm = {
@@ -32,9 +32,13 @@ export const useBrainstormForm = () => {
     [form.tlMode, form.tlStart, form.tlEnd, form.tlDead]
   );
   
-  const suggestions = useMemo(() => 
-    SUGGEST[form.sessionType] || SUGGEST.other,
-    [form.sessionType]
+  const suggestions = useMemo(() =>
+    getDeepDiveSuggestions(
+      form.sessionType,
+      form.productService,
+      form.issues.map(x => x.text).filter(Boolean),
+    ),
+    [form.sessionType, form.productService, form.issues]
   );
   
   const issueStr = useMemo(() => 

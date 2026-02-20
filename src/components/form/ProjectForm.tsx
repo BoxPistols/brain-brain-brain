@@ -12,12 +12,12 @@ import {
 import { BrainstormForm, IssueTemplate, SessionType } from '../../types'
 import {
     TYPES,
-    ISSUE_TPL,
     FREE_DEPTH,
     PRO_DEPTH,
     EXAMPLE_PRODUCTS,
     GOAL_TEMPLATES,
     ISSUE_TEMPLATES,
+    getIssueSuggestions,
 } from '../../constants/prompts'
 import { T } from '../../constants/theme'
 import { IssueRow } from './IssueRow'
@@ -118,7 +118,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
         })
 
     const issueTemplateKey = form.sessionType
-    const issueTpl = ISSUE_TPL[form.sessionType] ?? ISSUE_TPL.other
+    const issueTpl = getIssueSuggestions(form.sessionType, form.productService)
 
     return (
         <>
