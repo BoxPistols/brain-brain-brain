@@ -1,5 +1,14 @@
 import { ModelInfo } from '../types';
 
+const friendlyError = (status: number, body: string): string => {
+  if (status === 429) return 'APIレート制限に達しました。しばらく待ってから再試行してください。';
+  if (status === 401) return 'APIキーが無効です。設定を確認してください。';
+  if (status === 403) return 'APIアクセスが拒否されました。キーの権限を確認してください。';
+  if (status === 404) return `モデルが見つかりません。${body.slice(0, 100)}`;
+  if (status === 500 || status === 502 || status === 503) return 'APIサーバーが一時的に利用できません。しばらく待ってから再試行してください。';
+  return `API エラー (${status}): ${body.slice(0, 200)}`;
+};
+
 export const MODELS: ModelInfo[] = [
   { id: 'gpt-5-nano',   label: '5 Nano',   t: '最速',    cost: '$'  },
   { id: 'gpt-5-mini',   label: '5 Mini',   t: 'バランス', cost: '$$' },
@@ -16,7 +25,7 @@ export const testConn = async (modelId: string): Promise<string> => {
     body: JSON.stringify({ model: modelId, ...tokenParam, messages: [{ role: 'user', content: 'Say exactly: OK' }] }),
   });
   const d = await r.json();
-  if (!r.ok) throw new Error(`${r.status}: ${d?.error?.message || JSON.stringify(d)}`);
+  if (!r.ok) throw new Error(friendlyError(r.status, d?.error?.message || JSON.stringify(d)));
   return d.model || modelId;
 };
 
@@ -32,7 +41,7 @@ export const callAI = async (modelId: string, msgs: any[], maxTokens = 4096, jso
       ...(jsonMode ? { response_format: { type: 'json_object' } } : {}),
     }),
   });
-  if (!r.ok) throw new Error(`${r.status}: ${(await r.text()).slice(0, 300)}`);
+  if (!r.ok) throw new Error(friendlyError(r.status, (await r.text()).slice(0, 300)));
   const data = await r.json();
   return data.choices?.[0]?.message?.content || '';
 };
@@ -49,7 +58,7 @@ export const callAIWithKey = async (apiKey: string, modelId: string, msgs: any[]
       ...(jsonMode ? { response_format: { type: 'json_object' } } : {}),
     }),
   });
-  if (!r.ok) throw new Error(`${r.status}: ${(await r.text()).slice(0, 300)}`);
+  if (!r.ok) throw new Error(friendlyError(r.status, (await r.text()).slice(0, 300)));
   const data = await r.json();
   return data.choices?.[0]?.message?.content || '';
 };
