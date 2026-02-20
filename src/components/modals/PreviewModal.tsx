@@ -163,10 +163,11 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
                             </button>
                             <button
                                 onClick={() => {
+                                    const ts = new Date().toISOString().slice(0, 16).replace(/[T:]/g, '-')
                                     const filename =
                                         exportType === 'md'
-                                            ? `${pn}.md`
-                                            : `${pn}.txt`
+                                            ? `${pn}_${ts}.md`
+                                            : `${pn}_${ts}.txt`
                                     const mime =
                                         exportType === 'md'
                                             ? 'text/markdown'

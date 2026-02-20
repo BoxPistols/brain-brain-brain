@@ -636,18 +636,21 @@ export default function App() {
                     onDelete={deleteLog}
                     onDeleteAll={deleteAllLogs}
                     onExportAll={() => {
+                        const ts = new Date().toISOString().slice(0, 16).replace(/[T:]/g, '-');
                         const data = JSON.stringify(logs, null, 2);
-                        dlFile(data, `brainstorm-logs-${Date.now()}.json`, 'application/json');
+                        dlFile(data, `brainstorm-logs_${ts}.json`, 'application/json');
                     }}
                     onExportAnswers={() => {
+                        const ts = new Date().toISOString().slice(0, 16).replace(/[T:]/g, '-');
                         const answers = logs.map(l => ({
                             id: l.id, projectName: l.projectName, timestamp: l.timestamp,
                             model: l.model, depth: l.depth, results: l.results,
                         }));
-                        dlFile(JSON.stringify(answers, null, 2), `brainstorm-answers-${Date.now()}.json`, 'application/json');
+                        dlFile(JSON.stringify(answers, null, 2), `brainstorm-answers_${ts}.json`, 'application/json');
                     }}
                     onExportOne={(l) => {
-                        dlFile(JSON.stringify(l, null, 2), `brainstorm-${l.projectName || l.id}.json`, 'application/json');
+                        const ts = new Date(l.timestamp).toISOString().slice(0, 16).replace(/[T:]/g, '-');
+                        dlFile(JSON.stringify(l, null, 2), `brainstorm-${l.projectName || l.id}_${ts}.json`, 'application/json');
                     }}
                     onImport={importLogs}
                     settings={stgSettings}
