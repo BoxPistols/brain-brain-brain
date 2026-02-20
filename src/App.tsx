@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import {
     Target,
     Sparkles,
@@ -124,10 +124,14 @@ export default function App() {
 
     const cm = MODELS.find((m) => m.id === modelId) || MODELS[0]
     // AI生成サジェストがあればそちらを優先、なければstatic fallback
-    const displaySuggestions = results?.suggestions?.length ? results.suggestions : suggestions
-    const report = results
-        ? buildReportMd(usedName, form, results, 'OpenAI', cm.label, dep)
-        : null
+    const displaySuggestions = useMemo(
+        () => results?.suggestions?.length ? results.suggestions : suggestions,
+        [results?.suggestions, suggestions]
+    )
+    const report = useMemo(
+        () => results ? buildReportMd(usedName, form, results, 'OpenAI', cm.label, dep) : null,
+        [results, usedName, form, cm.label, dep]
+    )
 
     const handleGenerate = () => {
         if (!form.productService.trim() || !form.teamGoals.trim()) {
@@ -353,7 +357,7 @@ export default function App() {
                                 {/* Idea grid — 2col on md, 3col on xl */}
                                 <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3'>
                                     {results.ideas.map((idea, i) => (
-                                        <ResultCard key={i} idea={idea} index={i} />
+                                        <ResultCard key={`${idea.title}-${i}`} idea={idea} index={i} />
                                     ))}
                                 </div>
 
