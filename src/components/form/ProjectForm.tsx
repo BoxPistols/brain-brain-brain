@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
     Wand2,
     CalendarRange,
@@ -8,6 +8,7 @@ import {
     Plus,
     ChevronDown,
     ChevronUp,
+    Target,
 } from 'lucide-react'
 import { BrainstormForm, IssueTemplate, SessionType } from '../../types'
 import {
@@ -15,9 +16,9 @@ import {
     FREE_DEPTH,
     PRO_DEPTH,
     EXAMPLE_PRODUCTS,
-    GOAL_TEMPLATES,
     ISSUE_TEMPLATES,
     getIssueSuggestions,
+    getGoalSuggestions,
 } from '../../constants/prompts'
 import { T } from '../../constants/theme'
 import { IssueRow } from './IssueRow'
@@ -119,6 +120,25 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
     const issueTemplateKey = form.sessionType
     const issueTpl = getIssueSuggestions(form.sessionType, form.productService)
+    const goalSuggestions = useMemo(
+        () => getGoalSuggestions(form.sessionType, form.productService),
+        [form.sessionType, form.productService],
+    )
+    const [goalPickerOpen, setGoalPickerOpen] = useState(false)
+
+    const toggleGoal = (goal: string) => {
+        setForm((p) => {
+            const current = p.teamGoals
+                .split(/[,、・\n]/)
+                .map((s) => s.trim())
+                .filter(Boolean)
+            const exists = current.includes(goal)
+            const next = exists
+                ? current.filter((g) => g !== goal)
+                : [...current, goal]
+            return { ...p, teamGoals: next.join('・') }
+        })
+    }
 
     return (
         <>
@@ -293,28 +313,48 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                         value={form.teamGoals}
                         onChange={onF}
                         rows={2}
-                        placeholder='定量目標を含めると精度向上'
+                        placeholder='定量目標を含めると精度向上（下から選択 or 自由入力）'
                         className={`${T.inp} resize-none`}
                     />
-                    {form.teamGoals === '' && (
-                        <div className='flex flex-wrap gap-1 mt-1'>
-                            {(
-                                GOAL_TEMPLATES[form.sessionType] ||
-                                GOAL_TEMPLATES.other
-                            ).map((g, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() =>
-                                        setForm((p) => ({ ...p, teamGoals: g }))
-                                    }
-                                    className={`px-2 py-0.5 rounded-full text-xs border ${T.btnGhost}`}
-                                >
-                                    <span className={T.t3}>目標例: </span>
-                                    {g}
-                                </button>
-                            ))}
-                        </div>
-                    )}
+                    <div className='relative mt-1'>
+                        <button
+                            type='button'
+                            onClick={() => setGoalPickerOpen((o) => !o)}
+                            className={`flex items-center gap-1 text-xs ${T.t3} hover:text-slate-600 dark:hover:text-slate-300`}
+                        >
+                            <Target className='w-3 h-3' />
+                            目標サジェストから選択
+                            {goalPickerOpen ? (
+                                <ChevronUp className='w-3 h-3' />
+                            ) : (
+                                <ChevronDown className='w-3 h-3' />
+                            )}
+                        </button>
+                        {goalPickerOpen && (
+                            <div className='mt-1 flex flex-wrap gap-1'>
+                                {goalSuggestions.map((g, i) => {
+                                    const selected = form.teamGoals
+                                        .split(/[,、・\n]/)
+                                        .map((s) => s.trim())
+                                        .includes(g)
+                                    return (
+                                        <button
+                                            key={i}
+                                            type='button'
+                                            onClick={() => toggleGoal(g)}
+                                            className={`px-2 py-0.5 rounded-full text-xs border transition ${
+                                                selected
+                                                    ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300'
+                                                    : T.btnGhost
+                                            }`}
+                                        >
+                                            {g}
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <div>
                     <label
