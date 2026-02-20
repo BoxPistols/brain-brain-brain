@@ -5,7 +5,7 @@ interface RichTextProps {
   text: string | undefined;
 }
 
-export const RichText: React.FC<RichTextProps> = ({ text }) => {
+export const RichText: React.FC<RichTextProps> = React.memo(({ text }) => {
   if (!text) return null;
   const lines = text.split('\n');
   const elements: React.ReactNode[] = [];
@@ -73,4 +73,4 @@ export const RichText: React.FC<RichTextProps> = ({ text }) => {
   }
   if (inTable) flushTable();
   return <div className="space-y-0.5">{elements}</div>;
-};
+});
