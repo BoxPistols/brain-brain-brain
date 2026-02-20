@@ -222,8 +222,8 @@ ${commonConditions}。
     try {
       const msg = { role: 'user', content: prompt };
       const raw = proMode
-        ? await callAIWithKey(apiKey.trim(), modelId, [msg], dc.maxTokens)
-        : await callAI(modelId, [msg], dc.maxTokens);
+        ? await callAIWithKey(apiKey.trim(), modelId, [msg], dc.maxTokens, true)
+        : await callAI(modelId, [msg], dc.maxTokens, true);
       const parsed = parseAIJson(raw);
       
       setResults(parsed);
@@ -231,18 +231,18 @@ ${commonConditions}。
       onSuccess(parsed, prompt);
     } catch (e: any) {
       console.error(e);
-      setError(`生成失敗: ${e.message}`);
-      // Fallback for demo purposes
-      setResults({ 
-        understanding: `PJ「${pn}」の${sesLabel}セッション。目標「${form.teamGoals}」に向けた戦略提案。`, 
+      setError(`生成失敗: ${e.message}。フォールバック結果を表示しています。`);
+      const issues = form.issues.filter(x => x.text.trim()).map(x => x.text).join('、') || '未指定';
+      setResults({
+        understanding: `「${form.productService}」の${sesLabel}セッション（目標: ${form.teamGoals}）。現状課題「${issues}」を踏まえた戦略提案。APIとの通信に失敗したためフォールバック結果を表示しています。`,
         ideas: [
-          { title: 'バリューチェーン再構築', description: '低付加価値プロセスを特定し自動化を推進。', priority: 'High', effort: 'High', impact: 'High' }, 
-          { title: 'データドリブン意思決定', description: 'KPIツリーとダッシュボードで仮説検証サイクルを週次に短縮。', priority: 'High', effort: 'Medium', impact: 'High' }, 
-          { title: 'クロスファンクショナルスクワッド', description: '機能横断チーム編成でE2E提供速度を向上。', priority: 'Medium', effort: 'Medium', impact: 'High' }, 
-          { title: 'JTBD分析UXリデザイン', description: 'ジョブ理論で顧客ニーズを特定しコア体験を再設計。', priority: 'Medium', effort: 'High', impact: 'High' }, 
-          { title: 'アジャイルPoC標準化', description: '2週スプリント検証で投資判断を高速化。', priority: 'Medium', effort: 'Low', impact: 'Medium' }, 
-          { title: 'エコシステムアライアンス', description: '補完ケイパビリティ持つパートナー協業で制約を突破。', priority: 'Low', effort: 'Medium', impact: 'Medium' }
-        ] 
+          { title: '現状課題の構造化分析', description: `「${issues}」の根本原因を特定し、影響度×緊急度マトリクスで優先順位を整理。`, priority: 'High', effort: 'Low', impact: 'High' },
+          { title: 'クイックウィンの特定と実行', description: `${form.teamGoals}達成に向け、2週間以内に成果が出る施策を3つ選定し即座に着手。`, priority: 'High', effort: 'Low', impact: 'High' },
+          { title: 'KPIツリーの設計', description: `最終目標を分解し、先行指標と遅行指標を整理。週次レビューサイクルを確立。`, priority: 'High', effort: 'Medium', impact: 'High' },
+          { title: 'ステークホルダーマップ整備', description: '意思決定に関わる人物を整理し、合意形成のボトルネックを特定・解消。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+          { title: 'ベンチマーク分析', description: `同業・異業種の成功事例を調査し${form.productService}に適用可能な施策を抽出。`, priority: 'Medium', effort: 'Medium', impact: 'High' },
+          { title: '実行ロードマップ策定', description: '30-60-90日プランを策定し、各フェーズのマイルストーンと判断基準を明確化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+        ],
       });
     }
     setLoading(false);
