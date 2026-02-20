@@ -52,7 +52,11 @@ export const callAI = async (modelId: string, msgs: any[], maxTokens = 4096, jso
   });
   if (!r.ok) throw new Error(friendlyError(r.status, (await r.text()).slice(0, 300)));
   const data = await r.json();
-  return data.choices?.[0]?.message?.content || '';
+  const content = data.choices?.[0]?.message?.content || '';
+  if (!content && data.choices?.[0]?.finish_reason === 'length') {
+    throw new Error('回答が長すぎてトークン上限に達しました。分析深度を下げるか、入力を簡潔にしてください。');
+  }
+  return content;
 };
 
 /** Pro mode: call OpenAI directly with user's own API key */
@@ -69,5 +73,9 @@ export const callAIWithKey = async (apiKey: string, modelId: string, msgs: any[]
   });
   if (!r.ok) throw new Error(friendlyError(r.status, (await r.text()).slice(0, 300)));
   const data = await r.json();
-  return data.choices?.[0]?.message?.content || '';
+  const content = data.choices?.[0]?.message?.content || '';
+  if (!content && data.choices?.[0]?.finish_reason === 'length') {
+    throw new Error('回答が長すぎてトークン上限に達しました。分析深度を下げるか、入力を簡潔にしてください。');
+  }
+  return content;
 };

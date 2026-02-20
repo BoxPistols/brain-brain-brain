@@ -177,18 +177,10 @@ ${rd.lens}
 【出力形式】JSONのみ・コードブロック不要:
 {"understanding":"${dmap.understanding}","ideas":[${dc.ideas}個: {"title":"8語以内の行動起点タイトル","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High"}],"suggestions":["入力内容のプロダクト・課題・目標に直結する深掘り質問を5個。セッションタイプに縛られず実務担当者が次に考えるべき問いを設定すること"]}`;
     } else {
-      return `【あなたの役割】
-${rd.role}
-
-【前提条件】
-${commonConditions}。
-
-【分析対象】
-プロダクト・サービス: ${form.productService} / 目標: ${form.teamGoals}${issueStr ? ` / 課題: ${issueStr}` : ''}
-セッション: ${sesLabel}
-
-【出力形式】JSONのみ・コードブロック不要:
-{"understanding":"${dmap.understanding}","ideas":[${dc.ideas}個: {"title":"6語以内","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High"}],"suggestions":["入力内容に直結する深掘り質問を4個"]}`;
+      return `ビジネスコンサルとして建設的に分析。${rd.lens}の観点。
+対象: ${form.productService} / 目標: ${form.teamGoals}${issueStr ? ` / 課題: ${issueStr}` : ''}
+JSONのみ回答:
+{"understanding":"${dmap.understanding}","ideas":[${dc.ideas}個: {"title":"6語以内","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High"}],"suggestions":["深掘り質問を4個"]}`;
     }
   };
 
@@ -223,7 +215,7 @@ ${commonConditions}。
       const msg = { role: 'user', content: prompt };
       const raw = proMode
         ? await callAIWithKey(apiKey.trim(), modelId, [msg], dc.maxTokens, true)
-        : await callAI(modelId, [msg], dc.maxTokens, true);
+        : await callAI(modelId, [msg], dc.maxTokens, false);
       const parsed = parseAIJson(raw);
       
       setResults(parsed);

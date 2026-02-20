@@ -90,9 +90,9 @@ export function getSubIssueSuggestions(parentText: string): string[] {
 
 // Free mode (no API key) — limited tiers
 export const FREE_DEPTH: Record<number, { label: string; desc: string; ideas: number; wait: string; maxTokens: number }> = {
-  1: { label: 'Lite',     desc: '速報',    ideas: 3, wait: '1-2分',  maxTokens: 800  },
-  2: { label: 'Standard', desc: '標準',    ideas: 5, wait: '3-5分',  maxTokens: 1500 },
-  3: { label: 'Deep',     desc: '詳細',    ideas: 7, wait: '5-10分', maxTokens: 2500 },
+  1: { label: 'Lite',     desc: '速報',    ideas: 3, wait: '〜1分',  maxTokens: 4096  },
+  2: { label: 'Standard', desc: '標準',    ideas: 5, wait: '1-3分',  maxTokens: 8000 },
+  3: { label: 'Deep',     desc: '詳細',    ideas: 7, wait: '3-5分', maxTokens: 8000 },
 };
 
 // Pro mode (user's own API key) — full tiers
