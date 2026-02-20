@@ -147,10 +147,11 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
             {/* Project + Product */}
             <div className='grid grid-cols-1 md:grid-cols-2 gap-3 mb-3'>
                 <div className='relative'>
-                    <label className={`block text-xs font-medium ${T.t2} mb-1`}>
+                    <label htmlFor='projectName' className={`block text-xs font-medium ${T.t2} mb-1`}>
                         プロジェクト名
                     </label>
                     <input
+                        id='projectName'
                         name='projectName'
                         value={form.projectName}
                         onChange={onF}
@@ -165,10 +166,11 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                     </span>
                 </div>
                 <div>
-                    <label className={`block text-xs font-medium ${T.t2} mb-1`}>
+                    <label htmlFor='productService' className={`block text-xs font-medium ${T.t2} mb-1`}>
                         プロダクト / サービス *
                     </label>
                     <input
+                        id='productService'
                         name='productService'
                         value={form.productService}
                         onChange={onF}
@@ -202,7 +204,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
             {/* Session type */}
             <div className='mb-3'>
-                <label className={`block text-xs font-medium ${T.t2} mb-1`}>
+                <label htmlFor='sessionType' className={`block text-xs font-medium ${T.t2} mb-1`}>
                     セッションタイプ
                 </label>
                 {form.sessionType === 'other' ? (
@@ -229,6 +231,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                     </div>
                 ) : (
                     <select
+                        id='sessionType'
                         name='sessionType'
                         value={form.sessionType}
                         onChange={onSessionTypeChange}
@@ -307,10 +310,11 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
             {/* Goals + Depth */}
             <div className='grid grid-cols-1 md:grid-cols-3 gap-3 mb-3'>
                 <div className='md:col-span-2'>
-                    <label className={`block text-xs font-medium ${T.t2} mb-1`}>
+                    <label htmlFor='teamGoals' className={`block text-xs font-medium ${T.t2} mb-1`}>
                         チーム目標 *
                     </label>
                     <textarea
+                        id='teamGoals'
                         name='teamGoals'
                         value={form.teamGoals}
                         onChange={onF}
