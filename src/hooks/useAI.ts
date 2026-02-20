@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { isHRContext, getHRDomainContext } from '../constants/domainContext';
 
 /** JSONが途中で切れていても修復してパースする */
-function parseAIJson(raw: string): any {
+function parseAIJson(raw: string): AIResults {
   // コードフェンス除去、先頭の { を探す
   let text = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
   const start = text.indexOf('{');
@@ -45,7 +45,7 @@ function parseAIJson(raw: string): any {
 
   return JSON.parse(text);
 }
-import { BrainstormForm, AIResults } from '../types';
+import { BrainstormForm, AIResults, ChatMessage } from '../types';
 import { callAI, callAIWithKey, testConn, DEFAULT_MODEL_ID } from '../constants/models';
 import { FREE_DEPTH, PRO_DEPTH } from '../constants/prompts';
 
@@ -59,15 +59,15 @@ export const useAI = () => {
   const [reviewText, setReviewText] = useState('');
   const [refining, setRefining] = useState(false);
   const [diving, setDiving] = useState(false);
-  const [hist, setHist] = useState<any[]>([]);
+  const [hist, setHist] = useState<ChatMessage[]>([]);
 
   const runConnTest = useCallback(async (apiKey = '') => {
     setConnStatus({ status: 'testing', msg: '' });
     try {
       const model = await testConn(modelId, apiKey);
       setConnStatus({ status: 'ok', msg: `OK: ${model}` });
-    } catch (e: any) {
-      setConnStatus({ status: 'error', msg: e.message });
+    } catch (e: unknown) {
+      setConnStatus({ status: 'error', msg: e instanceof Error ? e.message : String(e) });
     }
   }, [modelId]);
 
@@ -221,7 +221,7 @@ JSONのみ回答:
     const prompt = buildPrompt(pn, form, dep, sesLabel, tlStr, issueStr, proMode);
 
     try {
-      const msg = { role: 'user', content: prompt };
+      const msg: ChatMessage = { role: 'user', content: prompt };
       const raw = proMode
         ? await callAIWithKey(apiKey.trim(), modelId, [msg], dc.maxTokens, true)
         : await callAI(modelId, [msg], dc.maxTokens, false);
@@ -230,9 +230,9 @@ JSONのみ回答:
       setResults(parsed);
       setHist([msg, { role: 'assistant', content: raw }]);
       onSuccess(parsed, prompt);
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
-      setError(`生成失敗: ${e.message}。フォールバック結果を表示しています。`);
+      setError(`生成失敗: ${e instanceof Error ? e.message : String(e)}。フォールバック結果を表示しています。`);
       const issues = form.issues.filter(x => x.text.trim()).map(x => x.text).join('、') || '未指定';
       setResults({
         understanding: `「${form.productService}」の${sesLabel}セッション（目標: ${form.teamGoals}）。現状課題「${issues}」を踏まえた戦略提案。APIとの通信に失敗したためフォールバック結果を表示しています。`,
@@ -266,7 +266,7 @@ JSONのみ回答:
     const proMode = apiKey.trim().startsWith('sk-');
 
     try {
-      const msg = { role: 'user', content: `あなたは戦略コンサルタントです。以下のレビュー・フィードバックに基づき、戦略提案をブラッシュアップしてください。\n\n【前提条件】現状を批判せず、強みを活かした建設的な改善提案に絞る。担当者が実行できる具体案を出す。\n\n【レビュー内容】${reviewText}\n\nMarkdown形式（見出し・箇条書き活用）で回答してください。` };
+      const msg: ChatMessage = { role: 'user', content: `あなたは戦略コンサルタントです。以下のレビュー・フィードバックに基づき、戦略提案をブラッシュアップしてください。\n\n【前提条件】現状を批判せず、強みを活かした建設的な改善提案に絞る。担当者が実行できる具体案を出す。\n\n【レビュー内容】${reviewText}\n\nMarkdown形式（見出し・箇条書き活用）で回答してください。` };
       const h2 = [...hist, msg];
       const raw = proMode
         ? await callAIWithKey(apiKey.trim(), modelId, h2, 4096)
@@ -274,11 +274,13 @@ JSONのみ回答:
 
       const newResults = { ...results, refinement: raw };
       setResults(newResults);
-      setHist([...h2, { role: 'assistant', content: raw }]);
+      const newHist = [...h2, { role: 'assistant' as const, content: raw }];
+      setHist(newHist.slice(-10));
+      setReviewText('');
 
       onSuccess(newResults, reviewText);
-    } catch (e: any) {
-      setError(`改善失敗: ${e.message}`);
+    } catch (e: unknown) {
+      setError(`改善失敗: ${e instanceof Error ? e.message : String(e)}`);
     } finally {
       setRefining(false);
     }
@@ -324,7 +326,7 @@ JSONのみ回答:
         .map((idea, i) => `${i + 1}. ${idea.title}: ${idea.description}`)
         .join('\n');
       const context = `【状況分析】\n${currentResults.understanding}\n\n【検討中の戦略アイデア】\n${ideaSummary}`;
-      const msg = {
+      const msg: ChatMessage = {
         role: 'user',
         content: `あなたは戦略コンサルタントです。以下の事業状況を踏まえ、質問に詳細回答してください。\n\n【事業状況】\n${context}\n\n【前提条件】現状批判ではなく「次の打ち手・改善機会」として建設的に回答すること。担当者（営業・マーケ・経営企画）が実行できる具体策を含めること。\n\n【質問】${q}\n\nMarkdown形式（見出し・テーブル・箇条書き活用）で詳細回答してください。`,
       };
@@ -333,12 +335,12 @@ JSONのみ回答:
         : await callAI(modelId, [msg], 4096);
 
       setResults(p => p ? ({ ...p, deepDives: [...(p.deepDives || []), { question: q, answer: raw }] }) : p);
-    } catch (e: any) {
+    } catch (e: unknown) {
       try {
         const fallback = buildFallbackDeepDive(q, currentResults);
         setResults(p => p ? ({ ...p, deepDives: [...(p.deepDives || []), { question: q, answer: fallback }] }) : p);
       } catch {
-        setError(`深掘り失敗: ${e?.message || '不明なエラー'}`);
+        setError(`深掘り失敗: ${e instanceof Error ? e.message : '不明なエラー'}`);
       }
     } finally {
       setDiving(false);

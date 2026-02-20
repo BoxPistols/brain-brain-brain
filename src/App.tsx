@@ -45,7 +45,7 @@ import { usePanelResize, PRESETS } from './hooks/usePanelResize'
 export default function App() {
     // Global hooks
     const { isDark, toggleTheme } = useTheme()
-    const { ratio, applyRatio, startDrag, isDragging, containerRef, activePreset } = usePanelResize()
+    const { ratio, applyRatio, startDrag, startTouchDrag, isDragging, containerRef, activePreset } = usePanelResize()
 
     const {
         logs,
@@ -226,7 +226,7 @@ export default function App() {
     handleGenerateRef.current = handleGenerate
 
     const handleRefine = () => {
-        refine((res: any, text: string) => {
+        refine((res, text) => {
             if (stgSettings.autoSave)
                 saveLog(usedName, form, res, text, cm.label, dep)
         }, apiKey)
@@ -454,6 +454,7 @@ export default function App() {
                     {/* ── Drag handle ── */}
                     <div
                         onMouseDown={startDrag}
+                        onTouchStart={startTouchDrag}
                         className={`hidden lg:flex items-center justify-center shrink-0 cursor-col-resize group transition-colors self-stretch ${isDragging ? 'w-1.5 bg-blue-500/40' : 'w-4 hover:bg-blue-500/10'}`}
                     >
                         <GripVertical className={`w-3 h-3 transition-colors ${isDragging ? 'text-blue-500' : 'text-slate-300 dark:text-slate-600 group-hover:text-blue-400'}`} />

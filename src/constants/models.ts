@@ -1,4 +1,4 @@
-import { ModelInfo } from '../types';
+import { ModelInfo, ChatMessage } from '../types';
 
 const friendlyError = (status: number, body: string): string => {
   if (status === 429) return 'APIレート制限に達しました。しばらく待ってから再試行してください。';
@@ -39,7 +39,7 @@ export const testConn = async (modelId: string, apiKey = ''): Promise<string> =>
 };
 
 /** Free mode: call via server proxy (no user key needed) */
-export const callAI = async (modelId: string, msgs: any[], maxTokens = 4096, jsonMode = false): Promise<string> => {
+export const callAI = async (modelId: string, msgs: ChatMessage[], maxTokens = 4096, jsonMode = false): Promise<string> => {
   const usesCompletionTokens = modelId.startsWith('gpt-5') || modelId.startsWith('o');
   const tokenParam = usesCompletionTokens ? { max_completion_tokens: maxTokens } : { max_tokens: maxTokens };
   const r = await fetch(API_PROXY, {
@@ -60,7 +60,7 @@ export const callAI = async (modelId: string, msgs: any[], maxTokens = 4096, jso
 };
 
 /** Pro mode: call OpenAI directly with user's own API key */
-export const callAIWithKey = async (apiKey: string, modelId: string, msgs: any[], maxTokens = 4096, jsonMode = false): Promise<string> => {
+export const callAIWithKey = async (apiKey: string, modelId: string, msgs: ChatMessage[], maxTokens = 4096, jsonMode = false): Promise<string> => {
   const usesCompletionTokens = modelId.startsWith('gpt-5') || modelId.startsWith('o');
   const tokenParam = usesCompletionTokens ? { max_completion_tokens: maxTokens } : { max_tokens: maxTokens };
   const r = await fetch(API_DIRECT, {

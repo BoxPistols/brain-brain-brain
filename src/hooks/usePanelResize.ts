@@ -25,7 +25,19 @@ export function usePanelResize() {
     localStorage.setItem(STORAGE_KEY, String(clamped));
   }, []);
 
+  const calcRatio = useCallback((clientX: number) => {
+    const container = containerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    applyRatio(((clientX - rect.left) / rect.width) * 100);
+  }, [applyRatio]);
+
   const startDrag = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const startTouchDrag = useCallback((e: React.TouchEvent) => {
     e.preventDefault();
     setIsDragging(true);
   }, []);
@@ -33,33 +45,32 @@ export function usePanelResize() {
   useEffect(() => {
     if (!isDragging) return;
 
-    const onMove = (e: MouseEvent) => {
-      const container = containerRef.current;
-      if (!container) return;
-      const rect = container.getBoundingClientRect();
-      const pct = ((e.clientX - rect.left) / rect.width) * 100;
-      applyRatio(pct);
+    const onMouseMove = (e: MouseEvent) => calcRatio(e.clientX);
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches[0]) calcRatio(e.touches[0].clientX);
     };
+    const onEnd = () => setIsDragging(false);
 
-    const onUp = () => setIsDragging(false);
-
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-    // Prevent text selection while dragging
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onEnd);
+    document.addEventListener('touchmove', onTouchMove, { passive: true });
+    document.addEventListener('touchend', onEnd);
     document.body.style.userSelect = 'none';
     document.body.style.cursor = 'col-resize';
 
     return () => {
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onEnd);
+      document.removeEventListener('touchmove', onTouchMove);
+      document.removeEventListener('touchend', onEnd);
       document.body.style.userSelect = '';
       document.body.style.cursor = '';
     };
-  }, [isDragging, applyRatio]);
+  }, [isDragging, calcRatio]);
 
   const activePreset = Object.entries(PRESETS).find(
     ([, v]) => Math.abs(ratio - v) <= 3
   )?.[0] as keyof typeof PRESETS | undefined;
 
-  return { ratio, applyRatio, startDrag, isDragging, containerRef, activePreset };
+  return { ratio, applyRatio, startDrag, startTouchDrag, isDragging, containerRef, activePreset };
 }
