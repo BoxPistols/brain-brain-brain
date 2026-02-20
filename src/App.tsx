@@ -113,6 +113,7 @@ export default function App() {
     const [seedOpen, setSeedOpen] = useState(false)
     const seedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
     const seedRef = useRef<HTMLDivElement | null>(null)
+    const handleGenerateRef = useRef<(() => void) | null>(null)
 
     useEffect(() => {
         if (!seedOpen) return
@@ -123,6 +124,26 @@ export default function App() {
         document.addEventListener('touchstart', handler)
         return () => { document.removeEventListener('mousedown', handler); document.removeEventListener('touchstart', handler) }
     }, [seedOpen])
+
+    // Keyboard shortcuts
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            // Cmd/Ctrl+Enter → 生成
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                e.preventDefault()
+                handleGenerateRef.current?.()
+            }
+            // Escape → モーダル閉じ
+            if (e.key === 'Escape') {
+                if (showLogs) setShowLogs(false)
+                else if (showPrev) setShowPrev(false)
+                else if (showCfg) setShowCfg(false)
+                else if (seedOpen) setSeedOpen(false)
+            }
+        }
+        document.addEventListener('keydown', handler)
+        return () => document.removeEventListener('keydown', handler)
+    }, [showLogs, showPrev, showCfg, seedOpen])
 
     const cm = MODELS.find((m) => m.id === modelId) || MODELS[0]
     // AI生成サジェストがあればそちらを優先、なければstatic fallback
@@ -149,6 +170,7 @@ export default function App() {
                 saveLog(pn, form, res, prompt, cm.label, dep)
         }, apiKey)
     }
+    handleGenerateRef.current = handleGenerate
 
     const handleRefine = () => {
         refine((res: any, text: string) => {
@@ -332,6 +354,7 @@ export default function App() {
                                     <button
                                         onClick={handleGenerate}
                                         disabled={loading}
+                                        title='Cmd/Ctrl+Enter'
                                         className={`flex items-center gap-1.5 px-5 py-2 rounded-lg font-semibold text-sm ${T.btnAccent} disabled:opacity-40 transition-all`}
                                     >
                                         {loading ? (
