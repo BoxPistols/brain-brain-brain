@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ChevronRight, Minus, Plus } from 'lucide-react';
 import { Issue } from '../../types';
 import { T } from '../../constants/theme';
+import { getSubIssueSuggestions } from '../../constants/prompts';
 
 interface IssueRowProps {
   issue: Issue;
@@ -17,7 +18,12 @@ export const IssueRow: React.FC<IssueRowProps> = ({
   issue, idx, onChange, onRemove, onAddSub, onSubChange, onRemoveSub
 }) => {
   const [open, setOpen] = useState(false);
-  
+  const subSuggestions = useMemo(
+    () => getSubIssueSuggestions(issue.text),
+    [issue.text],
+  );
+  const existingSubs = new Set(issue.sub || []);
+
   return (
     <div>
       <div className="flex items-start gap-1.5">
@@ -29,7 +35,7 @@ export const IssueRow: React.FC<IssueRowProps> = ({
           <Minus className="w-3 h-3" />
         </button>
       </div>
-      
+
       {open && (
         <div className={`ml-5 mt-1.5 space-y-1.5 pl-2 border-l ${T.div}`}>
           <input value={issue.detail || ''} onChange={e => onChange(idx, 'detail', e.target.value)} placeholder="背景・影響度・定量データ…" className={T.inpSm} />
@@ -42,9 +48,20 @@ export const IssueRow: React.FC<IssueRowProps> = ({
               </button>
             </div>
           ))}
-          <button onClick={() => onAddSub(idx)} className={`flex items-center gap-1 text-xs ${T.t3} hover:text-slate-600 dark:hover:text-slate-300 ml-3`}>
-            <Plus className="w-3 h-3" />サブ課題
-          </button>
+          <div className="flex items-center gap-1.5 flex-wrap ml-3">
+            <button onClick={() => onAddSub(idx)} className={`flex items-center gap-1 text-xs ${T.t3} hover:text-slate-600 dark:hover:text-slate-300`}>
+              <Plus className="w-3 h-3" />サブ課題
+            </button>
+            {subSuggestions.filter(s => !existingSubs.has(s)).map((s, i) => (
+              <button
+                key={i}
+                onClick={() => { onAddSub(idx); setTimeout(() => onSubChange(idx, (issue.sub || []).length, s), 0); }}
+                className={`px-1.5 py-0.5 rounded-full text-[10px] border ${T.btnGhost}`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>
