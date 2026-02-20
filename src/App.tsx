@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
     Target,
     Sparkles,
@@ -109,6 +109,17 @@ export default function App() {
     const [showPrev, setShowPrev] = useState(false)
     const [seedOpen, setSeedOpen] = useState(false)
     const seedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const seedRef = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        if (!seedOpen) return
+        const handler = (e: MouseEvent | TouchEvent) => {
+            if (seedRef.current && !seedRef.current.contains(e.target as Node)) setSeedOpen(false)
+        }
+        document.addEventListener('mousedown', handler)
+        document.addEventListener('touchstart', handler)
+        return () => { document.removeEventListener('mousedown', handler); document.removeEventListener('touchstart', handler) }
+    }, [seedOpen])
 
     const cm = MODELS.find((m) => m.id === modelId) || MODELS[0]
     // AI生成サジェストがあればそちらを優先、なければstatic fallback
@@ -182,11 +193,13 @@ export default function App() {
                         </div>
 
                         <div
+                            ref={seedRef}
                             className='relative'
                             onMouseEnter={() => { if (seedTimer.current) clearTimeout(seedTimer.current); setSeedOpen(true); }}
                             onMouseLeave={() => { seedTimer.current = setTimeout(() => setSeedOpen(false), 200); }}
                         >
                             <button
+                                onClick={() => setSeedOpen(o => !o)}
                                 className={`flex items-center gap-1 px-2 py-1.5 rounded-lg border text-xs font-medium bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700/40 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition`}
                                 title='サンプルデータを投入'
                             >
