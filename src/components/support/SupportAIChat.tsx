@@ -1,13 +1,17 @@
 import { useState, useRef, useEffect } from 'react'
 import { Send, Loader2 } from 'lucide-react'
 import { T } from '../../constants/theme'
-import { callAI, callAIWithKey, DEFAULT_MODEL_ID, isProMode } from '../../constants/models'
+import { callAI, callAIWithKey, isProMode } from '../../constants/models'
+
+const SUPPORT_MODEL = 'gpt-4.1-nano'
 import { SUPPORT_SYSTEM_PROMPT } from './supportData'
 
 interface Message {
     role: 'user' | 'assistant'
     content: string
 }
+
+const MAX_HISTORY = 6
 
 interface Props {
     apiKey: string
@@ -17,11 +21,11 @@ export const SupportAIChat: React.FC<Props> = ({ apiKey }) => {
     const [messages, setMessages] = useState<Message[]>([])
     const [input, setInput] = useState('')
     const [loading, setLoading] = useState(false)
-    const scrollRef = useRef<HTMLDivElement>(null)
+    const bottomRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
-    }, [messages])
+        bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }, [messages, loading])
 
     const handleSend = async () => {
         const text = input.trim()
@@ -34,18 +38,26 @@ export const SupportAIChat: React.FC<Props> = ({ apiKey }) => {
         setLoading(true)
 
         try {
+            // 直近のメッセージのみ送信し、長い回答は要約して送信
+            const recent = newMessages.slice(-MAX_HISTORY).map(m => ({
+                role: m.role as 'user' | 'assistant',
+                content: m.role === 'assistant' && m.content.length > 200
+                    ? m.content.slice(0, 200) + '…'
+                    : m.content,
+            }))
             const chatMsgs = [
                 { role: 'system' as const, content: SUPPORT_SYSTEM_PROMPT },
-                ...newMessages.map(m => ({ role: m.role as 'user' | 'assistant', content: m.content })),
+                ...recent,
             ]
             const reply = isProMode(apiKey)
-                ? await callAIWithKey(apiKey, DEFAULT_MODEL_ID, chatMsgs, 2048)
-                : await callAI(DEFAULT_MODEL_ID, chatMsgs, 2048)
+                ? await callAIWithKey(apiKey, SUPPORT_MODEL, chatMsgs, 512)
+                : await callAI(SUPPORT_MODEL, chatMsgs, 512)
             setMessages(prev => [...prev, { role: 'assistant', content: reply }])
-        } catch {
+        } catch (err) {
+            console.error('[SupportChat]', err)
             setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: '申し訳ありません。回答を取得できませんでした。ヘッダーの?アイコンから使い方ガイドをご確認ください。',
+                content: '回答を取得できませんでした。もう一度お試しください。',
             }])
         } finally {
             setLoading(false)
@@ -53,9 +65,9 @@ export const SupportAIChat: React.FC<Props> = ({ apiKey }) => {
     }
 
     return (
-        <div className='flex flex-col h-full'>
+        <div className='flex flex-col min-h-0 h-full'>
             {/* メッセージエリア */}
-            <div ref={scrollRef} className='flex-1 overflow-y-auto space-y-3 mb-3 overscroll-contain min-h-[120px]'>
+            <div className='flex-1 overflow-y-auto space-y-3 mb-3 overscroll-contain'>
                 {messages.length === 0 && (
                     <p className={`text-xs ${T.t3} text-center py-6`}>
                         使い方や機能について質問できます
@@ -79,10 +91,11 @@ export const SupportAIChat: React.FC<Props> = ({ apiKey }) => {
                         </div>
                     </div>
                 )}
+                <div ref={bottomRef} />
             </div>
 
             {/* 入力欄 */}
-            <div className='flex items-center gap-2'>
+            <div className='flex items-center gap-2 shrink-0'>
                 <input
                     value={input}
                     onChange={e => setInput(e.target.value)}
