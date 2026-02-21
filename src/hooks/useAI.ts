@@ -1,50 +1,6 @@
 import { useState, useCallback } from 'react';
 import { isHRContext, getHRDomainContext } from '../constants/domainContext';
-
-/** JSONが途中で切れていても修復してパースする */
-function parseAIJson(raw: string): AIResults {
-  // コードフェンス除去、先頭の { を探す
-  let text = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-  const start = text.indexOf('{');
-  if (start === -1) throw new Error('No JSON object found in response');
-  text = text.slice(start);
-
-  // まず素直にパース
-  try {
-    return JSON.parse(text);
-  } catch {}
-
-  // 末尾の } まで削ってみる
-  try {
-    const end = text.lastIndexOf('}');
-    if (end > 0) return JSON.parse(text.slice(0, end + 1));
-  } catch {}
-
-  // 途中切れ修復: depth=1 に戻った最後の位置まで切り詰め、]} で閉じる
-  let depth = 0;
-  let lastDepth1Close = -1;
-  let inStr = false;
-  let esc = false;
-
-  for (let i = 0; i < text.length; i++) {
-    const ch = text[i];
-    if (esc) { esc = false; continue; }
-    if (ch === '\\' && inStr) { esc = true; continue; }
-    if (ch === '"') { inStr = !inStr; continue; }
-    if (inStr) continue;
-    if (ch === '{' || ch === '[') depth++;
-    else if (ch === '}' || ch === ']') {
-      depth--;
-      if (depth === 1) lastDepth1Close = i;
-    }
-  }
-
-  if (lastDepth1Close > 0) {
-    text = text.slice(0, lastDepth1Close + 1) + ']}';
-  }
-
-  return JSON.parse(text);
-}
+import { parseAIJson } from '../utils/parseAIJson';
 import { BrainstormForm, AIResults, ChatMessage, ConnStatus } from '../types';
 import { callAI, callAIWithKey, testConn, DEFAULT_MODEL_ID, isProMode } from '../constants/models';
 import { FREE_DEPTH, PRO_DEPTH } from '../constants/prompts';
