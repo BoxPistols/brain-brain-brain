@@ -40,9 +40,10 @@ export const buildReportMd = (
   }
 
   md += `---\n\n## AI分析\n\n${results.understanding}\n\n---\n\n## 戦略アイデア\n\n`;
-  
+
+  const hasFeasibility = results.ideas.some(d => d.feasibility);
   results.ideas.forEach((d, i) => {
-    md += `### ${i + 1}. ${d.title}\n\n${d.description}\n\n| 優先度 | 工数 | インパクト |${d.feasibility ? ' 実現可能性 |' : ''}\n|---|---|---|${d.feasibility ? '---|' : ''}\n| ${ll(d.priority)} | ${ll(d.effort)} | ${ll(d.impact)} |${d.feasibility ? ` ${d.feasibility.total}/100 |` : ''}\n\n`;
+    md += `### ${i + 1}. ${d.title}\n\n${d.description}\n\n| 優先度 | 工数 | インパクト |${hasFeasibility ? ' 実現可能性 |' : ''}\n|---|---|---|${hasFeasibility ? '---|' : ''}\n| ${ll(d.priority)} | ${ll(d.effort)} | ${ll(d.impact)} |${hasFeasibility ? ` ${d.feasibility?.total ?? '-'}/100 |` : ''}\n\n`;
     if (d.feasibility) {
       md += `> リソース: ${d.feasibility.resource} / 技術容易性: ${d.feasibility.techDifficulty} / 組織受容性: ${d.feasibility.orgAcceptance}\n\n`;
     }
