@@ -15,6 +15,7 @@ import { ProjectForm } from './components/form/ProjectForm'
 import { PreviewModal } from './components/modals/PreviewModal'
 import { LogPanel } from './components/modals/LogPanel'
 import { SettingsModal } from './components/modals/SettingsModal'
+import { AppHelpModal } from './components/modals/AppHelpModal'
 
 // Utils & Constants
 import { buildReportMd, dlFile } from './utils/report'
@@ -65,6 +66,7 @@ export default function App() {
 
     // Local UI state
     const [showCfg, setShowCfg] = useState(false)
+    const [showHelp, setShowHelp] = useState(false)
     const [showPrev, setShowPrev] = useState(false)
     const [showValidation, setShowValidation] = useState(false)
     const [isSeedData, setIsSeedData] = useState(false)
@@ -83,12 +85,13 @@ export default function App() {
             if (e.key === 'Escape') {
                 if (showLogs) setShowLogs(false)
                 else if (showPrev) setShowPrev(false)
+                else if (showHelp) setShowHelp(false)
                 else if (showCfg) setShowCfg(false)
             }
         }
         document.addEventListener('keydown', handler)
         return () => document.removeEventListener('keydown', handler)
-    }, [showLogs, showPrev, showCfg])
+    }, [showLogs, showPrev, showHelp, showCfg])
 
     // Progress simulation during loading
     useEffect(() => {
@@ -175,6 +178,7 @@ export default function App() {
                     onPreset={applyRatio}
                     isDark={isDark}
                     onToggleTheme={toggleTheme}
+                    onShowHelp={() => setShowHelp(true)}
                     onShowLogs={() => setShowLogs(true)}
                     showCfg={showCfg}
                     onToggleCfg={() => setShowCfg(s => !s)}
@@ -295,6 +299,7 @@ export default function App() {
             </div>
 
             {/* Modals */}
+            {showHelp && <AppHelpModal onClose={() => setShowHelp(false)} />}
             {showPrev && report && (
                 <PreviewModal md={report} pn={usedName} onClose={() => setShowPrev(false)} />
             )}
