@@ -228,7 +228,12 @@ JSONのみ回答:
         ? await callAIWithKey(apiKey.trim(), modelId, h2, CHAT_MAX_TOKENS)
         : await callAI(modelId, h2, CHAT_MAX_TOKENS);
 
-      const newResults = { ...results, refinement: raw };
+      const entry = { review: reviewText, answer: raw };
+      const newResults = {
+        ...results,
+        refinement: raw,
+        refinements: [...(results.refinements || []), entry],
+      };
       setResults(newResults);
       const newHist = [...h2, { role: 'assistant' as const, content: raw }];
       setHist(newHist.slice(-MAX_HIST));

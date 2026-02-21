@@ -45,7 +45,14 @@ export const buildReportMd = (
     md += `### ${i + 1}. ${d.title}\n\n${d.description}\n\n| 優先度 | 工数 | インパクト |\n|---|---|---|\n| ${ll(d.priority)} | ${ll(d.effort)} | ${ll(d.impact)} |\n\n`;
   });
   
-  if (results.refinement) {
+  if (results.refinements?.length) {
+    md += `---\n\n## ブラッシュアップ\n\n`;
+    results.refinements.forEach((r, i) => {
+      if (results.refinements!.length > 1) md += `### ${i + 1}. レビュー: ${r.review}\n\n`;
+      else md += `> レビュー: ${r.review}\n\n`;
+      md += `${r.answer}\n\n`;
+    });
+  } else if (results.refinement) {
     md += `---\n\n## ブラッシュアップ\n\n${results.refinement}\n`;
   }
   

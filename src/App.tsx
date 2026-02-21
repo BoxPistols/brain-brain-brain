@@ -293,6 +293,11 @@ export default function App() {
                             refining={refining}
                             refineProgress={refineProgress}
                             onRefine={handleRefine}
+                            onShowPreview={results ? () => setShowPrev(true) : undefined}
+                            onQuickDownload={report ? () => {
+                                const ts = new Date().toISOString().slice(0, 16).replace(/[T:]/g, '-')
+                                dlFile(report, `${usedName}_${ts}.md`, 'text/markdown')
+                            } : undefined}
                         />
                     </div>
                 </div>

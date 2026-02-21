@@ -8,6 +8,8 @@ import {
     ChevronRight,
     AlertCircle,
     AlertTriangle,
+    Eye,
+    Download,
 } from 'lucide-react'
 import { AIResults } from '../../types'
 import { T } from '../../constants/theme'
@@ -29,6 +31,8 @@ interface ResultsPaneProps {
     refining: boolean
     refineProgress: number
     onRefine: () => void
+    onShowPreview?: () => void
+    onQuickDownload?: () => void
 }
 
 const LoadingSkeleton: React.FC = () => (
@@ -91,6 +95,8 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
     refining,
     refineProgress,
     onRefine,
+    onShowPreview,
+    onQuickDownload,
 }) => {
     if (loading && !results) return <LoadingSkeleton />
     if (!results) return <EmptyState />
@@ -102,7 +108,29 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
                 <h3 className={`text-xs font-semibold ${T.accentTxt} mb-2.5 flex items-center gap-1.5`}>
                     <Target className='w-3.5 h-3.5' />
                     AI 状況分析
-                    {isSeedData && <span className='ml-auto px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700/40'>Demo</span>}
+                    {isSeedData && <span className='ml-1 px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700/40'>Demo</span>}
+                    <span className='ml-auto flex items-center gap-1'>
+                        {onQuickDownload && (
+                            <button
+                                onClick={onQuickDownload}
+                                className={`p-1.5 rounded-lg ${T.btnGhost} transition-colors cursor-pointer`}
+                                title='Markdownでダウンロード'
+                                aria-label='レポートをダウンロード'
+                            >
+                                <Download className='w-3.5 h-3.5' />
+                            </button>
+                        )}
+                        {onShowPreview && (
+                            <button
+                                onClick={onShowPreview}
+                                className={`p-1.5 rounded-lg ${T.btnGhost} transition-colors cursor-pointer`}
+                                title='レポートプレビュー・エクスポート'
+                                aria-label='レポートをプレビュー'
+                            >
+                                <Eye className='w-3.5 h-3.5' />
+                            </button>
+                        )}
+                    </span>
                 </h3>
                 {results.keyIssue && (
                     <div className='mb-3 p-3 rounded-lg bg-rose-50 dark:bg-rose-900/10 border border-rose-200 dark:border-rose-800/30'>
@@ -189,8 +217,23 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
                 </div>
             )}
 
-            {/* Refinement output */}
-            {results.refinement && (
+            {/* Refinement output (stacking) */}
+            {(results.refinements?.length ?? 0) > 0 ? (
+                <div className='space-y-3'>
+                    <h4 className='text-xs font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-1'>
+                        <RefreshCw className='w-3.5 h-3.5' />
+                        ブラッシュアップ（{results.refinements!.length}件）
+                    </h4>
+                    {results.refinements!.map((r, i) => (
+                        <div key={i} className='bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800/30 rounded-xl p-5 border-l-2 border-l-emerald-400 dark:border-l-emerald-600'>
+                            <p className={`text-[11px] ${T.t3} mb-2 italic`}>
+                                レビュー: {r.review}
+                            </p>
+                            <RichText text={r.answer} />
+                        </div>
+                    ))}
+                </div>
+            ) : results.refinement ? (
                 <div className='bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800/30 rounded-xl p-5'>
                     <h4 className='text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-1'>
                         <RefreshCw className='w-3.5 h-3.5' />
@@ -198,7 +241,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
                     </h4>
                     <RichText text={results.refinement} />
                 </div>
-            )}
+            ) : null}
 
             {/* Review input */}
             <div className={`${T.cardFlat} p-4`}>
