@@ -16,6 +16,7 @@ import { PreviewModal } from './components/modals/PreviewModal'
 import { LogPanel } from './components/modals/LogPanel'
 import { SettingsModal } from './components/modals/SettingsModal'
 import { AppHelpModal } from './components/modals/AppHelpModal'
+import { SupportWidget } from './components/support/SupportWidget'
 
 // Utils & Constants
 import { buildReportMd, buildReportCsv, mdToTxt, printReport, dlFile } from './utils/report'
@@ -344,6 +345,9 @@ export default function App() {
                     onSettings={updateSettings}
                 />
             )}
+
+            {/* サポートチャット */}
+            <SupportWidget apiKey={apiKey} />
         </div>
     )
 }
