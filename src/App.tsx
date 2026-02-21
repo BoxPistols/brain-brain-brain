@@ -18,7 +18,7 @@ import { SettingsModal } from './components/modals/SettingsModal'
 import { AppHelpModal } from './components/modals/AppHelpModal'
 
 // Utils & Constants
-import { buildReportMd, dlFile } from './utils/report'
+import { buildReportMd, buildReportCsv, mdToTxt, printReport, dlFile } from './utils/report'
 import { T } from './constants/theme'
 import { MODELS, isProMode } from './constants/models'
 import { FREE_DEPTH, PRO_DEPTH } from './constants/prompts'
@@ -35,7 +35,7 @@ export default function App() {
 
     const {
         form, setForm, dep, setDep, usedName, setUsedName,
-        sesLabel, tlStr, suggestions, issueStr,
+        sesLabel, suggestions, issueStr,
         getValidProjectName, applySeed, seedScenarios,
     } = useBrainstormForm()
 
@@ -152,7 +152,7 @@ export default function App() {
         setIsSeedData(false)
         const pn = getValidProjectName()
         setUsedName(pn)
-        generate(pn, form, dep, sesLabel, tlStr, issueStr, (res, prompt) => {
+        generate(pn, form, dep, sesLabel, issueStr, (res, prompt) => {
             if (stgSettings.autoSave) saveLog(pn, form, res, prompt, cm.label, dep)
         }, apiKey)
     }
@@ -293,6 +293,20 @@ export default function App() {
                             refining={refining}
                             refineProgress={refineProgress}
                             onRefine={handleRefine}
+                            onShowPreview={results ? () => setShowPrev(true) : undefined}
+                            onDownload={report && results ? (fmt) => {
+                                const ts = new Date().toISOString().slice(0, 16).replace(/[T:]/g, '-')
+                                switch (fmt) {
+                                    case 'md':
+                                        dlFile(report, `${usedName}_${ts}.md`, 'text/markdown'); break
+                                    case 'txt':
+                                        dlFile(mdToTxt(report), `${usedName}_${ts}.txt`, 'text/plain'); break
+                                    case 'csv':
+                                        dlFile(buildReportCsv(usedName, form, results, cm.label, dep), `${usedName}_${ts}.csv`, 'text/csv'); break
+                                    case 'pdf':
+                                        printReport(mdToTxt(report), usedName); break
+                                }
+                            } : undefined}
                         />
                     </div>
                 </div>

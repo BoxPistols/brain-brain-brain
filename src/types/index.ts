@@ -17,10 +17,6 @@ export interface BrainstormForm {
   teamGoals: string;
   sessionType: SessionType;
   customSession: string;
-  tlMode: 'period' | 'deadline';
-  tlStart: string;
-  tlEnd: string;
-  tlDead: string;
   issues: Issue[];
 }
 
@@ -37,6 +33,11 @@ export interface DeepDiveEntry {
   answer: string;
 }
 
+export interface RefinementEntry {
+  review: string;
+  answer: string;
+}
+
 export interface AIResults {
   understanding: string;
   ideas: Idea[];
@@ -46,6 +47,7 @@ export interface AIResults {
   deepDive?: string;
   deepDives?: DeepDiveEntry[];
   refinement?: string;
+  refinements?: RefinementEntry[];
 }
 
 export interface LogEntry {

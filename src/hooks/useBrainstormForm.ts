@@ -11,10 +11,6 @@ const initialFormState: BrainstormForm = {
   teamGoals: '',
   sessionType: 'product',
   customSession: '',
-  tlMode: 'period',
-  tlStart: '',
-  tlEnd: '',
-  tlDead: '',
   issues: [{ text: '', detail: '', sub: [] }]
 };
 
@@ -26,11 +22,6 @@ export const useBrainstormForm = () => {
   const sesLabel = useMemo(() => 
     form.sessionType === 'other' ? (form.customSession || 'カスタム') : TYPES[form.sessionType],
     [form.sessionType, form.customSession]
-  );
-  
-  const tlStr = useMemo(() => 
-    form.tlMode === 'period' ? `${form.tlStart || '?'} 〜 ${form.tlEnd || '?'}` : (form.tlDead || '未指定'),
-    [form.tlMode, form.tlStart, form.tlEnd, form.tlDead]
   );
   
   const suggestions = useMemo(() =>
@@ -78,7 +69,6 @@ export const useBrainstormForm = () => {
     usedName,
     setUsedName,
     sesLabel,
-    tlStr,
     suggestions,
     issueStr,
     getValidProjectName,

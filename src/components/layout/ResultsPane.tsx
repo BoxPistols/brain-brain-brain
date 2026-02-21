@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import {
     Target,
     Sparkles,
@@ -8,11 +8,19 @@ import {
     ChevronRight,
     AlertCircle,
     AlertTriangle,
+    Eye,
+    Download,
+    FileText,
+    FileSpreadsheet,
+    Printer,
+    ChevronDown,
 } from 'lucide-react'
 import { AIResults } from '../../types'
 import { T } from '../../constants/theme'
 import { ResultCard } from '../results/ResultCard'
 import { RichText } from '../results/RichText'
+
+type DlFormat = 'md' | 'txt' | 'csv' | 'pdf'
 
 interface ResultsPaneProps {
     loading: boolean
@@ -29,6 +37,8 @@ interface ResultsPaneProps {
     refining: boolean
     refineProgress: number
     onRefine: () => void
+    onShowPreview?: () => void
+    onDownload?: (format: DlFormat) => void
 }
 
 const LoadingSkeleton: React.FC = () => (
@@ -91,9 +101,30 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
     refining,
     refineProgress,
     onRefine,
+    onShowPreview,
+    onDownload,
 }) => {
+    const [showDlMenu, setShowDlMenu] = useState(false)
+    const dlRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (!showDlMenu) return
+        const close = (e: MouseEvent) => {
+            if (dlRef.current && !dlRef.current.contains(e.target as Node)) setShowDlMenu(false)
+        }
+        document.addEventListener('mousedown', close)
+        return () => document.removeEventListener('mousedown', close)
+    }, [showDlMenu])
+
     if (loading && !results) return <LoadingSkeleton />
     if (!results) return <EmptyState />
+
+    const dlOptions: { fmt: DlFormat; label: string; icon: React.ReactNode }[] = [
+        { fmt: 'md', label: 'Markdown (.md)', icon: <FileText className='w-3.5 h-3.5 text-blue-500' /> },
+        { fmt: 'txt', label: 'テキスト (.txt)', icon: <FileText className='w-3.5 h-3.5 text-slate-500' /> },
+        { fmt: 'csv', label: 'CSV (.csv)', icon: <FileSpreadsheet className='w-3.5 h-3.5 text-green-500' /> },
+        { fmt: 'pdf', label: 'PDF / 印刷', icon: <Printer className='w-3.5 h-3.5 text-rose-500' /> },
+    ]
 
     return (
         <div className='space-y-4'>
@@ -102,7 +133,46 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
                 <h3 className={`text-xs font-semibold ${T.accentTxt} mb-2.5 flex items-center gap-1.5`}>
                     <Target className='w-3.5 h-3.5' />
                     AI 状況分析
-                    {isSeedData && <span className='ml-auto px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700/40'>Demo</span>}
+                    {isSeedData && <span className='ml-1 px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700/40'>Demo</span>}
+                    <span className='ml-auto flex items-center gap-1'>
+                        {onShowPreview && (
+                            <button
+                                onClick={onShowPreview}
+                                className={`p-1.5 rounded-lg ${T.btnGhost} transition-colors cursor-pointer`}
+                                title='レポートプレビュー'
+                                aria-label='レポートをプレビュー'
+                            >
+                                <Eye className='w-3.5 h-3.5' />
+                            </button>
+                        )}
+                        {onDownload && (
+                            <div ref={dlRef} className='relative'>
+                                <button
+                                    onClick={() => setShowDlMenu(s => !s)}
+                                    className={`flex items-center gap-0.5 p-1.5 rounded-lg ${T.btnGhost} transition-colors cursor-pointer`}
+                                    title='レポートをダウンロード'
+                                    aria-label='ダウンロード形式を選択'
+                                >
+                                    <Download className='w-3.5 h-3.5' />
+                                    <ChevronDown className='w-2.5 h-2.5 opacity-50' />
+                                </button>
+                                {showDlMenu && (
+                                    <div className={`absolute right-0 top-full mt-1 z-30 w-44 rounded-lg border shadow-lg ${T.card} py-1 animate-in fade-in slide-in-from-top-1 duration-150`}>
+                                        {dlOptions.map(o => (
+                                            <button
+                                                key={o.fmt}
+                                                onClick={() => { onDownload(o.fmt); setShowDlMenu(false) }}
+                                                className={`w-full flex items-center gap-2 px-3 py-2 text-xs ${T.t2} hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer`}
+                                            >
+                                                {o.icon}
+                                                {o.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </span>
                 </h3>
                 {results.keyIssue && (
                     <div className='mb-3 p-3 rounded-lg bg-rose-50 dark:bg-rose-900/10 border border-rose-200 dark:border-rose-800/30'>
@@ -189,8 +259,23 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
                 </div>
             )}
 
-            {/* Refinement output */}
-            {results.refinement && (
+            {/* Refinement output (stacking) */}
+            {(results.refinements?.length ?? 0) > 0 ? (
+                <div className='space-y-3'>
+                    <h4 className='text-xs font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-1'>
+                        <RefreshCw className='w-3.5 h-3.5' />
+                        ブラッシュアップ（{results.refinements!.length}件）
+                    </h4>
+                    {results.refinements!.map((r, i) => (
+                        <div key={i} className='bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800/30 rounded-xl p-5 border-l-2 border-l-emerald-400 dark:border-l-emerald-600'>
+                            <p className={`text-[11px] ${T.t3} mb-2 italic`}>
+                                レビュー: {r.review}
+                            </p>
+                            <RichText text={r.answer} />
+                        </div>
+                    ))}
+                </div>
+            ) : results.refinement ? (
                 <div className='bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800/30 rounded-xl p-5'>
                     <h4 className='text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-1'>
                         <RefreshCw className='w-3.5 h-3.5' />
@@ -198,7 +283,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
                     </h4>
                     <RichText text={results.refinement} />
                 </div>
-            )}
+            ) : null}
 
             {/* Review input */}
             <div className={`${T.cardFlat} p-4`}>

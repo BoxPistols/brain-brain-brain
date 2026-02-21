@@ -11,10 +11,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: 'ARR 2億円達成・チャーンレート3%以下・NPS +40以上',
       sessionType: 'growth',
       customSession: '',
-      tlMode: 'period',
-      tlStart: '2025-04-01',
-      tlEnd: '2025-09-30',
-      tlDead: '',
       issues: [
         { text: 'リテンション低下', detail: '月次チャーン6%→業界平均2%の3倍', sub: ['オンボーディング完了率42%', '30日以内解約が全体の38%'] },
         { text: 'CAC高騰', detail: 'CACが18ヶ月で2.4倍に増加、LTV/CAC=1.8（目標3.0）', sub: [] },
@@ -48,10 +44,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: '基幹システム刷新・現場デジタル化・年間コスト15%削減',
       sessionType: 'dx',
       customSession: '',
-      tlMode: 'period',
-      tlStart: '2025-07-01',
-      tlEnd: '2026-06-30',
-      tlDead: '',
       issues: [
         { text: 'レガシーERP依存', detail: '20年前導入のオンプレERPで改修コスト年間8,000万円', sub: ['ベンダー依存でカスタマイズ不可', 'API非対応でデータ連携不能'] },
         { text: '現場のデジタルリテラシー不足', detail: '平均年齢52歳、PC操作研修未実施', sub: [] },
@@ -79,10 +71,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: '6ヶ月でPoC完了・PMF仮説3件検証・投資回収見通し策定',
       sessionType: 'innovation',
       customSession: '',
-      tlMode: 'period',
-      tlStart: '2025-05-01',
-      tlEnd: '2025-10-31',
-      tlDead: '',
       issues: [
         { text: '仮説検証未完', detail: 'PoC開始から4ヶ月、農家ヒアリング6件のみでPMF仮説未確定', sub: ['定量データ未取得', '意思決定者へのアクセス不足'] },
         { text: '組織的抵抗', detail: '既存農業資材事業部との競合懸念でリソース確保困難', sub: [] },
@@ -109,10 +97,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: '新規リード月300件・CPA ¥50,000以下・パイプライン転換率25%',
       sessionType: 'marketing',
       customSession: '',
-      tlMode: 'period',
-      tlStart: '2025-06-01',
-      tlEnd: '2025-11-30',
-      tlDead: '',
       issues: [
         { text: 'CAC高騰', detail: '6ヶ月でCACが1.8倍に増加、ROASが目標の60%', sub: ['有料広告CPAが上限を突破', 'オーガニック流入が停滞'] },
         { text: '競合ポジショニング不明確', detail: '営業が「他社との違い」を説明できない', sub: [] },
@@ -139,10 +123,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: 'オペコスト15%削減・配送リードタイム20%短縮・品質不良率0.5%以下',
       sessionType: 'ops',
       customSession: '',
-      tlMode: 'period',
-      tlStart: '2025-08-01',
-      tlEnd: '2026-03-31',
-      tlDead: '',
       issues: [
         { text: 'プロセス非効率', detail: '手作業工数が全体の45%、入力エラー率3.2%', sub: ['Excel管理で属人化', 'ダブルチェック工数が月200時間'] },
         { text: '拠点間データ分断', detail: '12拠点の在庫・配送データがリアルタイム共有されない', sub: [] },
@@ -168,10 +148,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: '全プロダクト採用率80%・新機能実装速度2倍・a11y AA準拠100%',
       sessionType: 'design-system',
       customSession: '',
-      tlMode: 'period',
-      tlStart: '2025-09-01',
-      tlEnd: '2026-02-28',
-      tlDead: '',
       issues: [
         { text: '採用率低下', detail: '新機能の60%が独自実装でDSを不使用', sub: ['ドキュメント不足で使い方不明', 'コンポーネントAPIが不明確'] },
         { text: 'マルチプロダクト展開困難', detail: 'トークン設計がシングルブランド前提で4本目のプロダクトに対応不可', sub: [] },
@@ -197,10 +173,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: '東南アジア3ヶ国で初期顧客50社獲得・現地ARR 1億円・12ヶ月以内',
       sessionType: 'other',
       customSession: '海外展開戦略',
-      tlMode: 'period',
-      tlStart: '2025-10-01',
-      tlEnd: '2026-09-30',
-      tlDead: '',
       issues: [
         { text: '市場優先度が未確定', detail: 'ASEAN6ヶ国のどこから参入すべきか判断基準なし', sub: ['市場規模・競合・法規制の情報不足', '現地パートナー候補なし'] },
         { text: 'ローカライゼーションコスト', detail: '多言語対応・現地法規制対応で推定開発コスト3,000万円超', sub: [] },
@@ -226,10 +198,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: '技術的負債50%削減・デプロイ頻度週1→日次・新機能開発速度2倍',
       sessionType: 'product',
       customSession: '',
-      tlMode: 'period',
-      tlStart: '2025-07-01',
-      tlEnd: '2025-12-31',
-      tlDead: '',
       issues: [
         { text: '技術的負債', detail: 'リリース頻度が低下、バグ修正に開発工数の60%', sub: ['テストカバレッジ28%', 'モノリスアーキテクチャで変更が困難'] },
         { text: 'インフラコスト高騰', detail: 'トラフィック増でAWSコストが6ヶ月で2.3倍', sub: [] },
@@ -256,10 +224,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: '成約件数+40%・ハイスキル層（年収600万+）比率20%・CA一人当たり生産性1.5倍',
       sessionType: 'other',
       customSession: 'IT人材紹介 事業戦略',
-      tlMode: 'period',
-      tlStart: '2025-10-01',
-      tlEnd: '2026-09-30',
-      tlDead: '',
       issues: [
         { text: 'ハイスキル層の獲得難', detail: '登録者の70%がジュニア・レガシー系、ハイスキル層の登録比率8%で成約単価が低い', sub: ['エンジニアのエージェント不信が強く登録障壁が高い', '技術系コミュニティ・SNSへのリーチがない'] },
         { text: '直接採用・競合増加で差別化が困難', detail: 'LinkedIn等での直接採用が3年で2倍増、大手との価格競争に巻き込まれている', sub: ['差別化ポイントが「担当者の質」のみで再現性・スケールなし', 'フィー値下げ圧力でLTVが低下'] },
@@ -287,10 +251,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: 'CA一人当たり月次成約+50%・スカウト返信率3%→8%・CRM活用率80%達成',
       sessionType: 'ops',
       customSession: '',
-      tlMode: 'period',
-      tlStart: '2026-01-01',
-      tlEnd: '2026-06-30',
-      tlDead: '',
       issues: [
         { text: 'CRM活用不足', detail: 'SalesforceはデータDB化に留まり、自動アクション・スコアリング・アラートに未活用', sub: ['求職者の転職意欲変化をリアルタイム把握できない', 'CA間での顧客情報共有がSlack依存'] },
         { text: 'スカウト効率の低さ', detail: 'スカウト返信率2〜3%・CA工数の40%を占める・テンプレート文で個別最適化なし', sub: [] },
@@ -317,10 +277,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: 'AI検索流入の確立・コンテンツCV率0.3%→1.5%・ターゲット適合ユーザー比率向上',
       sessionType: 'marketing',
       customSession: '',
-      tlMode: 'period',
-      tlStart: '2025-10-01',
-      tlEnd: '2026-03-31',
-      tlDead: '',
       issues: [
         { text: 'SEO流入の質的低下', detail: 'PV維持もCV率0.3%→業界平均1.2%の1/4、ターゲット外流入が増加', sub: ['ボリューム優先でターゲット適合度を未計測', 'ネガティブ訴求記事が低意欲層を集めている'] },
         { text: 'EEAT不足・AIO未対応', detail: '外注ライター中心でE(経験)/E(専門性)が担保されておらずAI検索からの流入がほぼゼロ', sub: ['著者情報・一次情報が皆無', '構造化データ（FAQ Schema等）未整備'] },
@@ -348,10 +304,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: 'アクティブ利用率45%→70%・機能採用率改善・NPS+20pt向上',
       sessionType: 'cx',
       customSession: '',
-      tlMode: 'deadline',
-      tlStart: '',
-      tlEnd: '',
-      tlDead: '2025-12-31',
       issues: [
         { text: 'NPS低下', detail: 'NPS -5（昨年+18）、主因は「使いにくい」', sub: ['設定項目が複雑すぎる', 'ヘルプドキュメントが見つからない'] },
         { text: 'オンボーディング離脱', detail: '初回設定完了率31%', sub: [] },
@@ -377,7 +329,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: '月次チャーンレート2%→0.8%・NRR 110%達成・NPS +30',
       sessionType: 'growth',
       customSession: '',
-      tlMode: 'period', tlStart: '2026-01-01', tlEnd: '2026-06-30', tlDead: '',
       issues: [
         { text: '解約率の高止まり', detail: '月次チャーン2%、年換算で顧客の22%が離脱', sub: ['競合の無料プランに流出', 'オンボーディング未完了での早期解約が40%'] },
         { text: 'エクスパンション不足', detail: 'アップセル率5%、クロスセル実績ほぼゼロ', sub: [] },
@@ -403,7 +354,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: 'リピート率35%→55%・顧客単価+30%・LTV 24ヶ月化',
       sessionType: 'cx',
       customSession: '',
-      tlMode: 'period', tlStart: '2026-02-01', tlEnd: '2026-07-31', tlDead: '',
       issues: [
         { text: 'リピート率の低迷', detail: '2回目購入率35%、3回目はさらに半減', sub: ['初回購入者へのフォローが手動メール1通のみ'] },
         { text: 'パーソナライズ未対応', detail: '全顧客に同じレコメンド、肌質や悩みに応じた提案なし', sub: [] },
@@ -429,7 +379,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: 'PCI DSS Level 1取得・API稼働率99.99%・加盟店数3倍',
       sessionType: 'product',
       customSession: '',
-      tlMode: 'period', tlStart: '2026-01-01', tlEnd: '2026-12-31', tlDead: '',
       issues: [
         { text: 'コンプライアンス対応遅延', detail: 'PCI DSS準拠に必要な改修が12ヶ月計画で4ヶ月遅延中', sub: ['セキュリティ専任エンジニア不足', '監査対応の工数が開発を圧迫'] },
         { text: '可用性の不安定さ', detail: '月間ダウンタイム累計45分、SLA 99.95%未達', sub: [] },
@@ -455,7 +404,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: 'PMFスコア40%以上・有料転換率15%・月次リテンション85%',
       sessionType: 'innovation',
       customSession: '',
-      tlMode: 'period', tlStart: '2026-03-01', tlEnd: '2026-08-31', tlDead: '',
       issues: [
         { text: 'PMF未達', detail: 'Sean Ellis Test「なくなったら困る」率22%（目標40%）', sub: ['ターゲット企業規模が広すぎてニーズが拡散'] },
         { text: '有料転換率の低さ', detail: 'フリートライアル→有料転換が8%で目標の半分', sub: [] },
@@ -481,7 +429,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: 'プラットフォーム刷新・表示速度50%改善・カゴ落ち率15%削減',
       sessionType: 'dx',
       customSession: '',
-      tlMode: 'period', tlStart: '2026-04-01', tlEnd: '2027-03-31', tlDead: '',
       issues: [
         { text: 'レガシープラットフォーム', detail: '自社EC基盤が10年前の構築で改修コストが年々増加', sub: ['ページ表示3.5秒（目標1.5秒）', 'モバイルCVRがデスクトップの1/3'] },
         { text: '在庫管理の非効率', detail: '実店舗とECの在庫が分断、欠品と過剰在庫が同時発生', sub: [] },
@@ -507,7 +454,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: '応募数2倍・内定承諾率60%→80%・採用単価30%削減',
       sessionType: 'marketing',
       customSession: '',
-      tlMode: 'period', tlStart: '2026-01-01', tlEnd: '2026-12-31', tlDead: '',
       issues: [
         { text: '応募数の不足', detail: '求人媒体依存度80%、自社チャネルからの応募がほぼゼロ', sub: ['技術ブログ・採用サイトが形骸化'] },
         { text: '内定辞退率の高さ', detail: '内定承諾率60%、競合オファーに負けるケースが多い', sub: [] },
@@ -533,7 +479,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: 'ARPU +25%・既存顧客のダウングレード率5%以下・NRR 115%',
       sessionType: 'growth',
       customSession: '',
-      tlMode: 'deadline', tlStart: '', tlEnd: '', tlDead: '2026-06-30',
       issues: [
         { text: '価格体系の陳腐化', detail: '3年前のプラン設計のまま、機能追加に価格が追いついていない', sub: ['上位プランの差別化が弱く全体の70%が最安プラン'] },
         { text: 'エクスパンション収益の停滞', detail: 'NRR 102%、アップセル・クロスセルの仕組みなし', sub: [] },
@@ -559,7 +504,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: '導入企業100社・MAU率60%・健診受診率90%達成',
       sessionType: 'product',
       customSession: '',
-      tlMode: 'period', tlStart: '2026-01-01', tlEnd: '2026-12-31', tlDead: '',
       issues: [
         { text: '利用定着率の低さ', detail: '導入後3ヶ月でMAU率が40%→15%に急落', sub: ['通知が多すぎて無視される', '日常的に使う理由がない'] },
         { text: '企業の導入決裁が長い', detail: '平均商談期間6ヶ月、人事×IT×経営の3部門承認が必要', sub: [] },
@@ -585,7 +529,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: '配車計画自動化率80%・燃料費20%削減・ドライバー残業30%削減',
       sessionType: 'ops',
       customSession: '',
-      tlMode: 'period', tlStart: '2026-04-01', tlEnd: '2026-09-30', tlDead: '',
       issues: [
         { text: '配車計画の属人化', detail: 'ベテラン2名の経験値に完全依存、休暇時に効率30%低下', sub: ['Excelベースの手動計画で最適化不能'] },
         { text: '2024年問題対応', detail: 'ドライバー残業上限規制で配送キャパシティ不足が顕在化', sub: [] },
@@ -611,7 +554,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       teamGoals: '統一ブランドガイドライン策定・全社浸透率80%・制作コスト40%削減',
       sessionType: 'design-system',
       customSession: '',
-      tlMode: 'period', tlStart: '2026-01-01', tlEnd: '2026-09-30', tlDead: '',
       issues: [
         { text: 'ブランド乱立', detail: '3社それぞれのロゴ・カラー・トーンが混在し顧客に混乱', sub: ['営業資料が3パターン存在', 'Webサイトのデザインが統一されていない'] },
         { text: '制作プロセスの非効率', detail: '各社別々のデザインチーム・ベンダーで重複コストが発生', sub: [] },

@@ -1,8 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import {
     Wand2,
-    CalendarRange,
-    CalendarCheck,
     SlidersHorizontal,
     Layers,
     Plus,
@@ -127,6 +125,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
         [form.sessionType, form.productService],
     )
     const [goalPickerOpen, setGoalPickerOpen] = useState(false)
+    const shouldNudgeGoal = !goalPickerOpen && !form.teamGoals.trim() && form.productService.trim().length > 0
 
     const toggleGoal = (goal: string) => {
         setForm((p) => {
@@ -247,66 +246,6 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                 )}
             </div>
 
-            {/* Timeline */}
-            <div className='mb-3'>
-                <label className={`block text-xs font-medium ${T.t2} mb-1`}>
-                    タイムライン
-                </label>
-                <div className='flex items-center gap-2'>
-                    <div
-                        className={`flex shrink-0 rounded-lg overflow-hidden border ${T.div}`}
-                    >
-                        {(
-                            Object.entries({
-                                period: { l: '期間', I: CalendarRange },
-                                deadline: { l: '期日', I: CalendarCheck },
-                            }) as [
-                                'period' | 'deadline',
-                                { l: string; I: React.ElementType },
-                            ][]
-                        ).map(([m, { l, I }]) => (
-                            <button
-                                key={m}
-                                onClick={() =>
-                                    setForm((p) => ({ ...p, tlMode: m }))
-                                }
-                                className={`flex items-center gap-1 px-2.5 py-1.5 text-xs transition ${form.tlMode === m ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' : `${T.t2} hover:bg-slate-100 dark:hover:bg-slate-700/40`}`}
-                            >
-                                <I className='w-3 h-3' />
-                                {l}
-                            </button>
-                        ))}
-                    </div>
-                    {form.tlMode === 'period' ? (
-                        <div className='flex items-center gap-1.5 flex-1'>
-                            <input
-                                type='date'
-                                name='tlStart'
-                                value={form.tlStart}
-                                onChange={onF}
-                                className={`${T.inp} flex-1`}
-                            />
-                            <span className={`text-xs ${T.t3}`}>〜</span>
-                            <input
-                                type='date'
-                                name='tlEnd'
-                                value={form.tlEnd}
-                                onChange={onF}
-                                className={`${T.inp} flex-1`}
-                            />
-                        </div>
-                    ) : (
-                        <input
-                            type='date'
-                            name='tlDead'
-                            value={form.tlDead}
-                            onChange={onF}
-                            className={`${T.inp} flex-1`}
-                        />
-                    )}
-                </div>
-            </div>
-
             {/* Goals + Depth */}
             <div className='grid grid-cols-1 md:grid-cols-3 gap-3 mb-3'>
                 <div className='md:col-span-2'>
@@ -326,9 +265,14 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                         <button
                             type='button'
                             onClick={() => setGoalPickerOpen((o) => !o)}
-                            className={`flex items-center gap-1 text-xs ${T.t3} hover:text-slate-600 dark:hover:text-slate-300`}
+                            title='セッションタイプに応じた目標候補から選択できます'
+                            className={`flex items-center gap-1 text-xs transition-all duration-300 cursor-pointer ${
+                                shouldNudgeGoal
+                                    ? 'px-2.5 py-1 rounded-lg border border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-sm shadow-blue-200/50 dark:shadow-blue-900/30 animate-[nudge_2s_ease-in-out_1]'
+                                    : `${T.t3} hover:text-slate-600 dark:hover:text-slate-300`
+                            }`}
                         >
-                            <Target className='w-3 h-3' />
+                            <Target className='w-3.5 h-3.5' />
                             目標サジェストから選択
                             {goalPickerOpen ? (
                                 <ChevronUp className='w-3 h-3' />

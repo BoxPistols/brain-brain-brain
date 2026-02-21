@@ -18,6 +18,15 @@
   background: rgba(139, 92, 246, 0.4);
 }
 
+/* Micro-interaction: nudge attention */
+@keyframes nudge {
+  0%, 100% { transform: translateY(0); }
+  20% { transform: translateY(-2px); }
+  40% { transform: translateY(0); }
+  60% { transform: translateY(-1px); }
+  80% { transform: translateY(0); }
+}
+
 /* Date input dark mode fix */
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.7);
