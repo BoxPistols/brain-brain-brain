@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import {
     Sparkles,
     Database,
@@ -15,12 +15,13 @@ import {
 import { ConnStatus } from '../../types'
 import { T } from '../../constants/theme'
 import { PRESETS } from '../../hooks/usePanelResize'
+import { TYPES } from '../../constants/prompts'
 
 interface HeaderBarProps {
     proMode: boolean
     modelLabel: string
     connStatus: ConnStatus
-    seedScenarios: Array<{ label: string; form: { productService: string } }>
+    seedScenarios: Array<{ label: string; form: { productService: string; sessionType: string } }>
     onSeed: (index: number) => void
     activePreset?: keyof typeof PRESETS
     onPreset: (ratio: number) => void
@@ -50,6 +51,18 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     const [seedOpen, setSeedOpen] = useState(false)
     const seedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
     const seedRef = useRef<HTMLDivElement | null>(null)
+
+    const groupedSeeds = useMemo(() => {
+        const groups: Array<{ type: string; label: string; items: Array<{ idx: number; label: string; desc: string }> }> = []
+        const typeOrder = Object.keys(TYPES)
+        for (const t of typeOrder) {
+            const items = seedScenarios
+                .map((s, i) => ({ idx: i, label: s.label, desc: s.form.productService, type: s.form.sessionType }))
+                .filter(s => s.type === t)
+            if (items.length) groups.push({ type: t, label: TYPES[t], items })
+        }
+        return groups
+    }, [seedScenarios])
 
     useEffect(() => {
         if (!seedOpen) return
@@ -112,17 +125,24 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                         Seed
                     </button>
                     {seedOpen && (
-                        <div className='absolute right-0 top-full mt-1 w-64 max-h-80 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg z-50'>
-                            {seedScenarios.map((s, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => { onSeed(i); setSeedOpen(false); }}
-                                    className='w-full text-left px-3 py-2 text-xs hover:bg-amber-50 dark:hover:bg-amber-900/20 border-b border-slate-100 dark:border-slate-700/50 last:border-b-0 transition cursor-pointer'
-                                    title={`${s.label}: ${s.form.productService}`}
-                                >
-                                    <div className={`font-medium ${T.t1}`}>{s.label}</div>
-                                    <div className={`${T.t3} truncate`}>{s.form.productService}</div>
-                                </button>
+                        <div className='absolute right-0 top-full mt-1 w-80 max-h-[28rem] overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg z-50'>
+                            {groupedSeeds.map((g) => (
+                                <div key={g.type}>
+                                    <div className={`sticky top-0 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider ${T.t3} bg-slate-50 dark:bg-slate-800/90 border-b border-slate-200 dark:border-slate-700/50`}>
+                                        {g.label}
+                                    </div>
+                                    {g.items.map((s) => (
+                                        <button
+                                            key={s.idx}
+                                            onClick={() => { onSeed(s.idx); setSeedOpen(false); }}
+                                            className='w-full text-left px-3 py-2 text-xs hover:bg-amber-50 dark:hover:bg-amber-900/20 border-b border-slate-100 dark:border-slate-700/50 last:border-b-0 transition cursor-pointer'
+                                            title={`${s.label}: ${s.desc}`}
+                                        >
+                                            <div className={`font-medium ${T.t1}`}>{s.label}</div>
+                                            <div className={`${T.t3} truncate`}>{s.desc}</div>
+                                        </button>
+                                    ))}
+                                </div>
                             ))}
                         </div>
                     )}

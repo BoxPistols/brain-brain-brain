@@ -29,7 +29,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'パートナーチャネル構築', description: '社労士・税理士事務所300社とのリセラー契約でCAC/3を実現。紹介インセンティブ設計とパートナーポータル開発で間接販売比率を12ヶ月で30%へ。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
         { title: 'プロダクトアナリティクス基盤整備', description: 'Mixpanel or Amplitude導入でファネル可視化。機能別採用率・セッション深度・エラー頻度をリアルタイムモニタリングし、週次プロダクトレビューに組み込む。意思決定サイクルを月次→週次に短縮。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
         { title: 'カスタマーサクセス専任化', description: '現在営業兼任のCS機能を分離。51-200名担当CSを2名採用し、1人あたり担当社数を120社以下に抑制。QBR（四半期ビジネスレビュー）標準化でエクスパンション収益+15%。', priority: 'Low', effort: 'Low', impact: 'Medium' },
-        { title: 'AI機能によるスイッチングコスト向上', description: '給与計算AI・シフト最適化AIを差別化機能として追加。独自データ蓄積がスイッチングコストを形成し競合優位性を確保。GPT-4o API活用で開発コスト最小化。', priority: 'Low', effort: 'High', impact: 'High' },
+        { title: 'AI機能によるスイッチングコスト向上', description: '給与計算AI・シフト最適化AIを差別化機能として追加。独自データ蓄積がスイッチングコストを形成し競合優位性を確保。生成AI API活用で開発コスト最小化。', priority: 'Low', effort: 'High', impact: 'High' },
       ],
       deepDive: `### PMF検証の定量アプローチは？\n\n## Rahul Vohra式PMFスコア適用\n\n| 指標 | 現状 | PMF水準 |\n|---|---|---|\n| 「なくなったら残念」% | 測定未 | **40%以上** |\n| NPS（51-200名） | +38 | 目標+50 |\n| 30日リテンション | 62% | 目標80% |\n| Organic比率 | 12% | 目標30% |\n\n## 推奨アクション\n\n1. **Sean Ellis Test** を既存顧客全件に実施（1週間で完了可能）\n2. セグメント別にNPS+40超の顧客コホートを特定 → ICP（理想顧客プロファイル）を再定義\n3. ICPに絞った新規獲得にリソース集中し、PMFスコアを月次計測`,
       refinement: `## 優先度付きロードマップ（90日）\n\n**Phase 1（〜30日）：止血**\n- オンボーディングフロー刷新（MVE設計）\n- ヘルススコアβ版リリース\n- 50名以下セグメントへの価格改定通知\n\n**Phase 2（31〜60日）：基盤**\n- PLGバイラル機能リリース\n- パートナー候補30社へのアウトリーチ\n- CS専任採用（1名）\n\n**Phase 3（61〜90日）：加速**\n- PLGフリーミアム正式ローンチ\n- AI機能PoC開始\n- QBRプログラム全顧客展開\n\n> **KPI確認ポイント**：Day30時点でチャーン4.5%以下、Day60でLTV/CAC>2.2を達成できていれば軌道上`,
@@ -141,7 +141,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'デザインシステム整備',
-    prov: 'openai', modelId: 'gpt-5-mini', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Mosaic-738',
       productService: '大規模Webサービス（DAU 50万、プロダクト4本）',
@@ -191,7 +191,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'プロダクト ロードマップ',
-    prov: 'openai', modelId: 'gpt-5-mini', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Helix-563',
       productService: 'BtoB受発注プラットフォーム（ユーザー1,200社）',
@@ -211,7 +211,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'FinOps導入でコスト30%削減', description: 'AWSコスト分析でEC2 Reserved Instance移行・RDSサイズ適正化・S3ライフサイクルポリシー設定。Spot Instanceのバッチ処理活用で即時20-30%削減。月次コストレビュー体制を確立。', priority: 'High', effort: 'Low', impact: 'Medium' },
         { title: 'フィーチャーフラグ基盤整備', description: 'LaunchDarkly or Flagsmithでフィーチャーフラグを導入。デプロイとリリースを分離しデイリーデプロイ体制を3ヶ月で確立。カナリアリリースとA/Bテストの基盤として活用。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '開発者生産性ダッシュボード', description: 'DORAメトリクス（デプロイ頻度・リードタイム・変更失敗率・復旧時間）を計測し週次レビューに組み込む。技術的負債削減の進捗を定量化し経営層への可視化を確保。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
-        { title: 'AIコードレビュー導入', description: 'GitHub Copilot+PR-Agentを導入しコードレビュー工数を50%削減。セキュリティスキャン・バグ検出を自動化しレビュアーは設計判断に集中できる環境を整備。', priority: 'Low', effort: 'Low', impact: 'Medium' },
+        { title: 'AIコードレビュー導入', description: 'AIコードレビューツールを導入しコードレビュー工数を削減。セキュリティスキャン・バグ検出を自動化しレビュアーは設計判断に集中できる環境を整備。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
     },
   },
@@ -235,7 +235,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       ideas: [
         { title: 'ハイスキルエンジニア特化の独自ポジション確立', description: '「年収600万+のバックエンド・インフラ・ML系エンジニアに特化」など明確な絞り込みで大手との差別化を図る。特化することで求人の解像度が上がり、マッチング精度・内定率・フィー単価が同時に改善する。6ヶ月でニッチ1位ポジションの検証を実施。', priority: 'High', effort: 'Medium', impact: 'High' },
         { title: 'エンジニアコミュニティへの参入と信頼構築', description: 'Zenn・Qiita・技術系Discordへのスポンサーや勉強会共催でブランドをエンジニアのいる場所で構築。「エージェントではなく技術キャリアの相談相手」としてポジショニング。コミュニティ経由の自然流入は広告CAC比で1/5以下の実績が業界内で報告されている。', priority: 'High', effort: 'Medium', impact: 'High' },
-        { title: 'AIスカウト×CA高付加価値化', description: 'GPT-4o APIを活用しスキル×求人×過去成約データからパーソナライズドスカウト文を自動生成。CA工数を現状の40%→5%に削減し、浮いた時間を面談品質・クロージング・企業リレーション強化に再投資。返信率3%→8%を目標とした検証スプリントを設計。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'AIスカウト×CA高付加価値化', description: '生成AIを活用しスキル×求人×過去成約データからパーソナライズドスカウト文を自動生成。CA工数を現状の40%→5%に削減し、浮いた時間を面談品質・クロージング・企業リレーション強化に再投資。返信率3%→8%を目標とした検証スプリントを設計。', priority: 'High', effort: 'Medium', impact: 'High' },
         { title: 'ユニットエコノミクスの再設計', description: 'セグメント別（スキル×年収帯）の成約率・フィー・CAC・LTVを計測し収益性の高いセグメントを特定。ジュニア・レガシー系は自動化（ローコスト対応）、ハイスキル系はCA集中投資のハイブリッドモデルに移行。現状「全員同じ対応」からの脱却。', priority: 'High', effort: 'Low', impact: 'High' },
         { title: 'CA業務標準化×ナレッジDB構築', description: 'トップCAの面談ヒアリング・求人マッチング・クロージング手法を動画+テキストでドキュメント化。NotionベースのナレッジDBと月次ケーススタディ共有会で平均CAの成約率をトップCA比+50%に引き上げる。新人立ち上がり期間を6ヶ月→3ヶ月に短縮。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '企業クライアントのサクセス設計', description: '採用後3ヶ月・6ヶ月のフォローアップを標準化し、入社者の定着率データを企業に提供。「採用して終わり」から「採用後の定着支援」に価値を拡張することで、リピート率と単価の両立を図る。定着率データはEEATの強化にも活用可能。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
@@ -261,7 +261,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       understanding: `CA業務の非効率は「CRMをDBとして使っている」「スカウトを量でカバーしている」「ノウハウを共有していない」の3つの構造問題が重なっている。Salesforceはレコード管理ではなく行動自動化ツールとして使うことで、CA一人当たりの対応キャパシティを30〜50%拡大できる。AIスカウト文生成はCAの単純労働を削減し、高付加価値な面談・交渉に集中させる投資対効果が最も高い施策。`,
       ideas: [
         { title: 'Salesforce活用度フェーズ別ロードマップ', description: 'CRM活用を「Level 1: データ入力」→「Level 2: 行動トリガー自動化」→「Level 3: スコアリング×予測」の3段階で設計。まず求職者の「ログイン・応募・資料閲覧」をトリガーにCA自動アラートを設定（Level 2）。工数ゼロでフォロータイミングが最適化され成約率+10〜15%の効果が見込める。', priority: 'High', effort: 'Medium', impact: 'High' },
-        { title: 'AIスカウト文生成の内製化', description: 'GPT-4o APIで「求職者スキルサマリー×求人JD×類似成約事例」を入力しパーソナライズドスカウト文を自動生成。CAはレビュー+送信のみに集中。スカウト作成工数を40%→5%に削減し、浮いた時間を面談・フォローに再配分。返信率3%→8%のABテストを4週間で実施。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'AIスカウト文生成の内製化', description: '生成AIで「求職者スキルサマリー×求人JD×類似成約事例」を入力しパーソナライズドスカウト文を自動生成。CAはレビュー+送信のみに集中。スカウト作成工数を40%→5%に削減し、浮いた時間を面談・フォローに再配分。返信率3%→8%のABテストを4週間で実施。', priority: 'High', effort: 'Medium', impact: 'High' },
         { title: '転職意欲スコアリングの自動化', description: '求職者の行動データ（ログイン頻度・求人閲覧数・資料DL・面談後の反応速度）をSalesforceにイベント連携し意欲スコアを自動算出。スコア上昇時のCA自動通知で「タイミングを逃さないフォロー」を実現。CA経験値に依らない対応品質の底上げ。', priority: 'High', effort: 'Medium', impact: 'High' },
         { title: 'CAナレッジDB×ケーススタディ標準化', description: 'トップCAの「最初の15分の質問設計」「年収交渉のトークスクリプト」「内定後の不安解消フロー」をNotion動画+テキストでドキュメント化。月次ケーススタディ共有会と組み合わせ、新人CA立ち上がり6ヶ月→3ヶ月を目標に設計。', priority: 'Medium', effort: 'Low', impact: 'High' },
         { title: 'JD（求人票）AI品質改善', description: '企業クライアントの既存JDをAIで分析し「エンジニアが離脱するポイント」を特定。技術スタック・開発環境・チーム構成・意思決定スピードなどエンジニアが重視する情報を追記するテンプレートを提供。JD品質向上で応募率・内定承諾率の改善を同時に図る。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
@@ -284,7 +284,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       ],
     },
     results: {
-      understanding: `月間PV60万・記事3,500本でCV率0.3%は、量産SEOコンテンツが「転職に動かないユーザー」を大量に集めている構造的課題。人材紹介業界は市場縮小が続いており、旧来のSEO×量産モデルの費用対効果は今後さらに悪化する。AIO（AI Optimization）対応はChatGPT・Perplexityなど生成AI検索からの流入を獲得する新チャネルであり、同時にEEAT強化はGoogleのHelpful Content Updateへの対応でもある。技術的なHTML構造改善（構造化データ・Core Web Vitals）は即効性があり、短期施策として優先度が高い。ターゲット再定義はSEO施策の前提条件であり、エンジニアのジョブ理論（JTBD）調査なしにコンテンツ戦略を立てても改善は見込めない。`,
+      understanding: `月間PV60万・記事3,500本でCV率0.3%は、量産SEOコンテンツが「転職に動かないユーザー」を大量に集めている構造的課題。人材紹介業界は市場縮小が続いており、旧来のSEO×量産モデルの費用対効果は今後さらに悪化する。AIO（AI Optimization）対応は生成AI検索エンジンからの流入を獲得する新チャネルであり、同時にEEAT強化はGoogleのHelpful Content Updateへの対応でもある。技術的なHTML構造改善（構造化データ・Core Web Vitals）は即効性があり、短期施策として優先度が高い。ターゲット再定義はSEO施策の前提条件であり、エンジニアのジョブ理論（JTBD）調査なしにコンテンツ戦略を立てても改善は見込めない。`,
       ideas: [
         { title: 'FAQ/HowTo Schema大量実装', description: '既存3,500記事のうち「〜とは」「〜の方法」形式の記事にFAQ SchemaとHowTo Schemaを自動付与するスクリプトを実装。AI検索エンジンはSchemaを優先的に参照するため、AIO対応の最速施策。実装工数：エンジニア1人×2週間。', priority: 'High', effort: 'Low', impact: 'High' },
         { title: 'エンジニア当事者コンテンツの新設', description: '現役エンジニア10名と業務委託契約し「転職判断の実体験」「年収交渉の実例」を月4本公開。著者プロフィールにGitHub/Zennリンクを掲載しEEATを技術的に担保。AI検索での引用率向上とターゲット層の信頼獲得を同時達成。', priority: 'High', effort: 'Medium', impact: 'High' },
@@ -297,7 +297,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'プロダクト UXリデザイン',
-    prov: 'openai', modelId: 'gpt-5-mini', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Prism-284',
       productService: 'BtoBマーケティング自動化ツール',
@@ -397,7 +397,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: '教育SaaS PMF検証',
-    prov: 'openai', modelId: 'gpt-5-mini', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Ignite-334',
       productService: '法人向けAI研修プラットフォーム',
@@ -472,7 +472,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'サブスク価格改定',
-    prov: 'openai', modelId: 'gpt-5-mini', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Lever-847',
       productService: 'プロジェクト管理SaaS（ARR 8億円・契約社数3,000社）',
@@ -547,7 +547,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'ブランド統一 リブランディング',
-    prov: 'openai', modelId: 'gpt-5-mini', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Unity-951',
       productService: 'M&A後の統合企業グループ（3社統合・従業員2,000名）',
