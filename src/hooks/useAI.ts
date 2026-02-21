@@ -247,10 +247,9 @@ JSONのみ回答:
     }
   }, [reviewText, results, hist, modelId]);
 
-  /** seedデータなど、APIが使えない場合のフォールバック深掘り回答を生成 */
+  /** APIが使えない場合の戦略的フォールバック深掘り回答を生成 */
   const buildFallbackDeepDive = (q: string, r: AIResults): string => {
-    // 質問に最も関連するアイデアを特定
-    const qWords = q.replace(/[？?は。、]/g, ' ').split(/\s+/).filter(w => w.length > 1);
+    const qWords = q.replace(/[？?は。、の]/g, ' ').split(/\s+/).filter(w => w.length > 1);
     const scored = r.ideas.map(idea => {
       const text = `${idea.title} ${idea.description}`;
       const hits = qWords.filter(w => text.includes(w)).length;
@@ -258,20 +257,75 @@ JSONのみ回答:
     });
     scored.sort((a, b) => b.hits - a.hits);
     const top = scored.slice(0, 3).map(s => s.idea);
+    const highPri = r.ideas.filter(i => i.priority === 'High');
+    const highImpact = r.ideas.filter(i => i.impact === 'High');
 
-    let md = `この質問は、現在検討中の戦略アイデアのうち以下の施策と密接に関連しています。\n\n`;
-    md += `## 関連する重点施策\n\n`;
+    let md = '';
+
+    // ── 1. イシューの構造化 ──
+    md += `## イシューの構造化\n\n`;
+    md += `「${q}」という問いの本質は、**現状の施策体系に欠けている戦略的一貫性（ストーリーライン）を明確化し、実行の優先順位を再定義すること**にあります。\n\n`;
+    if (r.keyIssue) {
+      md += `最重要イシュー「${r.keyIssue}」を起点に考えると、この問いは以下の3つのサブイシューに分解できます。\n\n`;
+    }
+    md += `| サブイシュー | 検証すべき仮説 | 判断基準 |\n|---|---|---|\n`;
     top.forEach((idea, i) => {
-      md += `### ${i + 1}. ${idea.title}\n\n${idea.description}\n\n`;
-      md += `- **優先度**: ${idea.priority} / **工数**: ${idea.effort} / **インパクト**: ${idea.impact}\n\n`;
+      const hypotheses = [
+        `${idea.title}が未着手または不十分な場合、目標達成が構造的に阻まれる`,
+        `${idea.title}の効果が他施策の前提条件となっている`,
+        `${idea.title}の工数対効果が他施策と比較して最も高い`,
+      ];
+      const criteria = [
+        '現状データ（KPI実績）との乖離度',
+        '他施策への波及効果の大きさ',
+        '2週間以内に初期成果を計測可能か',
+      ];
+      md += `| ${idea.title} | ${hypotheses[i]} | ${criteria[i]} |\n`;
     });
-    md += `## 推奨アクション\n\n`;
-    md += `| フェーズ | アクション | 期待効果 |\n|---|---|---|\n`;
-    top.forEach((idea, i) => {
-      const phase = i === 0 ? '即座（〜2週間）' : i === 1 ? '短期（1-3ヶ月）' : '中期（3-6ヶ月）';
-      md += `| ${phase} | ${idea.title}の着手 | ${idea.impact}インパクト |\n`;
+
+    // ── 2. 戦略的分析 ──
+    md += `\n## 戦略的分析\n\n`;
+    md += `### Why：なぜ今この問いが重要か\n\n`;
+    md += `現在提示されている ${r.ideas.length} 件の施策のうち、優先度Highは ${highPri.length} 件、インパクトHighは ${highImpact.length} 件です。`;
+    if (highPri.length >= 3) {
+      md += ` 優先度Highが多いということは、**真の優先順位が曖昧なまま施策が並列化されている**可能性を示唆します。「すべてが重要」は「何も優先していない」と同義であり、ここにイシューの核があります。\n\n`;
+    } else {
+      md += ` この配分は比較的明確ですが、施策間の**依存関係と実行順序**がより重要な論点となります。\n\n`;
+    }
+
+    md += `### What：何を変えるべきか\n\n`;
+    if (top.length > 0) {
+      md += `最も関連性の高い施策「**${top[0].title}**」を軸に考えると:\n\n`;
+      md += `1. **短期（〜1ヶ月）**: ${top[0].title}の成功指標（KPI）を定義し、ベースラインを計測\n`;
+      md += `2. **中期（1-3ヶ月）**: ${top.length > 1 ? top[1].title : '関連施策'}との相乗効果を設計し、統合的に実行\n`;
+      md += `3. **長期（3-6ヶ月）**: 成果をもとに施策ポートフォリオ全体を再評価し、リソース再配分\n\n`;
+    }
+
+    md += `### How：どう実行するか\n\n`;
+    md += `| ステップ | アクション | 担当 | 期限目安 | 成果物 |\n|---|---|---|---|---|\n`;
+    const actions = [
+      { step: '①現状把握', action: `${top[0]?.title || '重点施策'}に関する定量データを収集`, role: '経営企画/データ', deadline: '1週間', output: '現状レポート' },
+      { step: '②仮説設定', action: 'ボトルネック仮説を3つ設定し検証計画を策定', role: 'マネージャー', deadline: '2週間', output: '仮説検証シート' },
+      { step: '③Quick Win', action: '最もROIの高い1施策を選定し即座に着手', role: '実行チーム', deadline: '3週間', output: '初期成果報告' },
+      { step: '④検証と修正', action: '初期成果をレビューし、次の打ち手を決定', role: '全体', deadline: '1ヶ月', output: '修正ロードマップ' },
+    ];
+    actions.forEach(a => {
+      md += `| ${a.step} | ${a.action} | ${a.role} | ${a.deadline} | ${a.output} |\n`;
     });
-    md += `\n> **注**: この回答はseedデータに基づく参考情報です。APIキーを設定するとAIによる詳細分析が利用できます。`;
+
+    // ── 3. リスクと判断基準 ──
+    md += `\n## リスクと撤退基準\n\n`;
+    md += `| リスク | 発生条件 | 対策 |\n|---|---|---|\n`;
+    md += `| 施策の分散 | 3施策以上を同時着手 | 最重要1施策に集中、他は待機 |\n`;
+    md += `| 効果測定不能 | KPI未定義のまま実行 | 着手前にベースライン計測を必須化 |\n`;
+    md += `| 現場の抵抗 | 変更の意義が共有されていない | キックオフで「Why」を30秒で説明できる状態に |\n`;
+
+    // ── 4. So What ──
+    md += `\n## So What（結論）\n\n`;
+    md += `この問いに対する回答は、**「${top[0]?.title || '最重要施策'}」を起点とした段階的な実行計画の策定**です。`;
+    md += ` 全施策を同時に動かすのではなく、最もインパクトの大きい1施策で早期に成果を出し、その実績をレバレッジにして次の施策への投資判断を行うアプローチを推奨します。\n\n`;
+
+    md += `> **注**: この分析はオフラインモードの構造化フレームワークによる回答です。設定画面でOpenAI APIキーを設定すると、AIによるさらに詳細な分析が利用できます。`;
     return md;
   };
 
