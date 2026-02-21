@@ -48,6 +48,7 @@ function parseAIJson(raw: string): AIResults {
 import { BrainstormForm, AIResults, ChatMessage, ConnStatus } from '../types';
 import { callAI, callAIWithKey, testConn, DEFAULT_MODEL_ID, isProMode } from '../constants/models';
 import { FREE_DEPTH, PRO_DEPTH } from '../constants/prompts';
+import { MAX_HIST, CHAT_MAX_TOKENS } from '../constants/config';
 
 export const useAI = () => {
   const [modelId, setModelId] = useState(DEFAULT_MODEL_ID);
@@ -269,13 +270,13 @@ JSONのみ回答:
       const msg: ChatMessage = { role: 'user', content: `あなたは戦略コンサルタントです。以下のレビュー・フィードバックに基づき、戦略提案をブラッシュアップしてください。\n\n【前提条件】現状を批判せず、強みを活かした建設的な改善提案に絞る。担当者が実行できる具体案を出す。\n\n【レビュー内容】${reviewText}\n\nMarkdown形式（見出し・箇条書き活用）で回答してください。` };
       const h2 = [...hist, msg];
       const raw = proMode
-        ? await callAIWithKey(apiKey.trim(), modelId, h2, 4096)
-        : await callAI(modelId, h2, 4096);
+        ? await callAIWithKey(apiKey.trim(), modelId, h2, CHAT_MAX_TOKENS)
+        : await callAI(modelId, h2, CHAT_MAX_TOKENS);
 
       const newResults = { ...results, refinement: raw };
       setResults(newResults);
       const newHist = [...h2, { role: 'assistant' as const, content: raw }];
-      setHist(newHist.slice(-10));
+      setHist(newHist.slice(-MAX_HIST));
       setReviewText('');
 
       onSuccess(newResults, reviewText);
@@ -331,8 +332,8 @@ JSONのみ回答:
         content: `あなたは戦略コンサルタントです。以下の事業状況を踏まえ、質問に詳細回答してください。\n\n【事業状況】\n${context}\n\n【前提条件】現状批判ではなく「次の打ち手・改善機会」として建設的に回答すること。担当者（営業・マーケ・経営企画）が実行できる具体策を含めること。\n\n【質問】${q}\n\nMarkdown形式（見出し・テーブル・箇条書き活用）で詳細回答してください。`,
       };
       const raw = proMode
-        ? await callAIWithKey(apiKey.trim(), modelId, [msg], 4096)
-        : await callAI(modelId, [msg], 4096);
+        ? await callAIWithKey(apiKey.trim(), modelId, [msg], CHAT_MAX_TOKENS)
+        : await callAI(modelId, [msg], CHAT_MAX_TOKENS);
 
       setResults(p => p ? ({ ...p, deepDives: [...(p.deepDives || []), { question: q, answer: raw }] }) : p);
     } catch (e: unknown) {

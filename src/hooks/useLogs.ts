@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { LogEntry, Settings, BrainstormForm, AIResults } from '../types';
 import { loadLogs, saveLogs, loadSettings, saveSettings } from '../utils/storage';
+import { MAX_LOGS, SAVE_DEBOUNCE_MS } from '../constants/config';
 
 export const useLogs = () => {
   const [logs, setLogs] = useState<LogEntry[]>(() => loadLogs());
@@ -14,7 +15,7 @@ export const useLogs = () => {
       if (!saveLogs(data)) {
         console.warn('localStorage quota exceeded — logs may not be saved');
       }
-    }, 300);
+    }, SAVE_DEBOUNCE_MS);
   }, []);
 
   const updateSettings = useCallback((s: Settings) => {
@@ -35,7 +36,7 @@ export const useLogs = () => {
       ...(stgSettings.logMode === 'all' ? { query: q, results: res } : { results: res })
     };
     
-    const updated = [entry, ...logs].slice(0, 200);
+    const updated = [entry, ...logs].slice(0, MAX_LOGS);
     setLogs(updated);
     debouncedSave(updated);
   }, [logs, stgSettings, debouncedSave]);
@@ -58,7 +59,7 @@ export const useLogs = () => {
     const merged = [...valid, ...logs];
     const unique = [...new Map(merged.map(x => [x.id, x])).values()]
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-      .slice(0, 200);
+      .slice(0, MAX_LOGS);
 
     setLogs(unique);
     if (!saveLogs(unique)) {
