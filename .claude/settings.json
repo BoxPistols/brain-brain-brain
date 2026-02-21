@@ -1,5 +1,16 @@
 {
   "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/hooks/protect-main.sh"
+          }
+        ]
+      }
+    ],
     "postToolUse": [
       {
         "matcher": "Write|Edit",
@@ -7,6 +18,17 @@
           {
             "type": "command",
             "command": "npx tsc --noEmit --pretty 2>&1 | head -20"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"入力待ちです\" with title \"Claude Code\"'"
           }
         ]
       }
