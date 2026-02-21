@@ -40,9 +40,13 @@ export const buildReportMd = (
   }
 
   md += `---\n\n## AI分析\n\n${results.understanding}\n\n---\n\n## 戦略アイデア\n\n`;
-  
+
+  const hasFeasibility = results.ideas.some(d => d.feasibility);
   results.ideas.forEach((d, i) => {
-    md += `### ${i + 1}. ${d.title}\n\n${d.description}\n\n| 優先度 | 工数 | インパクト |\n|---|---|---|\n| ${ll(d.priority)} | ${ll(d.effort)} | ${ll(d.impact)} |\n\n`;
+    md += `### ${i + 1}. ${d.title}\n\n${d.description}\n\n| 優先度 | 工数 | インパクト |${hasFeasibility ? ' 実現可能性 |' : ''}\n|---|---|---|${hasFeasibility ? '---|' : ''}\n| ${ll(d.priority)} | ${ll(d.effort)} | ${ll(d.impact)} |${hasFeasibility ? ` ${d.feasibility?.total ?? '-'}/100 |` : ''}\n\n`;
+    if (d.feasibility) {
+      md += `> リソース: ${d.feasibility.resource} / 技術容易性: ${d.feasibility.techDifficulty} / 組織受容性: ${d.feasibility.orgAcceptance}\n\n`;
+    }
   });
   
   if (results.refinements?.length) {
@@ -91,9 +95,10 @@ export const buildReportCsv = (
   const esc = (s: string) => `"${s.replace(/"/g, '""')}"`;
   const ses = form.sessionType === 'other' ? form.customSession : TYPES[form.sessionType];
   const rows: string[] = [];
-  rows.push('No,タイトル,説明,優先度,工数,インパクト');
+  rows.push('No,タイトル,説明,優先度,工数,インパクト,実現可能性(総合),リソース,技術容易性,組織受容性');
   results.ideas.forEach((d, i) => {
-    rows.push(`${i + 1},${esc(d.title)},${esc(d.description)},${d.priority},${d.effort},${d.impact}`);
+    const f = d.feasibility;
+    rows.push(`${i + 1},${esc(d.title)},${esc(d.description)},${d.priority},${d.effort},${d.impact},${f?.total ?? ''},${f?.resource ?? ''},${f?.techDifficulty ?? ''},${f?.orgAcceptance ?? ''}`);
   });
   rows.push('');
   rows.push(`プロジェクト,${esc(pn)}`);

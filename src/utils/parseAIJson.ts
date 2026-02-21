@@ -1,4 +1,4 @@
-import { AIResults } from '../types';
+import { AIResults, FeasibilityScore } from '../types';
 
 /**
  * AIレスポンスからJSONを抽出・修復してパースする。
@@ -67,6 +67,22 @@ function tryRepairTruncated(text: string): unknown | null {
   return null;
 }
 
+function parseFeasibility(raw: unknown): FeasibilityScore | undefined {
+  if (typeof raw !== 'object' || raw === null) return undefined;
+  const obj = raw as Record<string, unknown>;
+  const clamp = (v: unknown): number => {
+    const n = Number(v);
+    if (Number.isNaN(n)) return 50;
+    return Math.max(0, Math.min(100, Math.round(n)));
+  };
+  return {
+    total: clamp(obj.total),
+    resource: clamp(obj.resource),
+    techDifficulty: clamp(obj.techDifficulty),
+    orgAcceptance: clamp(obj.orgAcceptance),
+  };
+}
+
 /**
  * パース結果が AIResults の最低限の構造を持つことを検証する。
  * 足りないフィールドはデフォルト値で補完。
@@ -94,6 +110,7 @@ function validateStructure(data: unknown): AIResults {
           priority: (['High', 'Medium', 'Low'].includes(idea.priority as string) ? idea.priority : 'Medium') as 'High' | 'Medium' | 'Low',
           effort: (['High', 'Medium', 'Low'].includes(idea.effort as string) ? idea.effort : 'Medium') as 'High' | 'Medium' | 'Low',
           impact: (['High', 'Medium', 'Low'].includes(idea.impact as string) ? idea.impact : 'Medium') as 'High' | 'Medium' | 'Low',
+          feasibility: parseFeasibility(idea.feasibility),
         };
       })
     : [];

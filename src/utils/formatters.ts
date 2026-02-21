@@ -28,3 +28,13 @@ export const impactC = (v: string): string =>
     Medium: 'bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-700/40',
     Low: 'bg-slate-100 dark:bg-slate-700/40 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-600/40'
   }[v] || 'bg-slate-100 dark:bg-slate-700/40 text-slate-600 dark:text-slate-400 border-slate-200');
+
+export const feasibilityBarC = (score: number): string =>
+  score >= 70 ? 'bg-emerald-500 dark:bg-emerald-400'
+  : score >= 40 ? 'bg-amber-500 dark:bg-amber-400'
+  : 'bg-rose-500 dark:bg-rose-400';
+
+export const feasibilityTextC = (score: number): string =>
+  score >= 70 ? 'text-emerald-700 dark:text-emerald-300'
+  : score >= 40 ? 'text-amber-700 dark:text-amber-300'
+  : 'text-rose-700 dark:text-rose-300';

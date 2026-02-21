@@ -84,4 +84,41 @@ describe('parseAIJson', () => {
     const result = parseAIJson(input);
     expect(result.suggestions).toEqual(['有効な質問', '別の質問']);
   });
+
+  it('feasibilityスコアが正常にパースされる', () => {
+    const input = JSON.stringify({
+      understanding: 'OK',
+      ideas: [{
+        title: 'T', description: 'D', priority: 'High', effort: 'Low', impact: 'High',
+        feasibility: { total: 75, resource: 80, techDifficulty: 60, orgAcceptance: 85 },
+      }],
+    });
+    const result = parseAIJson(input);
+    expect(result.ideas[0].feasibility).toEqual({ total: 75, resource: 80, techDifficulty: 60, orgAcceptance: 85 });
+  });
+
+  it('feasibilityが欠落している場合はundefined', () => {
+    const input = JSON.stringify({
+      understanding: 'OK',
+      ideas: [{ title: 'T', description: 'D', priority: 'High', effort: 'Low', impact: 'High' }],
+    });
+    const result = parseAIJson(input);
+    expect(result.ideas[0].feasibility).toBeUndefined();
+  });
+
+  it('feasibilityの不正値は0-100にクランプされる', () => {
+    const input = JSON.stringify({
+      understanding: 'OK',
+      ideas: [{
+        title: 'T', description: 'D', priority: 'High', effort: 'Low', impact: 'High',
+        feasibility: { total: 150, resource: -20, techDifficulty: 'abc', orgAcceptance: 50.7 },
+      }],
+    });
+    const result = parseAIJson(input);
+    const f = result.ideas[0].feasibility!;
+    expect(f.total).toBe(100);
+    expect(f.resource).toBe(0);
+    expect(f.techDifficulty).toBe(50); // NaN → default 50
+    expect(f.orgAcceptance).toBe(51); // rounded
+  });
 });

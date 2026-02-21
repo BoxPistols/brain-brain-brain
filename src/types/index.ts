@@ -20,12 +20,20 @@ export interface BrainstormForm {
   issues: Issue[];
 }
 
+export interface FeasibilityScore {
+  total: number;          // 0-100 総合スコア
+  resource: number;       // 0-100 リソース充足度
+  techDifficulty: number; // 0-100 技術的実現容易性（高い = 容易）
+  orgAcceptance: number;  // 0-100 組織受容性
+}
+
 export interface Idea {
   title: string;
   description: string;
   priority: Priority;
   effort: Effort;
   impact: Impact;
+  feasibility?: FeasibilityScore;
 }
 
 export interface DeepDiveEntry {

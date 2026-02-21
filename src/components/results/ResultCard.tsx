@@ -3,6 +3,7 @@ import { Clock, TrendingUp } from 'lucide-react';
 import { Idea } from '../../types';
 import { ll, priorityC, effortC, impactC } from '../../utils/formatters';
 import { RichText } from './RichText';
+import { FeasibilityBar } from './FeasibilityBar';
 import { T } from '../../constants/theme';
 
 interface ResultCardProps {
@@ -36,6 +37,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({ idea, index }) => {
           </div>
         ))}
       </div>
+      {idea.feasibility && <FeasibilityBar f={idea.feasibility} />}
     </div>
   );
 };
