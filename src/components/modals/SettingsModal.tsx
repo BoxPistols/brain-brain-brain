@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Wifi, WifiOff, Loader, Key, Zap, HelpCircle, Eye, EyeOff, X } from 'lucide-react'
-import { MODELS } from '../../constants/models'
+import { MODELS, isProMode } from '../../constants/models'
 import { T } from '../../constants/theme'
 import { HelpModal } from './HelpModal'
 
@@ -28,7 +28,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 }) => {
     const [showKey, setShowKey] = useState(false)
     const [showHelp, setShowHelp] = useState(false)
-    const proMode = apiKey.trim().startsWith('sk-')
+    const proMode = isProMode(apiKey)
 
     return (
         <>
