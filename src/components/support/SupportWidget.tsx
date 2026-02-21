@@ -31,7 +31,7 @@ export const SupportWidget: React.FC<Props> = ({ apiKey }) => {
                         : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
                     }`}
             >
-                <SupportPanel apiKey={apiKey} onClose={() => setIsOpen(false)} />
+                <SupportPanel apiKey={apiKey} />
             </div>
 
             {/* FABボタン */}

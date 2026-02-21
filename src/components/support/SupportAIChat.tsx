@@ -2,9 +2,9 @@ import { useState, useRef, useEffect } from 'react'
 import { Send, Loader2 } from 'lucide-react'
 import { T } from '../../constants/theme'
 import { callAI, callAIWithKey, isProMode } from '../../constants/models'
+import { SUPPORT_SYSTEM_PROMPT } from './supportData'
 
 const SUPPORT_MODEL = 'gpt-4.1-nano'
-import { SUPPORT_SYSTEM_PROMPT } from './supportData'
 
 interface Message {
     role: 'user' | 'assistant'

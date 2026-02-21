@@ -9,10 +9,9 @@ type View = 'top' | 'faq' | 'ai'
 
 interface Props {
     apiKey: string
-    onClose: () => void
 }
 
-export const SupportPanel: React.FC<Props> = ({ apiKey, onClose }) => {
+export const SupportPanel: React.FC<Props> = ({ apiKey }) => {
     const [view, setView] = useState<View>('top')
     const [categoryId, setCategoryId] = useState<string | null>(null)
 
@@ -40,7 +39,7 @@ export const SupportPanel: React.FC<Props> = ({ apiKey, onClose }) => {
             </div>
 
             {/* コンテンツ */}
-            <div className='flex-1 overflow-y-auto p-4 overscroll-contain'>
+            <div className={`flex-1 p-4 ${view === 'ai' ? 'overflow-hidden flex flex-col min-h-0' : 'overflow-y-auto overscroll-contain'}`}>
                 {view === 'top' && (
                     <div className='space-y-2'>
                         {/* カテゴリ一覧 */}
