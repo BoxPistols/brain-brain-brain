@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { isHRContext, getHRDomainContext } from '../constants/domainContext';
 import { parseAIJson } from '../utils/parseAIJson';
-import { BrainstormForm, AIResults, ChatMessage, ConnStatus } from '../types';
+import { BrainstormForm, AIResults, ChatMessage, ConnStatus, Idea } from '../types';
 import { callAI, callAIWithKey, testConn, DEFAULT_MODEL_ID, isProMode } from '../constants/models';
 import { FREE_DEPTH, PRO_DEPTH } from '../constants/prompts';
 import { MAX_HIST, CHAT_MAX_TOKENS } from '../constants/config';

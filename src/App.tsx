@@ -43,8 +43,8 @@ export default function App() {
     const {
         modelId, setModelId, connStatus, setConnStatus, runConnTest,
         loading, results, setResults, error,
-        reviewText, setReviewText, refining, diving,
-        generate, refine, deepDive,
+        reviewText, setReviewText, refining, diving, drillingDownId,
+        generate, refine, deepDive, drillDownIdea,
     } = useAI()
 
     // Handle seed data injection into AI state

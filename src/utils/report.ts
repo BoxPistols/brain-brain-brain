@@ -170,7 +170,7 @@ export const downloadPdf = async (md: string, pn: string) => {
     html2canvas: { scale: 2 },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
     pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
-  }).from(container).save();
+  } as Record<string, unknown>).from(container).save();
 };
 
 /** PPTX エクスポート */
@@ -226,7 +226,8 @@ export const downloadPptx = async (
     if (hasFeas) row.push(d.feasibility ? `${d.feasibility.total}/100` : '-');
     return row;
   });
-  tableSlide.addTable([headerRow, ...rows], {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tableSlide.addTable([headerRow, ...rows] as any, {
     x: 0.3, y: 1.0, w: 9.4,
     fontSize: 10,
     border: { type: 'solid', pt: 0.5, color: 'CBD5E1' },
