@@ -18,7 +18,7 @@ export const SupportPanel: React.FC<Props> = ({ apiKey }) => {
     const selectedCategory = FAQ_CATEGORIES.find(c => c.id === categoryId)
 
     return (
-        <div className={`${T.card} shadow-2xl flex flex-col max-h-[70vh] sm:max-h-[500px] overflow-hidden`}>
+        <div className={`${T.card} shadow-2xl flex flex-col h-full overflow-hidden`}>
             {/* ヘッダー */}
             <div className='flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700/60 shrink-0'>
                 <div className='flex items-center gap-2'>
