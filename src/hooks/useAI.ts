@@ -222,8 +222,43 @@ JSONのみ回答:
     const proMode = isProMode(apiKey);
 
     try {
-      const msg: ChatMessage = { role: 'user', content: `あなたは戦略コンサルタントです。以下のレビュー・フィードバックに基づき、戦略提案をブラッシュアップしてください。\n\n【前提条件】現状を批判せず、強みを活かした建設的な改善提案に絞る。担当者が実行できる具体案を出す。\n\n【レビュー内容】${reviewText}\n\nMarkdown形式（見出し・箇条書き活用）で回答してください。` };
-      const h2 = [...hist, msg];
+      // keyIssue / funnelStage を注入
+      const keyContext = [
+        results.keyIssue ? `【最重要イシュー】${results.keyIssue}` : '',
+        results.funnelStage ? `【ファネルステージ】${results.funnelStage}` : '',
+      ].filter(Boolean).join('\n');
+
+      const ideaSummary = results.ideas
+        .map((idea, i) => `${i + 1}. ${idea.title}: ${idea.description}`)
+        .join('\n');
+
+      // 過去のブラッシュアップ履歴
+      const pastRefinements = (results.refinements || [])
+        .map((r, i) => `Review${i + 1}: ${r.review}\nResult: ${r.answer.length > 300 ? r.answer.slice(0, 300) + '…' : r.answer}`)
+        .join('\n\n');
+
+      const systemMsg: ChatMessage = {
+        role: 'system',
+        content: `あなたは戦略コンサルタントです。以下の事業状況と過去の分析を踏まえ、レビュー・フィードバックに基づいて戦略提案をブラッシュアップしてください。
+
+${keyContext}
+
+【状況分析】
+${results.understanding}
+
+【現在の戦略アイデア】
+${ideaSummary}
+${pastRefinements ? `\n【過去のブラッシュアップ履歴】\n${pastRefinements}` : ''}
+
+【前提条件】
+- 現状を批判せず、強みを活かした建設的な改善提案に絞る
+- 担当者が実行できる具体案を出す
+- 過去のブラッシュアップ結果と矛盾しない一貫した改善を行う`,
+      };
+
+      const msg: ChatMessage = { role: 'user', content: `【レビュー内容】${reviewText}\n\nMarkdown形式（見出し・箇条書き活用）で回答してください。` };
+      const recentHist = hist.slice(-MAX_HIST);
+      const h2 = [systemMsg, ...recentHist, msg];
       const raw = proMode
         ? await callAIWithKey(apiKey.trim(), modelId, h2, CHAT_MAX_TOKENS)
         : await callAI(modelId, h2, CHAT_MAX_TOKENS);
@@ -340,16 +375,54 @@ JSONのみ回答:
       const ideaSummary = currentResults.ideas
         .map((idea, i) => `${i + 1}. ${idea.title}: ${idea.description}`)
         .join('\n');
-      const context = `【状況分析】\n${currentResults.understanding}\n\n【検討中の戦略アイデア】\n${ideaSummary}`;
-      const msg: ChatMessage = {
-        role: 'user',
-        content: `あなたは戦略コンサルタントです。以下の事業状況を踏まえ、質問に詳細回答してください。\n\n【事業状況】\n${context}\n\n【前提条件】現状批判ではなく「次の打ち手・改善機会」として建設的に回答すること。担当者（営業・マーケ・経営企画）が実行できる具体策を含めること。\n\n【質問】${q}\n\nMarkdown形式（見出し・テーブル・箇条書き活用）で詳細回答してください。`,
+
+      // 過去の深掘り履歴をコンテキストに含める
+      const pastDives = (currentResults.deepDives || [])
+        .map((dd, i) => `Q${i + 1}: ${dd.question}\nA: ${dd.answer.length > 300 ? dd.answer.slice(0, 300) + '…' : dd.answer}`)
+        .join('\n\n');
+
+      // keyIssue / funnelStage を注入
+      const keyContext = [
+        currentResults.keyIssue ? `【最重要イシュー】${currentResults.keyIssue}` : '',
+        currentResults.funnelStage ? `【ファネルステージ】${currentResults.funnelStage}` : '',
+      ].filter(Boolean).join('\n');
+
+      const systemMsg: ChatMessage = {
+        role: 'system',
+        content: `あなたは戦略コンサルタントです。以下の事業状況と過去の分析を踏まえ、質問に詳細回答してください。
+
+${keyContext}
+
+【状況分析】
+${currentResults.understanding}
+
+【検討中の戦略アイデア】
+${ideaSummary}
+${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}
+
+【前提条件】
+- 現状批判ではなく「次の打ち手・改善機会」として建設的に回答する
+- 担当者（営業・マーケ・経営企画）が実行できる具体策を含める
+- 過去の深掘り結果と矛盾しない一貫した回答をする`,
       };
+
+      const userMsg: ChatMessage = {
+        role: 'user',
+        content: `【質問】${q}\n\nMarkdown形式（見出し・テーブル・箇条書き活用）で詳細回答してください。`,
+      };
+
+      // 会話履歴を活用
+      const recentHist = hist.slice(-MAX_HIST);
+      const messages: ChatMessage[] = [systemMsg, ...recentHist, userMsg];
+
       const raw = proMode
-        ? await callAIWithKey(apiKey.trim(), modelId, [msg], CHAT_MAX_TOKENS)
-        : await callAI(modelId, [msg], CHAT_MAX_TOKENS);
+        ? await callAIWithKey(apiKey.trim(), modelId, messages, CHAT_MAX_TOKENS)
+        : await callAI(modelId, messages, CHAT_MAX_TOKENS);
 
       setResults(p => p ? ({ ...p, deepDives: [...(p.deepDives || []), { question: q, answer: raw }] }) : p);
+      // 深掘りの会話も履歴に追加
+      const newHist = [...recentHist, userMsg, { role: 'assistant' as const, content: raw }];
+      setHist(newHist.slice(-MAX_HIST));
     } catch (e: unknown) {
       try {
         const fallback = buildFallbackDeepDive(q, currentResults);
@@ -360,7 +433,7 @@ JSONのみ回答:
     } finally {
       setDiving(false);
     }
-  }, [results, modelId]);
+  }, [results, hist, modelId]);
 
   return {
     modelId,
