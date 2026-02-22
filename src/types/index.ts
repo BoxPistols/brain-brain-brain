@@ -44,6 +44,7 @@ export interface DeepDiveEntry {
 export interface RefinementEntry {
   review: string;
   answer: string;
+  results?: AIResults; // ブラッシュアップ後の構造的結果
 }
 
 export interface AIResults {

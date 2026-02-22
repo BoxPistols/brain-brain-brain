@@ -295,6 +295,8 @@ export default function App() {
                             refineProgress={refineProgress}
                             onRefine={handleRefine}
                             onShowPreview={results ? () => setShowPrev(true) : undefined}
+                            onDrillDown={(idea, index) => drillDownIdea(idea, index, apiKey)}
+                            drillingDownId={drillingDownId}
                             onDownload={report && results ? (fmt) => {
                                 const ts = new Date().toISOString().slice(0, 16).replace(/[T:]/g, '-')
                                 switch (fmt) {

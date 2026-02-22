@@ -16,13 +16,14 @@ export const useAI = () => {
   const [reviewText, setReviewText] = useState('');
   const [refining, setRefining] = useState(false);
   const [diving, setDiving] = useState(false);
+  const [drillingDownId, setDrillingDownId] = useState<string | null>(null);
   const [hist, setHist] = useState<ChatMessage[]>([]);
 
   const runConnTest = useCallback(async (apiKey = '') => {
     setConnStatus({ status: 'testing', msg: '' });
     try {
-      const model = await testConn(modelId, apiKey);
-      setConnStatus({ status: 'ok', msg: `OK: ${model}` });
+      await testConn(modelId, apiKey);
+      setConnStatus({ status: 'ok', msg: 'OK' });
     } catch (e: unknown) {
       setConnStatus({ status: 'error', msg: e instanceof Error ? e.message : String(e) });
     }
@@ -256,14 +257,28 @@ ${pastRefinements ? `\n【過去のブラッシュアップ履歴】\n${pastRefi
 - 過去のブラッシュアップ結果と矛盾しない一貫した改善を行う`,
       };
 
-      const msg: ChatMessage = { role: 'user', content: `【レビュー内容】${reviewText}\n\nMarkdown形式（見出し・箇条書き活用）で回答してください。` };
+      const msg: ChatMessage = { role: 'user', content: `【レビュー内容】${reviewText}\n\nMarkdown形式（見出し・箇条書き活用）で詳細に回答した後、文末に必ず以下の形式のJSONを付加してください。JSONのみコードブロックで囲んでください。
+\`\`\`json
+{"understanding":"改善後の状況分析","ideas":[{"title":"タイトル","description":"内容","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High"}]}
+\`\`\`` };
       const recentHist = hist.slice(-MAX_HIST);
       const h2 = [systemMsg, ...recentHist, msg];
       const raw = proMode
         ? await callAIWithKey(apiKey.trim(), modelId, h2, CHAT_MAX_TOKENS)
         : await callAI(modelId, h2, CHAT_MAX_TOKENS);
 
-      const entry = { review: reviewText, answer: raw };
+      // JSONを抽出・パース
+      let structRes: AIResults | undefined;
+      try {
+        const jsonMatch = raw.match(/```json\n([\s\S]*?)\n```/) || raw.match(/{[\s\S]*}/);
+        if (jsonMatch) {
+          structRes = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+        }
+      } catch (e) {
+        console.warn('Structured JSON parse failed', e);
+      }
+
+      const entry = { review: reviewText, answer: raw, results: structRes };
       const newResults = {
         ...results,
         refinement: raw,
@@ -435,6 +450,56 @@ ${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}
     }
   }, [results, hist, modelId]);
 
+  const drillDownIdea = useCallback(async (
+    idea: Idea,
+    ideaIndex: number,
+    apiKey = '',
+  ) => {
+    if (!results) return;
+    const drillId = `${idea.title}-${ideaIndex}`;
+    setDrillingDownId(drillId);
+    setError(null);
+    const proMode = isProMode(apiKey);
+
+    try {
+      const systemMsg: ChatMessage = {
+        role: 'system',
+        content: `あなたは戦略コンサルタントです。以下の「戦略アイデア」をさらに深掘りし、具体的で実行可能な「2〜3個のサブアイデア（子要素）」に分解してください。
+各サブアイデアは、親の目的を達成するための具体的なステップ、あるいは異なるアプローチの切り口として提示してください。`,
+      };
+
+      const userMsg: ChatMessage = {
+        role: 'user',
+        content: `【親アイデア】
+タイトル: ${idea.title}
+内容: ${idea.description}
+
+【出力形式】JSONのみ（コードブロック不要）。以下の配列形式で返してください:
+[{"title":"具体的なサブアイデア名","description":"具体的アクションと期待効果","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High"}]`,
+      };
+
+      const raw = proMode
+        ? await callAIWithKey(apiKey.trim(), modelId, [systemMsg, userMsg], CHAT_MAX_TOKENS)
+        : await callAI(modelId, [systemMsg, userMsg], CHAT_MAX_TOKENS);
+
+      // JSON配列を抽出・パース
+      const jsonMatch = raw.match(/\[[\s\S]*\]/);
+      if (!jsonMatch) throw new Error('AIが有効なJSONを返しませんでした');
+      const subIdeas = JSON.parse(jsonMatch[0]) as Idea[];
+      
+      setResults(p => {
+        if (!p) return p;
+        const nextIdeas = [...p.ideas];
+        nextIdeas[ideaIndex] = { ...nextIdeas[ideaIndex], subIdeas };
+        return { ...p, ideas: nextIdeas };
+      });
+    } catch (e: unknown) {
+      setError(`カード深掘り失敗: ${e instanceof Error ? e.message : String(e)}`);
+    } finally {
+      setDrillingDownId(null);
+    }
+  }, [results, modelId]);
+
   return {
     modelId,
     setModelId,
@@ -449,8 +514,10 @@ ${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}
     setReviewText,
     refining,
     diving,
+    drillingDownId,
     generate,
     refine,
-    deepDive
+    deepDive,
+    drillDownIdea
   };
 };
