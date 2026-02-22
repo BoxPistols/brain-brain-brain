@@ -11,6 +11,7 @@ import {
     Columns2,
     PanelRightClose,
     HelpCircle,
+    Navigation,
 } from 'lucide-react'
 import { ConnStatus } from '../../types'
 import { T } from '../../constants/theme'
@@ -28,6 +29,7 @@ interface HeaderBarProps {
     isDark: boolean
     onToggleTheme: () => void
     onShowHelp: () => void
+    onStartTour: () => void
     onShowLogs: () => void
     showCfg: boolean
     onToggleCfg: () => void
@@ -44,6 +46,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     isDark,
     onToggleTheme,
     onShowHelp,
+    onStartTour,
     onShowLogs,
     showCfg,
     onToggleCfg,
@@ -120,6 +123,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                         className='flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-medium bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700/40 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition cursor-pointer'
                         title='サンプルデータを投入'
                         aria-label='Seedデータ選択'
+                        data-tour='seed'
                     >
                         <FlaskConical className='w-4 h-4' />
                         Seed
@@ -173,6 +177,14 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                     {isDark ? <Sun className='w-4 h-4' /> : <Moon className='w-4 h-4' />}
                 </button>
                 <button
+                    onClick={onStartTour}
+                    className={`p-2 rounded-lg cursor-pointer ${T.btnGhost} transition-colors`}
+                    title='ガイドツアーを開始'
+                    aria-label='ガイドツアーを開始'
+                >
+                    <Navigation className='w-4 h-4' />
+                </button>
+                <button
                     onClick={onShowHelp}
                     className={`p-2 rounded-lg cursor-pointer ${T.btnGhost} transition-colors`}
                     title='使い方ガイドを開く'
@@ -193,6 +205,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                     className={`p-2 rounded-lg cursor-pointer transition-colors ${showCfg ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 text-blue-600 dark:text-blue-400' : T.btnGhost} border`}
                     title={showCfg ? '設定パネルを閉じる' : '設定パネルを開く'}
                     aria-label={showCfg ? '設定パネルを閉じる' : '設定パネルを開く'}
+                    data-tour='settings'
                 >
                     <Settings className='w-4 h-4' />
                 </button>

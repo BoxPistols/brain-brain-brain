@@ -164,7 +164,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                         自動
                     </span>
                 </div>
-                <div>
+                <div data-tour='product-service'>
                     <label htmlFor='productService' className={`block text-xs font-medium ${T.t2} mb-1`}>
                         プロダクト / サービス *
                     </label>
@@ -202,7 +202,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
             </div>
 
             {/* Session type */}
-            <div className='mb-3'>
+            <div className='mb-3' data-tour='session-type'>
                 <label htmlFor='sessionType' className={`block text-xs font-medium ${T.t2} mb-1`}>
                     セッションタイプ
                 </label>
@@ -248,7 +248,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
             {/* Goals + Depth */}
             <div className='grid grid-cols-1 md:grid-cols-3 gap-3 mb-3'>
-                <div className='md:col-span-2'>
+                <div className='md:col-span-2' data-tour='team-goals'>
                     <label htmlFor='teamGoals' className={`block text-xs font-medium ${T.t2} mb-1`}>
                         チーム目標 *
                     </label>
@@ -306,7 +306,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                         )}
                     </div>
                 </div>
-                <div>
+                <div data-tour='depth'>
                     <label
                         className={`block text-xs font-medium ${T.t2} mb-1 flex items-center gap-1`}
                     >
