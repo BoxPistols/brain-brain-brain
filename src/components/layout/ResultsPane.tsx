@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
 import {
     Target,
-    Sparkles,
     RefreshCw,
     Search,
     MessageSquarePlus,
     ChevronRight,
-    AlertCircle,
     AlertTriangle,
     Eye,
     Download,
@@ -15,8 +13,9 @@ import {
     Printer,
     Presentation,
     ChevronDown,
+    Loader2,
 } from 'lucide-react'
-import { AIResults } from '../../types'
+import { AIResults, Idea } from '../../types'
 import { T } from '../../constants/theme'
 import { ResultCard } from '../results/ResultCard'
 import { RichText } from '../results/RichText'
@@ -44,13 +43,38 @@ interface ResultsPaneProps {
     drillingDownId?: string | null
 }
 
+const LoadingSkeleton = () => (
+    <div className='space-y-4 animate-pulse'>
+        <div className={`${T.card} p-5 space-y-3`}>
+            <div className='h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4' />
+            <div className='h-3 bg-slate-200 dark:bg-slate-700 rounded w-full' />
+            <div className='h-3 bg-slate-200 dark:bg-slate-700 rounded w-5/6' />
+        </div>
+        <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3'>
+            {[1, 2, 3].map(i => (
+                <div key={i} className={`${T.card} p-4 space-y-2`}>
+                    <div className='h-4 bg-slate-200 dark:bg-slate-700 rounded w-2/3' />
+                    <div className='h-3 bg-slate-200 dark:bg-slate-700 rounded w-full' />
+                    <div className='h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/2' />
+                </div>
+            ))}
+        </div>
+    </div>
+)
+
+const EmptyState = () => (
+    <div className='flex flex-col items-center justify-center py-20 text-center'>
+        <Loader2 className='w-8 h-8 text-slate-300 dark:text-slate-600 mb-3' />
+        <p className={`text-sm ${T.t3}`}>左のフォームに情報を入力して「戦略アイデア生成」を実行</p>
+    </div>
+)
+
 const AnalysisBlock: React.FC<{
     results: AIResults;
-    isSeedData?: boolean;
     onDrillDown?: (idea: Idea, index: number) => void;
     drillingDownId?: string | null;
     index?: number;
-}> = ({ results, isSeedData, onDrillDown, drillingDownId, index = 0 }) => (
+}> = ({ results, onDrillDown, drillingDownId, index = 0 }) => (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
         <div className={`${T.card} p-5`}>
             {results.keyIssue && (
@@ -174,10 +198,9 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
 
             {/* Initial Results Block */}
             <section className="space-y-4">
-                <AnalysisBlock 
-                    results={results} 
-                    isSeedData={isSeedData} 
-                    onDrillDown={onDrillDown} 
+                <AnalysisBlock
+                    results={results}
+                    onDrillDown={onDrillDown}
                     drillingDownId={drillingDownId}
                     index={0}
                 />
@@ -261,6 +284,9 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
                                 <div className='h-full bg-blue-500 rounded-full transition-all duration-300' style={{ width: `${diveProgress}%` }} />
                             </div>
                         </div>
+                    )}
+                    {error && !diving && (
+                        <p className='mt-2 text-xs text-red-600 dark:text-red-400'>{error}</p>
                     )}
                 </div>
 

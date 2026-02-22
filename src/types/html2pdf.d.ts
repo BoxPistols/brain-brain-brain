@@ -7,7 +7,7 @@ declare module 'html2pdf.js' {
     pagebreak?: Record<string, unknown>
   }
   interface Html2PdfInstance {
-    set(opt: Html2PdfOptions): Html2PdfInstance
+    set(opt: Record<string, unknown>): Html2PdfInstance
     from(el: HTMLElement | string): Html2PdfInstance
     save(): Promise<void>
   }

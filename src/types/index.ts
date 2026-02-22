@@ -34,6 +34,7 @@ export interface Idea {
   effort: Effort;
   impact: Impact;
   feasibility?: FeasibilityScore;
+  subIdeas?: Idea[];
 }
 
 export interface DeepDiveEntry {
