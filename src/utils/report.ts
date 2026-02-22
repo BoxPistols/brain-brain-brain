@@ -126,3 +126,128 @@ export const dlFile = (c: string, fn: string, mime: string) => {
   Object.assign(document.createElement('a'), { href: u, download: fn }).click();
   URL.revokeObjectURL(u);
 };
+
+/** Markdown → HTML 簡易変換 */
+const mdToHtml = (md: string): string =>
+  md
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>')
+    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+    .replace(/\n{2,}/g, '<br/><br/>')
+    .replace(/^---$/gm, '<hr/>')
+    .replace(/\|(.+)\|\n\|[-| ]+\|\n/gm, (_, header: string) => {
+      const cols = header.split('|').map((c: string) => `<th>${c.trim()}</th>`).join('');
+      return `<table><thead><tr>${cols}</tr></thead><tbody>`;
+    })
+    .replace(/\|(.+)\|/gm, (_, row: string) => {
+      const cols = row.split('|').map((c: string) => `<td>${c.trim()}</td>`).join('');
+      return `<tr>${cols}</tr>`;
+    })
+    .replace(/(<tr>.*<\/tr>\n?)(?=<[^t]|$)/g, '$&</tbody></table>');
+
+/** PDF ダウンロード（html2pdf.js による生成） */
+export const downloadPdf = async (md: string, pn: string) => {
+  const { default: html2pdf } = await import('html2pdf.js');
+  const html = mdToHtml(md);
+  const container = document.createElement('div');
+  container.innerHTML = html;
+  container.style.cssText = 'font-family:-apple-system,"Hiragino Sans",sans-serif;font-size:12px;line-height:1.7;color:#1a1a1a;max-width:700px;padding:20px';
+  container.querySelectorAll('h1').forEach(el => { el.style.cssText = 'font-size:18px;margin:16px 0 8px;border-bottom:2px solid #2563eb;padding-bottom:4px' });
+  container.querySelectorAll('h2').forEach(el => { el.style.cssText = 'font-size:15px;margin:14px 0 6px;color:#1e40af' });
+  container.querySelectorAll('h3').forEach(el => { el.style.cssText = 'font-size:13px;margin:10px 0 4px;color:#334155' });
+  container.querySelectorAll('table').forEach(el => { el.style.cssText = 'border-collapse:collapse;width:100%;margin:8px 0;font-size:11px' });
+  container.querySelectorAll('th,td').forEach(el => { (el as HTMLElement).style.cssText = 'border:1px solid #cbd5e1;padding:4px 8px;text-align:left' });
+  container.querySelectorAll('th').forEach(el => { el.style.cssText += ';background:#f1f5f9;font-weight:600' });
+  container.querySelectorAll('blockquote').forEach(el => { el.style.cssText = 'border-left:3px solid #93c5fd;padding-left:12px;margin:8px 0;color:#475569' });
+
+  await html2pdf().set({
+    margin: [10, 10, 10, 10],
+    filename: `${pn}.pdf`,
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+  }).from(container).save();
+};
+
+/** PPTX エクスポート */
+export const downloadPptx = async (
+  pn: string,
+  form: BrainstormForm,
+  results: AIResults,
+  provN: string,
+  dep: number,
+) => {
+  const PptxGenJS = (await import('pptxgenjs')).default;
+  const pptx = new PptxGenJS();
+  pptx.layout = 'LAYOUT_16x9';
+  pptx.author = 'AI Strategic Brainstorm';
+  pptx.title = pn;
+
+  const ses = form.sessionType === 'other' ? form.customSession : TYPES[form.sessionType];
+  const BLUE = '2563EB';
+  const DARK = '1E293B';
+  const GRAY = '64748B';
+
+  // --- タイトルスライド ---
+  const title = pptx.addSlide();
+  title.addText(pn, { x: 0.8, y: 1.5, w: 8.4, h: 1.2, fontSize: 28, bold: true, color: DARK });
+  title.addText([
+    { text: `${form.productService}  |  ${ses}  |  ${PRO_DEPTH[dep]?.label ?? `Lv${dep}`}`, options: { fontSize: 14, color: GRAY } },
+  ], { x: 0.8, y: 2.8, w: 8.4 });
+  title.addText(`${provN}  |  ${new Date().toLocaleString('ja-JP')}`, { x: 0.8, y: 4.2, w: 8.4, fontSize: 10, color: GRAY });
+
+  // --- 目標 & 課題 ---
+  const goalSlide = pptx.addSlide();
+  goalSlide.addText('目標 & 課題', { x: 0.5, y: 0.3, w: 9, fontSize: 20, bold: true, color: BLUE });
+  goalSlide.addText(form.teamGoals, { x: 0.5, y: 1.0, w: 9, h: 1.5, fontSize: 13, color: DARK, valign: 'top' });
+  const issueTexts = form.issues.filter(x => x.text.trim()).map(x => x.text + (x.detail ? `: ${x.detail}` : ''));
+  if (issueTexts.length) {
+    goalSlide.addText(issueTexts.map(t => ({ text: t, options: { bullet: true, fontSize: 12, color: DARK, breakLine: true } })), { x: 0.5, y: 2.8, w: 9, h: 2.2, valign: 'top' });
+  }
+
+  // --- 状況分析 ---
+  const underSlide = pptx.addSlide();
+  underSlide.addText('AI 状況分析', { x: 0.5, y: 0.3, w: 9, fontSize: 20, bold: true, color: BLUE });
+  const underText = results.understanding.length > 800 ? results.understanding.slice(0, 800) + '…' : results.understanding;
+  underSlide.addText(underText, { x: 0.5, y: 1.0, w: 9, h: 4.0, fontSize: 11, color: DARK, valign: 'top' });
+
+  // --- アイデア一覧テーブル ---
+  const tableSlide = pptx.addSlide();
+  tableSlide.addText('戦略アイデア一覧', { x: 0.5, y: 0.3, w: 9, fontSize: 20, bold: true, color: BLUE });
+  const hasFeas = results.ideas.some(d => d.feasibility);
+  const headerRow = ['#', 'タイトル', '優先度', '工数', 'インパクト'];
+  if (hasFeas) headerRow.push('実現可能性');
+  const rows = results.ideas.map((d, i) => {
+    const row = [`${i + 1}`, d.title, d.priority, d.effort, d.impact];
+    if (hasFeas) row.push(d.feasibility ? `${d.feasibility.total}/100` : '-');
+    return row;
+  });
+  tableSlide.addTable([headerRow, ...rows], {
+    x: 0.3, y: 1.0, w: 9.4,
+    fontSize: 10,
+    border: { type: 'solid', pt: 0.5, color: 'CBD5E1' },
+    colW: hasFeas ? [0.4, 3.5, 1.1, 1.1, 1.1, 1.2] : [0.5, 4.5, 1.3, 1.3, 1.4],
+    autoPage: true,
+    autoPageRepeatHeader: true,
+    rowH: 0.4,
+  });
+
+  // --- 各アイデア詳細 ---
+  results.ideas.forEach((d, i) => {
+    const slide = pptx.addSlide();
+    slide.addText(`${i + 1}. ${d.title}`, { x: 0.5, y: 0.3, w: 9, fontSize: 18, bold: true, color: DARK });
+    const desc = d.description.length > 600 ? d.description.slice(0, 600) + '…' : d.description;
+    slide.addText(desc, { x: 0.5, y: 1.0, w: 9, h: 2.5, fontSize: 11, color: DARK, valign: 'top' });
+    const meta = `優先度: ${d.priority}  |  工数: ${d.effort}  |  インパクト: ${d.impact}`;
+    slide.addText(meta, { x: 0.5, y: 3.8, w: 9, fontSize: 10, color: GRAY });
+    if (d.feasibility) {
+      slide.addText(`実現可能性: ${d.feasibility.total}/100  (リソース: ${d.feasibility.resource} / 技術: ${d.feasibility.techDifficulty} / 組織: ${d.feasibility.orgAcceptance})`, { x: 0.5, y: 4.2, w: 9, fontSize: 10, color: GRAY });
+    }
+  });
+
+  await pptx.writeFile({ fileName: `${pn}.pptx` });
+};

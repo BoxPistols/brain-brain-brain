@@ -13,6 +13,7 @@ import {
     FileText,
     FileSpreadsheet,
     Printer,
+    Presentation,
     ChevronDown,
 } from 'lucide-react'
 import { AIResults } from '../../types'
@@ -20,7 +21,7 @@ import { T } from '../../constants/theme'
 import { ResultCard } from '../results/ResultCard'
 import { RichText } from '../results/RichText'
 
-type DlFormat = 'md' | 'txt' | 'csv' | 'pdf'
+type DlFormat = 'md' | 'txt' | 'csv' | 'pdf' | 'pdfDl' | 'pptx'
 
 interface ResultsPaneProps {
     loading: boolean
@@ -123,7 +124,9 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
         { fmt: 'md', label: 'Markdown (.md)', icon: <FileText className='w-3.5 h-3.5 text-blue-500' /> },
         { fmt: 'txt', label: 'テキスト (.txt)', icon: <FileText className='w-3.5 h-3.5 text-slate-500' /> },
         { fmt: 'csv', label: 'CSV (.csv)', icon: <FileSpreadsheet className='w-3.5 h-3.5 text-green-500' /> },
-        { fmt: 'pdf', label: 'PDF / 印刷', icon: <Printer className='w-3.5 h-3.5 text-rose-500' /> },
+        { fmt: 'pdfDl', label: 'PDF (.pdf)', icon: <Download className='w-3.5 h-3.5 text-rose-500' /> },
+        { fmt: 'pptx', label: 'PowerPoint (.pptx)', icon: <Presentation className='w-3.5 h-3.5 text-orange-500' /> },
+        { fmt: 'pdf', label: '印刷プレビュー', icon: <Printer className='w-3.5 h-3.5 text-slate-400' /> },
     ]
 
     return (

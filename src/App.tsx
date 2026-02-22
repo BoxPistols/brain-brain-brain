@@ -19,7 +19,7 @@ import { AppHelpModal } from './components/modals/AppHelpModal'
 import { SupportWidget } from './components/support/SupportWidget'
 
 // Utils & Constants
-import { buildReportMd, buildReportCsv, mdToTxt, printReport, dlFile } from './utils/report'
+import { buildReportMd, buildReportCsv, mdToTxt, printReport, dlFile, downloadPdf, downloadPptx } from './utils/report'
 import { T } from './constants/theme'
 import { MODELS, isProMode } from './constants/models'
 import { FREE_DEPTH, PRO_DEPTH } from './constants/prompts'
@@ -304,6 +304,10 @@ export default function App() {
                                         dlFile(mdToTxt(report), `${usedName}_${ts}.txt`, 'text/plain'); break
                                     case 'csv':
                                         dlFile(buildReportCsv(usedName, form, results, cm.label, dep), `${usedName}_${ts}.csv`, 'text/csv'); break
+                                    case 'pdfDl':
+                                        downloadPdf(report, `${usedName}_${ts}`); break
+                                    case 'pptx':
+                                        downloadPptx(usedName, form, results, cm.label, dep); break
                                     case 'pdf':
                                         printReport(mdToTxt(report), usedName); break
                                 }
