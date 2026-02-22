@@ -21,8 +21,8 @@ export const useAI = () => {
   const runConnTest = useCallback(async (apiKey = '') => {
     setConnStatus({ status: 'testing', msg: '' });
     try {
-      const model = await testConn(modelId, apiKey);
-      setConnStatus({ status: 'ok', msg: `OK: ${model}` });
+      await testConn(modelId, apiKey);
+      setConnStatus({ status: 'ok', msg: 'OK' });
     } catch (e: unknown) {
       setConnStatus({ status: 'error', msg: e instanceof Error ? e.message : String(e) });
     }
