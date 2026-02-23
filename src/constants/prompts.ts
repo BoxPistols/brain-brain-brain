@@ -90,17 +90,18 @@ export function getSubIssueSuggestions(parentText: string): string[] {
 
 // Free mode (no API key) — limited tiers
 export const FREE_DEPTH: Record<number, { label: string; desc: string; ideas: number; wait: string; maxTokens: number }> = {
-  1: { label: 'Lite',     desc: '速報',    ideas: 3, wait: '〜1分',  maxTokens: 4096  },
-  2: { label: 'Standard', desc: '標準',    ideas: 5, wait: '1-3分',  maxTokens: 8000 },
-  3: { label: 'Deep',     desc: '詳細',    ideas: 7, wait: '3-5分', maxTokens: 8000 },
+  1: { label: 'Lite',     desc: '速報',    ideas: 3, wait: '〜1分',  maxTokens: 6000  },
+  2: { label: 'Standard', desc: '標準',    ideas: 5, wait: '1-3分',  maxTokens: 12000 },
+  3: { label: 'Deep',     desc: '詳細',    ideas: 7, wait: '3-5分', maxTokens: 16000 },
 };
 
 // Pro mode (user's own API key) — full tiers
+// gpt-4o-mini 出力 $0.60/1M tokens 基準: 32,000 tokens ≈ 約3円
 export const PRO_DEPTH: Record<number, { label: string; desc: string; ideas: number; wait: string; maxTokens: number }> = {
-  1: { label: 'Quick',     desc: '概要',       ideas: 3,  wait: '〜5分',   maxTokens: 1500 },
-  2: { label: 'Standard',  desc: '標準',       ideas: 6,  wait: '〜15分',  maxTokens: 3000 },
-  3: { label: 'Deep',      desc: '詳細',       ideas: 8,  wait: '〜30分',  maxTokens: 5000 },
-  4: { label: 'High-Class', desc: 'トップティア', ideas: 10, wait: '30分+',   maxTokens: 8000 },
+  1: { label: 'Quick',     desc: '概要',       ideas: 3,  wait: '〜5分',   maxTokens: 8000 },
+  2: { label: 'Standard',  desc: '標準',       ideas: 6,  wait: '〜15分',  maxTokens: 16000 },
+  3: { label: 'Deep',      desc: '詳細',       ideas: 8,  wait: '〜30分',  maxTokens: 24000 },
+  4: { label: 'High-Class', desc: 'トップティア', ideas: 10, wait: '30分+',   maxTokens: 32000 },
 };
 
 export const EXAMPLE_PRODUCTS: Record<string, string[]> = {

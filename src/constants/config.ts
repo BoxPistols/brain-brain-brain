@@ -8,4 +8,4 @@ export const MAX_HIST = 10;
 export const SAVE_DEBOUNCE_MS = 300;
 
 /** refine / deepDive のデフォルトトークン上限 */
-export const CHAT_MAX_TOKENS = 4096;
+export const CHAT_MAX_TOKENS = 12000;
