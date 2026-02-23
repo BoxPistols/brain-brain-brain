@@ -37,7 +37,7 @@ export const MODEL_COSTS: Record<string, { inputPerM: number; outputPerM: number
 export interface APICallResult {
   content: string;
   usage: { prompt_tokens: number; completion_tokens: number } | null;
-  rateLimit?: { remaining: number; limit: number };
+  rateLimit?: { remaining: number; limit: number; resetAt?: number };
 }
 
 export const testConn = async (modelId: string, apiKey = ''): Promise<string> => {
@@ -80,8 +80,9 @@ const callAPI = async (modelId: string, msgs: ChatMessage[], maxTokens: number, 
   // rate limit ヘッダー取得（Free mode のみサーバーが返す）
   const rlRemaining = r.headers.get('X-RateLimit-Remaining');
   const rlLimit = r.headers.get('X-RateLimit-Limit');
+  const rlReset = r.headers.get('X-RateLimit-Reset');
   const rateLimit = rlRemaining != null && rlLimit != null
-    ? { remaining: Number(rlRemaining), limit: Number(rlLimit) }
+    ? { remaining: Number(rlRemaining), limit: Number(rlLimit), ...(rlReset ? { resetAt: Number(rlReset) } : {}) }
     : undefined;
 
   return {

@@ -34,7 +34,7 @@ interface HeaderBarProps {
     showCfg: boolean
     onToggleCfg: () => void
     lastUsedModel?: string | null
-    freeRemaining?: number | null
+    freeRemaining?: { remaining: number; limit: number; resetAt?: number } | null
 }
 
 export const HeaderBar: React.FC<HeaderBarProps> = ({
@@ -108,9 +108,23 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                     {modelLabel === 'Auto' && lastUsedModel && (
                         <span className={`${T.t3} text-[10px]`}>→ {lastUsedModel.replace('gpt-', '')}</span>
                     )}
-                    {!proMode && freeRemaining != null && (
-                        <span className={`${T.t3} text-[10px]`}>{freeRemaining}回</span>
-                    )}
+                    {!proMode && freeRemaining && (() => {
+                        const used = freeRemaining.limit - freeRemaining.remaining
+                        const resetLabel = freeRemaining.resetAt
+                            ? (() => {
+                                const diffMs = freeRemaining.resetAt! - Date.now()
+                                if (diffMs <= 0) return 'まもなくリセット'
+                                const h = Math.floor(diffMs / 3_600_000)
+                                const m = Math.ceil((diffMs % 3_600_000) / 60_000)
+                                return h > 0 ? `${h}時間${m}分後リセット` : `${m}分後リセット`
+                            })()
+                            : null
+                        return (
+                            <span className={`${T.t3} text-[10px]`} title={resetLabel || undefined}>
+                                {used}/{freeRemaining.limit}件{resetLabel && `（${resetLabel}）`}
+                            </span>
+                        )
+                    })()}
                     {connStatus.status === 'ok' && (
                         <span className='w-1.5 h-1.5 rounded-full bg-emerald-500' title={connStatus.msg} role='status' aria-label='接続正常' />
                     )}

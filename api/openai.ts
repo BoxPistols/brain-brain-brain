@@ -79,6 +79,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const entry = rateMap.get(ip);
       res.setHeader('X-RateLimit-Remaining', String(RATE_LIMIT - (entry?.count || 0)));
       res.setHeader('X-RateLimit-Limit', String(RATE_LIMIT));
+      if (entry) {
+        res.setHeader('X-RateLimit-Reset', String(entry.resetAt));
+      }
     }
 
     return res.status(200).json(data);

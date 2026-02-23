@@ -10,7 +10,6 @@ interface Props {
 }
 
 const emptyComp = (): CompetitorEntry => ({ name: '', url: '', note: '' })
-const emptyKpi = (): KpiEntry => ({ label: '', value: '' })
 
 export const CompetitiveIntelSection: React.FC<Props> = ({ form, setForm }) => {
     const [open, setOpen] = useState(

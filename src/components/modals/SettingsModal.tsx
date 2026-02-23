@@ -16,7 +16,7 @@ interface SettingsModalProps {
     setApiKey: (key: string) => void
     sessionCost?: number
     lastUsedModel?: string | null
-    freeRemaining?: number | null
+    freeRemaining?: { remaining: number; limit: number; resetAt?: number } | null
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -57,8 +57,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             <>
                                 <span className='w-1.5 h-1.5 rounded-full bg-slate-400' />
                                 フリーモード
-                                {freeRemaining != null && (
-                                    <span className='ml-0.5 opacity-70'>（残り{freeRemaining}回）</span>
+                                {freeRemaining && (
+                                    <span className='ml-0.5 opacity-70'>
+                                        （{freeRemaining.limit - freeRemaining.remaining}/{freeRemaining.limit}件使用済み）
+                                    </span>
                                 )}
                             </>
                         )}

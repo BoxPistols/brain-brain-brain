@@ -47,7 +47,7 @@ export const useAI = () => {
   const [costWarning, setCostWarning] = useState<BudgetWarning | null>(null);
   const [sessionCost, setSessionCost] = useState(0);
   const [lastUsedModel, setLastUsedModel] = useState<string | null>(null);
-  const [freeRemaining, setFreeRemaining] = useState<number | null>(null);
+  const [freeRemaining, setFreeRemaining] = useState<{ remaining: number; limit: number; resetAt?: number } | null>(null);
 
   const runConnTest = useCallback(async (apiKey = '') => {
     setConnStatus({ status: 'testing', msg: '' });
@@ -88,7 +88,7 @@ export const useAI = () => {
 
     // Free mode: rate limit 残り回数更新
     if (result.rateLimit != null) {
-      setFreeRemaining(result.rateLimit.remaining);
+      setFreeRemaining(result.rateLimit);
     }
 
     setLastUsedModel(resolvedId);
