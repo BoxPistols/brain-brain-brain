@@ -11,6 +11,17 @@ export interface Issue {
 
 export type IssueTemplate = Issue;
 
+export interface CompetitorEntry {
+  name: string;
+  url: string;
+  note: string;
+}
+
+export interface KpiEntry {
+  label: string;
+  value: string;
+}
+
 export interface BrainstormForm {
   projectName: string;
   productService: string;
@@ -18,6 +29,9 @@ export interface BrainstormForm {
   sessionType: SessionType;
   customSession: string;
   issues: Issue[];
+  serviceUrl: string;
+  competitors: CompetitorEntry[];
+  kpis: KpiEntry[];
 }
 
 export interface FeasibilityScore {

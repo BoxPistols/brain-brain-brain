@@ -331,6 +331,20 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
                     </div>
                 </div>
             </div>
+            {/* フッターDLバー */}
+            {onDownload && (
+                <div className='flex items-center justify-end gap-2 pt-4 mt-4 border-t border-slate-200 dark:border-slate-800'>
+                    {onShowPreview && (
+                        <button onClick={onShowPreview} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${T.btnGhost} cursor-pointer`}>
+                            <Eye className='w-3.5 h-3.5' /> プレビュー
+                        </button>
+                    )}
+                    <button onClick={() => setShowDlMenu(s => !s)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer ${T.btnAccent}`}>
+                        <Download className='w-3.5 h-3.5' /> 結果をダウンロード
+                    </button>
+                </div>
+            )}
+
             <div ref={endRef} />
         </div>
     )

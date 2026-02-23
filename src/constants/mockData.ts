@@ -16,6 +16,20 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: '直接採用・競合増加で差別化が困難', detail: 'LinkedIn等での直接採用が3年で2倍増、大手との価格競争に巻き込まれている', sub: ['差別化ポイントが「担当者の質」のみで再現性・スケールなし', 'フィー値下げ圧力でLTVが低下'] },
         { text: 'CA業務の属人化とスカウト効率の低さ', detail: 'スカウト返信率2〜3%、CA工数の40%をスカウト文作成が占め、ノウハウが個人依存', sub: [] },
       ],
+      serviceUrl: 'https://example-agent.co.jp',
+      competitors: [
+        { name: 'レバテックキャリア', url: 'https://career.levtech.jp', note: 'ITエンジニア特化の最大手' },
+        { name: 'Geekly', url: 'https://www.geekly.co.jp', note: 'IT・Web業界特化・ゲーム領域に強い' },
+      ],
+      kpis: [
+        { label: 'CA一人当たり月間成約件数', value: '1.7件' },
+        { label: 'スカウト返信率', value: '2.8%' },
+        { label: '内定承諾率', value: '58%' },
+        { label: '平均成約単価（フィー）', value: '105万円' },
+      ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `IT人材紹介市場は構造的な転換期にある。直接採用・大手統合・AIマッチングの3つの圧力が同時に進行しており、「量×汎用」モデルの賞味期限が切れつつある。ハイスキルエンジニアは従来のエージェントモデルを嫌い、コミュニティや同業者の推薦を信頼する傾向が強まっている。差別化の軸は「エンジニアに信頼されるCA」から「エンジニアに信頼されるブランド・コミュニティ」への転換が必要。CA業務のAI化は生産性向上と同時にCA自身をより高付加価値な仕事（信頼構築・交渉）に集中させる基盤となる。`,
@@ -27,6 +41,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'CA業務標準化×ナレッジDB構築', description: 'トップCAの面談ヒアリング・求人マッチング・クロージング手法を動画+テキストでドキュメント化。NotionベースのナレッジDBと月次ケーススタディ共有会で平均CAの成約率をトップCA比+50%に引き上げる。新人立ち上がり期間を6ヶ月→3ヶ月に短縮。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '企業クライアントのサクセス設計', description: '採用後3ヶ月・6ヶ月のフォローアップを標準化し、入社者の定着率データを企業に提供。「採用して終わり」から「採用後の定着支援」に価値を拡張することで、リピート率と単価の両立を図る。定着率データはEEATの強化にも活用可能。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -43,6 +60,16 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: 'スカウト効率の低さ', detail: 'スカウト返信率2〜3%・CA工数の40%を占める・テンプレート文で個別最適化なし', sub: [] },
         { text: 'CA業務の属人化', detail: 'トップCAのノウハウが個人依存で、退職リスクと新人育成遅延が慢性的に発生', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [
+        { label: 'スカウト返信率', value: '2.3%' },
+        { label: 'CRM活用率', value: '35%' },
+        { label: 'CA一人当たり月間面談数', value: '22件' },
+      ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `CA業務の非効率は「CRMをDBとして使っている」「スカウトを量でカバーしている」「ノウハウを共有していない」の3つの構造問題が重なっている。Salesforceはレコード管理ではなく行動自動化ツールとして使うことで、CA一人当たりの対応キャパシティを30〜50%拡大できる。AIスカウト文生成はCAの単純労働を削減し、高付加価値な面談・交渉に集中させる投資対効果が最も高い施策。`,
@@ -53,6 +80,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'CAナレッジDB×ケーススタディ標準化', description: 'トップCAの「最初の15分の質問設計」「年収交渉のトークスクリプト」「内定後の不安解消フロー」をNotion動画+テキストでドキュメント化。月次ケーススタディ共有会と組み合わせ、新人CA立ち上がり6ヶ月→3ヶ月を目標に設計。', priority: 'Medium', effort: 'Low', impact: 'High' },
         { title: 'JD（求人票）AI品質改善', description: '企業クライアントの既存JDをAIで分析し「エンジニアが離脱するポイント」を特定。技術スタック・開発環境・チーム構成・意思決定スピードなどエンジニアが重視する情報を追記するテンプレートを提供。JD品質向上で応募率・内定承諾率の改善を同時に図る。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -69,6 +99,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: 'EEAT不足・AIO未対応', detail: '外注ライター中心でE(経験)/E(専門性)が担保されておらずAI検索からの流入がほぼゼロ', sub: ['著者情報・一次情報が皆無', '構造化データ（FAQ Schema等）未整備'] },
         { text: 'ターゲットのメンタルモデル乖離', detail: '想定ユーザー（ハイスキルIT人材）と実来訪者（シニア・受け身層）が一致していない', sub: ['エンジニアの情報収集行動・意思決定フローの調査なし'] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `月間PV60万・記事3,500本でCV率0.3%は、量産SEOコンテンツが「転職に動かないユーザー」を大量に集めている構造的課題。人材紹介業界は市場縮小が続いており、旧来のSEO×量産モデルの費用対効果は今後さらに悪化する。AIO（AI Optimization）対応は生成AI検索エンジンからの流入を獲得する新チャネルであり、同時にEEAT強化はGoogleのHelpful Content Updateへの対応でもある。技術的なHTML構造改善（構造化データ・Core Web Vitals）は即効性があり、短期施策として優先度が高い。ターゲット再定義はSEO施策の前提条件であり、エンジニアのジョブ理論（JTBD）調査なしにコンテンツ戦略を立てても改善は見込めない。`,
@@ -80,6 +113,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'コンテンツアトリビューション計測基盤', description: 'GA4×Looker StudioでコンテンツごとのCV貢献度を可視化。「最終流入ページ」だけでなく「転職意向が上がった接点」をマルチタッチ計測し、ROIの高いコンテンツタイプを特定。量産継続か撤退かの意思決定基準を整備。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: 'AIOランディングページ新設', description: 'AI検索で想定される質問「エンジニア転職 [スキル名]」「[年収帯] エンジニア キャリア」に対応したQ&A形式のLPを20本新設。各LPにFAQ Schema・著者Schemaを実装し生成AI検索での引用を狙う。既存SEO資産を活用したリライト中心で開発コスト最小化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -95,6 +131,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: '応募数の不足', detail: '求人媒体依存度80%、自社チャネルからの応募がほぼゼロ', sub: ['技術ブログ・採用サイトが形骸化'] },
         { text: '内定辞退率の高さ', detail: '内定承諾率60%、競合オファーに負けるケースが多い', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `エンジニア採用は「選ばれる側」の競争。求人媒体依存からの脱却と、技術ブランドの構築が採用単価削減の本質的な解決策。内定辞退は候補者体験（CX）の設計不足。`,
@@ -105,6 +144,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'エンジニア向けイベント開催', description: '月1回の技術勉強会・ハッカソンで潜在候補者との接点を構築。イベント参加者の応募転換率は通常の5倍。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
         { title: '採用サイトのリニューアル', description: '技術スタック・開発文化・チーム紹介を中心にしたエンジニア特化の採用サイトに刷新。動画インタビュー+GitHub活動の可視化で透明性を担保。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -121,6 +163,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: 'CAC高騰', detail: 'CACが18ヶ月で2.4倍に増加、LTV/CAC=1.8（目標3.0）', sub: [] },
         { text: 'PMF検証未完', detail: 'セグメント別NPS：50名以下+12、51-200名+38', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       keyIssue: 'オンボーディング完走率42%が全チャーンの起点であり、LTV/CAC改善の最大レバー',
@@ -154,6 +199,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: '現場のデジタルリテラシー不足', detail: '平均年齢52歳、PC操作研修未実施', sub: [] },
         { text: 'データサイロ', detail: '生産・品質・在庫が別システムで横断分析不可', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `製造業DXの典型的なレガシー課題。段階的移行（ストラングラーフィグパターン）が必須で、一括刷新は操業リスクが高すぎる。現場リテラシー課題はChangeManagement設計が技術同様に重要。`,
@@ -165,6 +213,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'ERP並行稼働コスト削減', description: '移行期間中の並行稼働コストを最小化するため機能別停止スケジュールを設計。年間8,000万円→移行完了時ゼロのロードマップを明示。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
         { title: 'COE（デジタル推進室）設立', description: 'IT部門とは別にビジネス理解のあるDX推進室を設置。外部DXコンサル1名常駐で内製化を加速。2年で内製比率70%を目標。', priority: 'Low', effort: 'Medium', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -180,6 +231,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: '仮説検証未完', detail: 'PoC開始から4ヶ月、農家ヒアリング6件のみでPMF仮説未確定', sub: ['定量データ未取得', '意思決定者へのアクセス不足'] },
         { text: '組織的抵抗', detail: '既存農業資材事業部との競合懸念でリソース確保困難', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `大手食品メーカーの新規事業PoCは「組織vs市場」の二重課題。農業IoT市場は2030年に国内3,000億円見込みだが、既存事業との利害対立と社内承認プロセスが最大ボトルネック。PoC4ヶ月・ヒアリング6件は意思決定に必要な証拠として不十分であり、3C+リーンキャンバスで仮説を構造化し残り2ヶ月で定量検証に集中する必要がある。`,
@@ -191,6 +245,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '競合PoC比較分析', description: 'クボタ・ヤンマー・スタートアップのIoTソリューションをベンチマーク分析し差別化ポイントを特定。「食品メーカー×農家」の川上統合モデルを唯一の競合優位として設計。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
         { title: '投資回収シナリオ3案作成', description: 'Bull/Base/Bearの3シナリオでROI試算。投資回収5年以内・市場シェア3%のBaseシナリオを経営会議提出用に整備。Go/No-Goの判断基準を定量化。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -206,6 +263,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: 'CAC高騰', detail: '6ヶ月でCACが1.8倍に増加、ROASが目標の60%', sub: ['有料広告CPAが上限を突破', 'オーガニック流入が停滞'] },
         { text: '競合ポジショニング不明確', detail: '営業が「他社との違い」を説明できない', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `ARR 3,000万円のBtoB SaaSはPMF後のGTMスケールが最重要フェーズ。CAC高騰はチャネルミックスの問題ではなくICP（理想顧客プロファイル）の不明確さが根本原因。ポジショニング不明確は製品機能ではなく「誰の・どの課題を解決するか」の再定義が必要。`,
@@ -217,6 +277,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'パートナー販売チャネル開拓', description: 'SIer・コンサル10社とのリセラー契約でCAC/2を実現。紹介フィー設計とパートナー向けトレーニング資料を整備し間接販売比率30%を目標。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
         { title: 'プロダクトレッドGrowth要素追加', description: 'フリートライアルの活用データを分析し「アハモーメント」を特定。オンボーディングフローを最適化しトライアル→有料転換率を現状12%→20%へ。', priority: 'Low', effort: 'Medium', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -232,6 +295,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: 'プロセス非効率', detail: '手作業工数が全体の45%、入力エラー率3.2%', sub: ['Excel管理で属人化', 'ダブルチェック工数が月200時間'] },
         { text: '拠点間データ分断', detail: '12拠点の在庫・配送データがリアルタイム共有されない', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `食品物流の典型的なオペ課題。Excel依存・手作業による属人化が根本原因で、デジタル化の前にプロセス標準化が必須。12拠点のデータ分断はWMS/TMSのSaaS化で解決可能。投資対効果はコスト削減額で測定しやすく、ROI提示が経営承認の鍵。`,
@@ -242,6 +308,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '配送ルート最適化AI', description: 'AIルート最適化ツール（Hacobu MOVO）を12拠点に展開。燃料費15%・残業時間20%削減を実現。ドライバー不足問題の緩和にも寄与。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '品質管理デジタル化', description: 'IoT温度センサー+QRコードで冷凍品の温度履歴を自動記録。不良品発生時の原因追跡を4時間→15分に短縮。食品安全基準への対応もトレーサビリティ強化で同時解決。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -257,6 +326,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: '採用率低下', detail: '新機能の60%が独自実装でDSを不使用', sub: ['ドキュメント不足で使い方不明', 'コンポーネントAPIが不明確'] },
         { text: 'マルチプロダクト展開困難', detail: 'トークン設計がシングルブランド前提で4本目のプロダクトに対応不可', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `DSの採用率低下は「ドキュメントの質」と「開発者体験（DX）」の問題。コンポーネント数の問題ではなく、既存コンポーネントの発見性・理解容易性・拡張性が不足している。マルチブランド対応はトークンアーキテクチャの再設計が必要で、既存コンポーネントへの影響を最小化したDesign Token 2.0移行計画が必要。`,
@@ -267,6 +339,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'a11y自動テスト統合', description: 'axe-core+Storybookでa11yテストをCI/CDに組み込み。WCAG AA準拠チェックを自動化し新規コンポーネントのa11y違反を即座に検出。現状40%→100%の達成ロードマップ策定。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: 'DS採用インセンティブ制度', description: 'プロダクトチームのスプリントKPIにDS採用率を追加。「DS使用＝開発速度2倍」のデータを実証し自発的採用を促進。DS非採用のカスタム実装にはデザインレビューの承認を必須化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -282,6 +357,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: '市場優先度が未確定', detail: 'ASEAN6ヶ国のどこから参入すべきか判断基準なし', sub: ['市場規模・競合・法規制の情報不足', '現地パートナー候補なし'] },
         { text: 'ローカライゼーションコスト', detail: '多言語対応・現地法規制対応で推定開発コスト3,000万円超', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `国内ARR 5億円はASEAN展開の資金的裏付けとして十分。優先市場はシンガポール（ビジネス環境・英語対応）→タイ（製造業集積）→ベトナム（成長率）の順が典型的なJapanese SaaSの参入パターン。ローカライゼーション3,000万円超はパートナー経由のWhiteLabelモデルで初期投資を1/3に圧縮可能。PMF確認前の全市場同時参入はリソース分散で失敗リスクが高い。`,
@@ -292,6 +370,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'シンガポールPoC（6ヶ月）', description: 'シンガポールで日系企業10社をパイロット顧客として獲得。現地サポートはリモート+月1回の訪問で対応。NPS・解約率・拡張意欲のデータを取得し全市場展開の投資判断材料とする。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '現地規制サンドボックス活用', description: 'シンガポールMASのFinTechサンドボックス、タイのDigital Economyプログラムを活用し規制対応コストを補助金で賄う。各国のIT展示会（Gitex Asia・Slush Singapore）でブランド認知を獲得。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -307,6 +388,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: '技術的負債', detail: 'リリース頻度が低下、バグ修正に開発工数の60%', sub: ['テストカバレッジ28%', 'モノリスアーキテクチャで変更が困難'] },
         { text: 'インフラコスト高騰', detail: 'トラフィック増でAWSコストが6ヶ月で2.3倍', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `技術的負債60%・テストカバレッジ28%・モノリスの三重苦は典型的なスケールアップ期の課題。一括リファクタリングは現実的でなく「Strangler Fig + テスト先行」の段階的移行が最適解。インフラコスト2.3倍はアーキテクチャ改善と同時にFinOps導入で短期削減可能。`,
@@ -318,6 +402,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '開発者生産性ダッシュボード', description: 'DORAメトリクス（デプロイ頻度・リードタイム・変更失敗率・復旧時間）を計測し週次レビューに組み込む。技術的負債削減の進捗を定量化し経営層への可視化を確保。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
         { title: 'AIコードレビュー導入', description: 'AIコードレビューツールを導入しコードレビュー工数を削減。セキュリティスキャン・バグ検出を自動化しレビュアーは設計判断に集中できる環境を整備。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -333,6 +420,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: 'NPS低下', detail: 'NPS -5（昨年+18）、主因は「使いにくい」', sub: ['設定項目が複雑すぎる', 'ヘルプドキュメントが見つからない'] },
         { text: 'オンボーディング離脱', detail: '初回設定完了率31%', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `NPS急落（+18→-5）と初回設定完了率31%は、プロダクトの機能過多・情報アーキテクチャの複雑化が主因。ユーザーは価値を理解する前に離脱しており、まずTime-to-Valueを短縮するUX改善が最優先。`,
@@ -343,6 +433,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'IA（情報設計）リファクタリング', description: 'カードソーティング調査で現行のナビゲーション構造を検証し、ユーザーのメンタルモデルに合わせてサイドバー・設定画面を再設計。', priority: 'Medium', effort: 'High', impact: 'Medium' },
         { title: 'VOCダッシュボード整備', description: 'NPS・サポートチケット・セッション録画（Hotjar）を週次でレビューするVOCループを確立。定性フィードバックを優先度マトリクスに変換するプロセスを標準化。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -358,6 +451,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: '解約率の高止まり', detail: '月次チャーン2%、年換算で顧客の22%が離脱', sub: ['競合の無料プランに流出', 'オンボーディング未完了での早期解約が40%'] },
         { text: 'エクスパンション不足', detail: 'アップセル率5%、クロスセル実績ほぼゼロ', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `チャーン2%の主因はオンボーディング失敗と競合フリーミアムへの流出。NRR 110%達成にはチャーン削減だけでなくエクスパンション収益の設計が不可欠。`,
@@ -368,6 +464,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'アップセル導線の自動化', description: '利用量が閾値を超えた企業に自動でアップグレード提案。既存データから「次に必要になる機能」を予測しタイミング最適化。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '解約理由の構造化分析', description: '直近6ヶ月の解約企業全件にExitインタビューを実施し原因を5分類に構造化。再発防止策を優先度順に実装。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -383,6 +482,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: 'リピート率の低迷', detail: '2回目購入率35%、3回目はさらに半減', sub: ['初回購入者へのフォローが手動メール1通のみ'] },
         { text: 'パーソナライズ未対応', detail: '全顧客に同じレコメンド、肌質や悩みに応じた提案なし', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `D2Cスキンケアでリピート率35%は業界平均以下。2回目購入への「橋渡し体験」が設計されておらず、初回購入が単発で終わっている。パーソナライズはCX改善の最大レバー。`,
@@ -393,6 +495,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'UGCレビュープログラム', description: '購入者にレビュー投稿インセンティブ（次回クーポン）を提供。リアルな口コミが新規CVRとリピート率の両方を改善。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
         { title: 'VIP顧客プログラム', description: '累計購入額上位10%にVIPステータスを付与。先行販売・限定商品・1on1カウンセリングで顧客単価+30%とLTV最大化を同時達成。', priority: 'Medium', effort: 'Medium', impact: 'High' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -408,6 +513,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: 'コンプライアンス対応遅延', detail: 'PCI DSS準拠に必要な改修が12ヶ月計画で4ヶ月遅延中', sub: ['セキュリティ専任エンジニア不足', '監査対応の工数が開発を圧迫'] },
         { text: '可用性の不安定さ', detail: '月間ダウンタイム累計45分、SLA 99.95%未達', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `決済プラットフォームはコンプライアンスと可用性が事業継続の前提条件。PCI DSS遅延はセキュリティ債務であり最優先。可用性改善はアーキテクチャレベルの対応が必要。`,
@@ -418,6 +526,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'インシデント対応の自動化', description: 'PagerDuty+Runbook自動化で障害検知→初動対応を5分以内に短縮。ポストモーテム文化を定着させ再発防止を構造化。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '加盟店オンボーディングの効率化', description: 'API連携ドキュメント+サンドボックス環境を整備し、加盟店の技術検証期間を4週間→1週間に短縮。開発者体験の改善が加盟店獲得の加速要因。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -433,6 +544,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: 'PMF未達', detail: 'Sean Ellis Test「なくなったら困る」率22%（目標40%）', sub: ['ターゲット企業規模が広すぎてニーズが拡散'] },
         { text: '有料転換率の低さ', detail: 'フリートライアル→有料転換が8%で目標の半分', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `PMFスコア22%は「nice-to-have」の段階。ターゲット絞り込みとコアバリューの再定義が最優先。広く浅くから狭く深くへの転換が必要。`,
@@ -443,6 +557,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'カスタマーサクセス先行投資', description: '有料転換前からCSが伴走する「コンシェルジュ型トライアル」を上位20社に提供。転換率を個別対応で15%→30%に引き上げ成功パターンを型化。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '導入事例の量産と横展開', description: 'PMFスコア高コホートの成功事例を3本制作。同業種への横展開で獲得効率を改善。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -458,6 +575,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: 'レガシープラットフォーム', detail: '自社EC基盤が10年前の構築で改修コストが年々増加', sub: ['ページ表示3.5秒（目標1.5秒）', 'モバイルCVRがデスクトップの1/3'] },
         { text: '在庫管理の非効率', detail: '実店舗とECの在庫が分断、欠品と過剰在庫が同時発生', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `年商30億円ECのリプレイスは事業リスクの高いプロジェクト。段階的移行（ストラングラーフィグ）で売上影響を最小化しながら技術刷新を進めるべき。在庫統合はOMS導入が最短解。`,
@@ -468,6 +588,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'パーソナライズレコメンド実装', description: '閲覧・購入履歴ベースのAIレコメンドで回遊率と購入点数を改善。SKU 12,000点の強みを活かしクロスセル率+20%。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: 'カゴ落ちリカバリー自動化', description: 'カゴ落ち後30分・3時間・24時間のステップメール+LINE通知で回収率を改善。決済手段追加（BNPL）でカゴ落ち率-15%。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -483,6 +606,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: '価格体系の陳腐化', detail: '3年前のプラン設計のまま、機能追加に価格が追いついていない', sub: ['上位プランの差別化が弱く全体の70%が最安プラン'] },
         { text: 'エクスパンション収益の停滞', detail: 'NRR 102%、アップセル・クロスセルの仕組みなし', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `ARR 8億円でNRR 102%は成長の天井。価格改定は短期的なリスクを伴うが、中期的にはARPU改善が最大の成長レバー。段階的な移行と十分な顧客コミュニケーションが成功の鍵。`,
@@ -493,6 +619,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '利用量ベースの従量課金追加', description: 'ストレージ・API呼出数・外部連携数に従量課金を追加。ヘビーユーザーから適正な対価を得つつ、小規模利用者の参入障壁を下げる。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
         { title: '価格改定コミュニケーション計画', description: '改定90日前の事前告知→60日前のFAQ公開→30日前の個別対応。CSチーム向けの想定Q&A50問を準備し、問い合わせ対応を標準化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -508,6 +637,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: '利用定着率の低さ', detail: '導入後3ヶ月でMAU率が40%→15%に急落', sub: ['通知が多すぎて無視される', '日常的に使う理由がない'] },
         { text: '企業の導入決裁が長い', detail: '平均商談期間6ヶ月、人事×IT×経営の3部門承認が必要', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `ヘルスケアアプリの定着は「義務感」ではなく「日常の習慣」に組み込む設計が鍵。健診管理だけでは月1回の利用にしかならず、毎日使う理由の創出が必須。B2Bの長い商談サイクルは導入事例とROI数値で短縮可能。`,
@@ -518,6 +650,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '産業医連携機能', description: '産業医面談のスケジュール管理+面談記録をアプリに統合。法定義務対応をワンストップ化し企業の管理負荷を削減。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
         { title: 'アノニマスレポート機能', description: '組織全体のメンタルヘルス傾向を匿名集計しダッシュボード化。人事が早期にリスクを把握でき、導入企業への提供価値を向上。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -533,6 +668,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: '配車計画の属人化', detail: 'ベテラン2名の経験値に完全依存、休暇時に効率30%低下', sub: ['Excelベースの手動計画で最適化不能'] },
         { text: '2024年問題対応', detail: 'ドライバー残業上限規制で配送キャパシティ不足が顕在化', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `物流の2024年問題（残業上限規制）は業界全体の構造変化。属人化した配車計画のAI化は「効率改善」ではなく「事業継続」の問題。段階的なデジタル化で現場の抵抗を最小化しつつ、短期でROIを出す設計が重要。`,
@@ -543,6 +681,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '拠点間幹線輸送の最適化', description: '8拠点間の幹線輸送ルート・頻度を需要データに基づき再設計。空車回送率を現状25%→10%に改善し燃料費削減。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: 'エコドライブ研修+インセンティブ', description: '燃費データに基づくドライバー別エコドライブスコアを算出。上位者にインセンティブを付与し全体の燃費10%改善。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
   {
@@ -558,6 +699,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { text: 'ブランド乱立', detail: '3社それぞれのロゴ・カラー・トーンが混在し顧客に混乱', sub: ['営業資料が3パターン存在', 'Webサイトのデザインが統一されていない'] },
         { text: '制作プロセスの非効率', detail: '各社別々のデザインチーム・ベンダーで重複コストが発生', sub: [] },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
     results: {
       understanding: `M&A後のブランド統合は「見た目の統一」ではなく「企業アイデンティティの再定義」。3社の強みを活かした新ブランドストーリーが先行し、デザインシステムはその具現化ツール。社内浸透には経営層のコミットメントが不可欠。`,
@@ -568,6 +712,9 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'ブランド浸透プログラム', description: '月次のブランドアンバサダー研修+社内ブランドポータルサイトで全社浸透を促進。浸透度を四半期サーベイで計測しPDCA。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
         { title: 'デザインベンダー統合', description: '3社別々のベンダーを1社に統合しコスト削減+品質統一。RFP実施でデザインシステム運用に対応可能なパートナーを選定。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
+      serviceUrl: '',
+      competitors: [],
+      kpis: [],
     },
   },
 ];

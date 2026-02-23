@@ -6,10 +6,32 @@ import { callAI, callAIWithKey, testConn, DEFAULT_MODEL_ID, isProMode } from '..
 import { FREE_DEPTH, PRO_DEPTH } from '../constants/prompts';
 import { MAX_HIST, CHAT_MAX_TOKENS } from '../constants/config';
 
+/** 競合・データ情報のプロンプト文字列を生成 */
+function buildCompetitiveIntelContext(form: BrainstormForm): string {
+  const parts: string[] = [];
+  if (form.serviceUrl?.trim()) {
+    parts.push(`自社サービスURL: ${form.serviceUrl.trim()}`);
+  }
+  const comps = (form.competitors || []).filter(c => c.name.trim() || c.url.trim());
+  if (comps.length) {
+    parts.push('競合情報:\n' + comps.map((c, i) => {
+      const items = [`${i + 1}. ${c.name || '(名称未入力)'}`];
+      if (c.url) items.push(`URL: ${c.url}`);
+      if (c.note) items.push(`特徴: ${c.note}`);
+      return items.join(' / ');
+    }).join('\n'));
+  }
+  const kpis = (form.kpis || []).filter(k => k.label.trim() && k.value.trim());
+  if (kpis.length) {
+    parts.push('主要KPI実績値:\n' + kpis.map(k => `- ${k.label}: ${k.value}`).join('\n'));
+  }
+  return parts.length ? parts.join('\n\n') : '';
+}
+
 export const useAI = () => {
   const [modelId, setModelId] = useState(DEFAULT_MODEL_ID);
   const [connStatus, setConnStatus] = useState<ConnStatus>({ status: 'idle', msg: '' });
-  
+
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<AIResults | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -18,6 +40,7 @@ export const useAI = () => {
   const [diving, setDiving] = useState(false);
   const [drillingDownId, setDrillingDownId] = useState<string | null>(null);
   const [hist, setHist] = useState<ChatMessage[]>([]);
+  const [activeForm, setActiveForm] = useState<BrainstormForm | null>(null);
 
   const runConnTest = useCallback(async (apiKey = '') => {
     setConnStatus({ status: 'testing', msg: '' });
@@ -79,6 +102,14 @@ export const useAI = () => {
     const hrDetected = isHRContext(form.productService, issueTexts);
     const hrContext = hrDetected ? getHRDomainContext(proMode) : '';
 
+    // ── 競合・データ情報 ──
+    const compIntel = buildCompetitiveIntelContext(form);
+    const compInstructions = compIntel ? [
+      'KPI実績値が提供されている場合、業界平均と比較してボトルネックを特定し、数値から逆算した改善提案を行う',
+      '競合情報が提供されている場合、URLやサービス名から推測される競合ポジショニングと比較分析を行う',
+      '深掘り質問（suggestions）は、提供データから回答可能な質問、または次に取得すべきデータを示す質問を優先する',
+    ].join('。') : '';
+
     // ── 共通前提条件 ──
     const commonConditions = [
       '現状の取り組みを否定せず、強みを活かしながら「次に何をすべきか」を建設的・前向きに提案する',
@@ -86,7 +117,8 @@ export const useAI = () => {
       '担当者（営業・マーケ・経営企画）が明日から実行できる具体的なアクションを含める',
       'ビジネス成果（売上・利益・顧客満足・効率改善）を軸に効果を示す',
       '数値を使う場合は絶対値より相対値（「業界平均比○倍」「現状比+○%」等）を優先し、推定値には「業界目安」「一般的に」等の根拠を付記する。裏付けのない具体的数字の断言は避ける',
-    ].join('。');
+      compInstructions,
+    ].filter(Boolean).join('。');
 
     // ── 深度別 出力指示 ──
     const depthMap: Record<number, { understanding: string; desc: string }> = {
@@ -135,7 +167,7 @@ ${commonConditions}。
 
 【分析の視点】
 ${rd.lens}
-${hrContext ? `\n${hrContext}` : ''}
+${hrContext ? `\n${hrContext}` : ''}${compIntel ? `\n【競合・データ情報】\n${compIntel}\n` : ''}
 【分析対象】
 プロジェクト: ${pn} / プロダクト・サービス: ${form.productService}
 チーム目標: ${form.teamGoals}${issueStr ? `\n現状課題: ${issueStr}` : ''}
@@ -144,7 +176,7 @@ ${hrContext ? `\n${hrContext}` : ''}
 【出力形式】JSONのみ・コードブロック不要:
 {"understanding":"${dmap.understanding}",${hrJson}"ideas":[${dc.ideas}個: {"title":"8語以内の行動起点タイトル","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High","feasibility":{"total":0-100総合,"resource":0-100リソース充足度,"techDifficulty":0-100技術的容易性(高=容易),"orgAcceptance":0-100組織受容性}}],"suggestions":["入力内容のプロダクト・課題・目標に直結する深掘り質問を5個。セッションタイプに縛られず実務担当者が次に考えるべき問いを設定すること"]}`;
     } else {
-      return `ビジネスコンサルとして建設的に分析。${rd.lens}の観点。${hrContext ? ` ${hrContext}` : ''}
+      return `ビジネスコンサルとして建設的に分析。${rd.lens}の観点。${hrContext ? ` ${hrContext}` : ''}${compIntel ? ` [データ] ${compIntel.replace(/\n/g, ' ')}` : ''}
 対象: ${form.productService} / 目標: ${form.teamGoals}${issueStr ? ` / 課題: ${issueStr}` : ''}
 JSONのみ回答:
 {"understanding":"${dmap.understanding}",${hrJson}"ideas":[${dc.ideas}個: {"title":"6語以内","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High","feasibility":{"total":0-100,"resource":0-100,"techDifficulty":0-100,"orgAcceptance":0-100}}],"suggestions":["深掘り質問を4個"]}`;
@@ -174,6 +206,7 @@ JSONのみ回答:
     setResults(null);
     setReviewText('');
     setHist([]);
+    setActiveForm(form);
 
     const prompt = buildPrompt(pn, form, dep, sesLabel, issueStr, proMode);
 
@@ -238,6 +271,7 @@ JSONのみ回答:
         .map((r, i) => `Review${i + 1}: ${r.review}\nResult: ${r.answer.length > 300 ? r.answer.slice(0, 300) + '…' : r.answer}`)
         .join('\n\n');
 
+      const ciCtx = activeForm ? buildCompetitiveIntelContext(activeForm) : '';
       const systemMsg: ChatMessage = {
         role: 'system',
         content: `あなたは戦略コンサルタントです。以下の事業状況と過去の分析を踏まえ、レビュー・フィードバックに基づいて戦略提案をブラッシュアップしてください。
@@ -249,12 +283,12 @@ ${results.understanding}
 
 【現在の戦略アイデア】
 ${ideaSummary}
-${pastRefinements ? `\n【過去のブラッシュアップ履歴】\n${pastRefinements}` : ''}
+${pastRefinements ? `\n【過去のブラッシュアップ履歴】\n${pastRefinements}` : ''}${ciCtx ? `\n【競合・データ情報】\n${ciCtx}` : ''}
 
 【前提条件】
 - 現状を批判せず、強みを活かした建設的な改善提案に絞る
 - 担当者が実行できる具体案を出す
-- 過去のブラッシュアップ結果と矛盾しない一貫した改善を行う`,
+- 過去のブラッシュアップ結果と矛盾しない一貫した改善を行う${ciCtx ? '\n- KPI実績値は「ファクト」として扱い、業界平均と比較してボトルネックを特定する' : ''}`,
       };
 
       const msg: ChatMessage = { role: 'user', content: `【レビュー内容】${reviewText}\n\nMarkdown形式（見出し・箇条書き活用）で詳細に回答した後、文末に必ず以下の形式のJSONを付加してください。JSONのみコードブロックで囲んでください。
@@ -292,7 +326,7 @@ ${pastRefinements ? `\n【過去のブラッシュアップ履歴】\n${pastRefi
     } finally {
       setRefining(false);
     }
-  }, [reviewText, results, hist, modelId]);
+  }, [reviewText, results, hist, modelId, activeForm]);
 
   /** APIが使えない場合の戦略的フォールバック深掘り回答を生成 */
   const buildFallbackDeepDive = (q: string, r: AIResults): string => {
@@ -399,6 +433,7 @@ ${pastRefinements ? `\n【過去のブラッシュアップ履歴】\n${pastRefi
         currentResults.funnelStage ? `【ファネルステージ】${currentResults.funnelStage}` : '',
       ].filter(Boolean).join('\n');
 
+      const ddCiCtx = activeForm ? buildCompetitiveIntelContext(activeForm) : '';
       const systemMsg: ChatMessage = {
         role: 'system',
         content: `あなたは戦略コンサルタントです。以下の事業状況と過去の分析を踏まえ、質問に詳細回答してください。
@@ -410,12 +445,12 @@ ${currentResults.understanding}
 
 【検討中の戦略アイデア】
 ${ideaSummary}
-${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}
+${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}${ddCiCtx ? `\n【競合・データ情報】\n${ddCiCtx}` : ''}
 
 【前提条件】
 - 現状批判ではなく「次の打ち手・改善機会」として建設的に回答する
 - 担当者（営業・マーケ・経営企画）が実行できる具体策を含める
-- 過去の深掘り結果と矛盾しない一貫した回答をする`,
+- 過去の深掘り結果と矛盾しない一貫した回答をする${ddCiCtx ? '\n- KPI実績値を「ファクト」として扱い、改善提案に具体的数値を活用する' : ''}`,
       };
 
       const userMsg: ChatMessage = {
@@ -445,7 +480,7 @@ ${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}
     } finally {
       setDiving(false);
     }
-  }, [results, hist, modelId]);
+  }, [results, hist, modelId, activeForm]);
 
   const drillDownIdea = useCallback(async (
     idea: Idea,

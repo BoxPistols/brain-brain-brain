@@ -20,6 +20,7 @@ import {
 } from '../../constants/prompts'
 import { T } from '../../constants/theme'
 import { IssueRow } from './IssueRow'
+import { CompetitiveIntelSection } from './CompetitiveIntelSection'
 
 interface ProjectFormProps {
     form: BrainstormForm
@@ -440,6 +441,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                     )}
                 </div>
             </div>
+
+            {/* 競合・データ情報 */}
+            <CompetitiveIntelSection form={form} setForm={setForm} />
         </>
     )
 }

@@ -11,7 +11,10 @@ const initialFormState: BrainstormForm = {
   teamGoals: '',
   sessionType: 'product',
   customSession: '',
-  issues: [{ text: '', detail: '', sub: [] }]
+  issues: [{ text: '', detail: '', sub: [] }],
+  serviceUrl: '',
+  competitors: [],
+  kpis: [],
 };
 
 export const useBrainstormForm = () => {
@@ -29,8 +32,10 @@ export const useBrainstormForm = () => {
       form.sessionType,
       form.productService,
       form.issues.map(x => x.text).filter(Boolean),
+      (form.kpis || []).filter(k => k.label && k.value),
+      (form.competitors || []).some(c => c.name || c.url),
     ),
-    [form.sessionType, form.productService, form.issues]
+    [form.sessionType, form.productService, form.issues, form.kpis, form.competitors]
   );
   
   const issueStr = useMemo(() => 

@@ -269,10 +269,86 @@ const ISSUE_SUGGEST_HINTS: [RegExp, string[]][] = [
   [/CV|コンバージョン|商談化/,          ['CVR改善のためのボトルネック特定と優先施策は？']],
 ];
 
+/** セッションタイプ別 KPI サジェスト */
+export const KPI_SUGGESTIONS: Record<string, { label: string; placeholder: string }[]> = {
+  'ops': [
+    { label: 'CA一人当たり月間成約件数', placeholder: '例: 3件' },
+    { label: 'スカウト返信率', placeholder: '例: 3.2%' },
+    { label: '内定承諾率', placeholder: '例: 65%' },
+    { label: '商談化率', placeholder: '例: 25%' },
+    { label: '平均成約単価', placeholder: '例: 120万円' },
+  ],
+  'marketing': [
+    { label: 'CVR（転換率）', placeholder: '例: 1.2%' },
+    { label: '月間リード数', placeholder: '例: 150件' },
+    { label: 'CPA（獲得単価）', placeholder: '例: ¥8,000' },
+    { label: '月間PV / UU', placeholder: '例: 60万PV' },
+  ],
+  'growth': [
+    { label: '月次チャーンレート', placeholder: '例: 2.5%' },
+    { label: 'LTV / CAC比率', placeholder: '例: 1.8' },
+    { label: 'MRR / ARR', placeholder: '例: 月300万円' },
+    { label: '新規契約件数（月）', placeholder: '例: 12件' },
+  ],
+  'cx': [
+    { label: 'NPS', placeholder: '例: +32' },
+    { label: 'リピート率', placeholder: '例: 45%' },
+    { label: '顧客満足度', placeholder: '例: 4.2/5.0' },
+  ],
+  'product': [
+    { label: '月間アクティブユーザー', placeholder: '例: 5,000' },
+    { label: '有料転換率', placeholder: '例: 3.5%' },
+    { label: '平均単価', placeholder: '例: ¥9,800/月' },
+  ],
+  'dx': [
+    { label: '業務時間削減率', placeholder: '例: 30%' },
+    { label: 'ツール利用率', placeholder: '例: 60%' },
+  ],
+  'innovation': [
+    { label: 'PoC成功率', placeholder: '例: 2/5件' },
+    { label: '初期ユーザー数', placeholder: '例: 200人' },
+  ],
+  'design-system': [
+    { label: '制作リードタイム', placeholder: '例: 5日→2日' },
+    { label: 'ブランドガイドライン遵守率', placeholder: '例: 70%' },
+  ],
+  'other': [
+    { label: '売上高', placeholder: '例: 年5億円' },
+    { label: '営業利益率', placeholder: '例: 8%' },
+  ],
+};
+
+/** プロダクトキーワードによるKPIサジェスト上書き */
+const PRODUCT_KPI_HINTS: [RegExp, { label: string; placeholder: string }[]][] = [
+  [/人材|採用|エージェント|CA|転職|求人|スカウト|人事|キャリア|人材紹介|派遣/i, [
+    { label: 'CA一人当たり月間成約件数', placeholder: '例: 3件' },
+    { label: 'スカウト返信率', placeholder: '例: 2.8%' },
+    { label: '内定承諾率', placeholder: '例: 62%' },
+    { label: '平均成約単価（フィー）', placeholder: '例: 120万円' },
+    { label: '登録→面談転換率', placeholder: '例: 45%' },
+    { label: '月間成約件数（全社）', placeholder: '例: 45件' },
+  ]],
+];
+
+/** KPIサジェスト取得 */
+export function getKpiSuggestions(sessionType: string, productService: string): { label: string; placeholder: string }[] {
+  // プロダクトキーワードで上書きがあればそちらを優先
+  for (const [re, hints] of PRODUCT_KPI_HINTS) {
+    if (re.test(productService)) return hints;
+  }
+  return KPI_SUGGESTIONS[sessionType] ?? KPI_SUGGESTIONS.other;
+}
+
 /**
- * sessionType × productService × 入力済み課題 で深掘りサジェスト生成（7個以上保証）
+ * sessionType × productService × 入力済み課題 × KPI × 競合 で深掘りサジェスト生成（7個以上保証）
  */
-export function getDeepDiveSuggestions(sessionType: string, productService: string, issues: string[]): string[] {
+export function getDeepDiveSuggestions(
+  sessionType: string,
+  productService: string,
+  issues: string[],
+  kpis?: { label: string; value: string }[],
+  hasCompetitors?: boolean,
+): string[] {
   const base = SUGGEST[sessionType] ?? SUGGEST.other;
   const extras: string[] = [];
 
@@ -289,6 +365,23 @@ export function getDeepDiveSuggestions(sessionType: string, productService: stri
     for (const [re, hints] of ISSUE_SUGGEST_HINTS) {
       if (re.test(issueText)) extras.push(...hints);
     }
+  }
+
+  // KPIデータ駆動の質問
+  if (kpis?.length) {
+    for (const kpi of kpis) {
+      if (/返信率|CVR|転換率|承諾率|転化率/.test(kpi.label)) {
+        extras.push(`${kpi.label}（現状${kpi.value}）を改善する具体的な施策は？`);
+      } else if (/成約|売上|件数|契約/.test(kpi.label)) {
+        extras.push(`${kpi.label}（現状${kpi.value}）を伸ばすためのレバーは？`);
+      }
+    }
+  }
+
+  // 競合データ駆動の質問
+  if (hasCompetitors) {
+    extras.push('競合との差別化で最も攻めやすいポイントは？');
+    extras.push('競合が手薄な領域で勝てる戦略は？');
   }
 
   const seen = new Set(base);

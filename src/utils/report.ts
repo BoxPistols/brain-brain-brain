@@ -33,6 +33,25 @@ export const buildReportMd = (
     md += '\n';
   }
   
+  // 競合・データ情報
+  if (form.serviceUrl?.trim()) {
+    md += `## 自社サービス\n${form.serviceUrl}\n\n`;
+  }
+  const comps = (form.competitors || []).filter(c => c.name.trim());
+  if (comps.length) {
+    md += `## 競合情報\n`;
+    comps.forEach(c => {
+      md += `- **${c.name}**${c.url ? ` (${c.url})` : ''}${c.note ? ` — ${c.note}` : ''}\n`;
+    });
+    md += '\n';
+  }
+  const kpis = (form.kpis || []).filter(k => k.label.trim() && k.value.trim());
+  if (kpis.length) {
+    md += `## 主要KPI実績値\n\n| KPI | 値 |\n|---|---|\n`;
+    kpis.forEach(k => { md += `| ${k.label} | ${k.value} |\n`; });
+    md += '\n';
+  }
+
   if (results.keyIssue) {
     md += `## 最重要イシュー\n\n`;
     if (results.funnelStage) md += `**ボトルネック段階**: ${results.funnelStage}\n\n`;
