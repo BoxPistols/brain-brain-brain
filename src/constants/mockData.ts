@@ -27,9 +27,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { label: '内定承諾率', value: '58%' },
         { label: '平均成約単価（フィー）', value: '105万円' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
     results: {
       understanding: `IT人材紹介市場は構造的な転換期にある。直接採用・大手統合・AIマッチングの3つの圧力が同時に進行しており、「量×汎用」モデルの賞味期限が切れつつある。ハイスキルエンジニアは従来のエージェントモデルを嫌い、コミュニティや同業者の推薦を信頼する傾向が強まっている。差別化の軸は「エンジニアに信頼されるCA」から「エンジニアに信頼されるブランド・コミュニティ」への転換が必要。CA業務のAI化は生産性向上と同時にCA自身をより高付加価値な仕事（信頼構築・交渉）に集中させる基盤となる。`,
@@ -41,9 +38,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'CA業務標準化×ナレッジDB構築', description: 'トップCAの面談ヒアリング・求人マッチング・クロージング手法を動画+テキストでドキュメント化。NotionベースのナレッジDBと月次ケーススタディ共有会で平均CAの成約率をトップCA比+50%に引き上げる。新人立ち上がり期間を6ヶ月→3ヶ月に短縮。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '企業クライアントのサクセス設計', description: '採用後3ヶ月・6ヶ月のフォローアップを標準化し、入社者の定着率データを企業に提供。「採用して終わり」から「採用後の定着支援」に価値を拡張することで、リピート率と単価の両立を図る。定着率データはEEATの強化にも活用可能。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -67,9 +61,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { label: 'CRM活用率', value: '35%' },
         { label: 'CA一人当たり月間面談数', value: '22件' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
     results: {
       understanding: `CA業務の非効率は「CRMをDBとして使っている」「スカウトを量でカバーしている」「ノウハウを共有していない」の3つの構造問題が重なっている。Salesforceはレコード管理ではなく行動自動化ツールとして使うことで、CA一人当たりの対応キャパシティを30〜50%拡大できる。AIスカウト文生成はCAの単純労働を削減し、高付加価値な面談・交渉に集中させる投資対効果が最も高い施策。`,

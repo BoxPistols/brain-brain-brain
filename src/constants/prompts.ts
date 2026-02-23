@@ -1,3 +1,6 @@
+import type { SessionType } from '../types';
+import { HR_REGEX } from './domainContext';
+
 export const TYPES: Record<string, string> = {
   'ops': '営業・業務オペレーション',
   'marketing': 'マーケティング・集客',
@@ -115,6 +118,41 @@ export const EXAMPLE_PRODUCTS: Record<string, string[]> = {
   'design-system':  ['求人サイト（マルチブランド）', 'エンタープライズHR SaaS', '金融系モバイルアプリ', 'グローバルSaaS'],
   'other':          ['IT人材紹介 事業再設計', '人材紹介×AIエージェント', '新規市場参入戦略', 'M&A後のPMI'],
 };
+
+/** 目的ファーストカード定義 */
+export interface PurposeCluster {
+  id: string
+  label: string
+  sublabel: string
+  sessionType: SessionType
+  goals: string[]
+}
+
+export const PURPOSE_CLUSTERS: PurposeCluster[] = [
+  { id: 'close-deals',     label: '成約・売上を伸ばす',         sublabel: '成約件数UP・単価向上・商談化率改善',     sessionType: 'ops',        goals: ['商談化率・成約率改善', '一人当たり生産性向上'] },
+  { id: 'get-leads',       label: '集客・リードを増やす',       sublabel: 'スカウト返信率UP・登録数UP・認知拡大',  sessionType: 'marketing',  goals: ['リード獲得数の拡大', 'CAC（獲得コスト）削減'] },
+  { id: 'beat-competitors', label: '競合に差をつける',           sublabel: 'ポジショニング・差別化・シェア拡大',     sessionType: 'growth',     goals: ['売上・ARR成長率の加速', '市場シェア拡大'] },
+  { id: 'efficiency',      label: '業務をラクにする',           sublabel: 'ムダ削減・CRM活用・AI自動化',          sessionType: 'dx',         goals: ['業務プロセスのデジタル化', 'AI・自動化による工数削減'] },
+  { id: 'new-biz',         label: '新しい収益源をつくる',       sublabel: '新規事業・新サービス・新市場',          sessionType: 'innovation', goals: ['新収益モデルの確立', '市場参入戦略の策定'] },
+  { id: 'team-cx',         label: '顧客満足・リピートを増やす', sublabel: '対応品質UP・継続率改善',               sessionType: 'cx',         goals: ['顧客満足度（NPS）向上', 'リピート率・継続率向上'] },
+];
+
+const HR_CLUSTER_GOALS: Record<string, string[]> = {
+  'close-deals':      ['CA一人当たり成約件数+50%', '内定承諾率向上'],
+  'get-leads':        ['スカウト返信率改善', 'ハイスキル人材の登録比率向上'],
+  'beat-competitors': ['求人-求職者マッチング精度改善', 'クライアント企業リピート率向上'],
+  'efficiency':       ['CA業務のAI自動化', 'CRM・ツール活用率向上'],
+  'new-biz':          ['AIマッチングエンジン構築', '新領域参入'],
+  'team-cx':          ['候補者体験の改善', '担当者対応品質の均一化'],
+};
+
+export function getEnrichedClusters(productService: string): PurposeCluster[] {
+  if (!HR_REGEX.test(productService)) return PURPOSE_CLUSTERS;
+  return PURPOSE_CLUSTERS.map(c => ({
+    ...c,
+    goals: HR_CLUSTER_GOALS[c.id] || c.goals,
+  }));
+}
 
 export const GOAL_TEMPLATES: Record<string, string[]> = {
   'product':        ['顧客維持率（リテンション）改善', 'プロダクトMF達成・検証', '技術的負債削減・開発速度改善', 'ARPU・単価向上', 'ユーザー体験（UX）改善', '新機能リリース速度向上', '競合との差別化確立'],

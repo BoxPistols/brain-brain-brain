@@ -17,10 +17,13 @@ import {
     ISSUE_TEMPLATES,
     getIssueSuggestions,
     getGoalSuggestions,
+    getEnrichedClusters,
+    PurposeCluster,
 } from '../../constants/prompts'
 import { T } from '../../constants/theme'
 import { IssueRow } from './IssueRow'
 import { CompetitiveIntelSection } from './CompetitiveIntelSection'
+import { PurposeCards } from './PurposeCards'
 
 interface ProjectFormProps {
     form: BrainstormForm
@@ -41,6 +44,31 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 }) => {
     const depTable = proMode ? PRO_DEPTH : FREE_DEPTH
     const [issueTemplateOpen, setIssueTemplateOpen] = useState(false)
+    const [selectedClusterId, setSelectedClusterId] = useState<string | null>(null)
+    const [sessionTypeExpanded, setSessionTypeExpanded] = useState(false)
+
+    const enrichedClusters = useMemo(
+        () => getEnrichedClusters(form.productService),
+        [form.productService],
+    )
+
+    const onClusterSelect = (cluster: PurposeCluster) => {
+        if (selectedClusterId === cluster.id) {
+            setSelectedClusterId(null)
+            setSessionTypeExpanded(false)
+            return
+        }
+        setSelectedClusterId(cluster.id)
+        setSessionTypeExpanded(false)
+        setForm(prev => ({
+            ...prev,
+            sessionType: cluster.sessionType,
+            teamGoals: prev.teamGoals.trim() ? prev.teamGoals : cluster.goals.join('・'),
+            issues: prev.issues.some(x => x.text.trim())
+                ? prev.issues
+                : [{ text: '', detail: '', sub: [] }],
+        }))
+    }
 
     const onF = (
         e: React.ChangeEvent<
@@ -52,6 +80,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
         e: React.ChangeEvent<HTMLSelectElement>,
     ) => {
         const next = e.target.value as SessionType
+        setSelectedClusterId(null)
         setForm((prev) => {
             if (prev.sessionType === next) return prev
             return {
@@ -202,48 +231,87 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                 </div>
             </div>
 
-            {/* Session type */}
+            {/* 目的ファーストカード */}
             <div className='mb-3' data-tour='session-type'>
-                <label htmlFor='sessionType' className={`block text-xs font-medium ${T.t2} mb-1`}>
-                    セッションタイプ
+                <label className={`block text-xs font-medium ${T.t2} mb-1.5`}>
+                    何を達成したいですか？
                 </label>
-                {form.sessionType === 'other' ? (
-                    <div className='flex gap-2'>
+                <PurposeCards
+                    clusters={enrichedClusters}
+                    selectedId={selectedClusterId}
+                    onSelect={onClusterSelect}
+                />
+
+                {/* セッションタイプ（カード選択時は折りたたみ） */}
+                {selectedClusterId ? (
+                    <div>
                         <button
-                            onClick={() =>
-                                setForm((p) => ({
-                                    ...p,
-                                    sessionType: 'product',
-                                }))
-                            }
-                            className={`shrink-0 px-2.5 py-2 rounded-lg border text-xs ${T.btnGhost}`}
+                            type='button'
+                            onClick={() => setSessionTypeExpanded(o => !o)}
+                            className={`flex items-center gap-1 text-[11px] ${T.t3} hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer`}
                         >
-                            ← 戻す
+                            セッションタイプ: {TYPES[form.sessionType]}
+                            {sessionTypeExpanded ? <ChevronUp className='w-3 h-3' /> : <ChevronDown className='w-3 h-3' />}
                         </button>
-                        <input
-                            name='customSession'
-                            value={form.customSession}
-                            onChange={onF}
-                            placeholder='例: 海外展開戦略、M&A検討、IPO準備…'
-                            className={`${T.inp} flex-1`}
-                            autoFocus
-                        />
+                        {sessionTypeExpanded && (
+                            <select
+                                id='sessionType'
+                                name='sessionType'
+                                value={form.sessionType}
+                                onChange={onSessionTypeChange}
+                                className={`${T.inp} mt-1`}
+                                style={{ backgroundImage: 'none' }}
+                            >
+                                {Object.entries(TYPES).map(([v, l]) => (
+                                    <option key={v} value={v}>{l}</option>
+                                ))}
+                            </select>
+                        )}
                     </div>
                 ) : (
-                    <select
-                        id='sessionType'
-                        name='sessionType'
-                        value={form.sessionType}
-                        onChange={onSessionTypeChange}
-                        className={T.inp}
-                        style={{ backgroundImage: 'none' }}
-                    >
-                        {Object.entries(TYPES).map(([v, l]) => (
-                            <option key={v} value={v}>
-                                {l}
-                            </option>
-                        ))}
-                    </select>
+                    <>
+                        <label htmlFor='sessionType' className={`block text-[11px] ${T.t3} mb-1`}>
+                            または セッションタイプを直接選択:
+                        </label>
+                        {form.sessionType === 'other' ? (
+                            <div className='flex gap-2'>
+                                <button
+                                    onClick={() =>
+                                        setForm((p) => ({
+                                            ...p,
+                                            sessionType: 'product',
+                                        }))
+                                    }
+                                    className={`shrink-0 px-2.5 py-2 rounded-lg border text-xs ${T.btnGhost}`}
+                                >
+                                    ← 戻す
+                                </button>
+                                <input
+                                    name='customSession'
+                                    value={form.customSession}
+                                    onChange={onF}
+                                    placeholder='例: 海外展開戦略、M&A検討、IPO準備…'
+                                    className={`${T.inp} flex-1`}
+                                    autoFocus
+                                />
+                            </div>
+                        ) : (
+                            <select
+                                id='sessionType'
+                                name='sessionType'
+                                value={form.sessionType}
+                                onChange={onSessionTypeChange}
+                                className={T.inp}
+                                style={{ backgroundImage: 'none' }}
+                            >
+                                {Object.entries(TYPES).map(([v, l]) => (
+                                    <option key={v} value={v}>
+                                        {l}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+                    </>
                 )}
             </div>
 
