@@ -16,6 +16,7 @@ import { PreviewModal } from './components/modals/PreviewModal'
 import { LogPanel } from './components/modals/LogPanel'
 import { SettingsModal } from './components/modals/SettingsModal'
 import { AppHelpModal } from './components/modals/AppHelpModal'
+import { AppTour } from './components/tour/AppTour'
 import { SupportWidget } from './components/support/SupportWidget'
 
 // Utils & Constants
@@ -67,7 +68,8 @@ export default function App() {
 
     // Local UI state
     const [showCfg, setShowCfg] = useState(false)
-    const [showHelp, setShowHelp] = useState(() => !localStorage.getItem('ai-brainstorm-visited'))
+    const [showHelp, setShowHelp] = useState(false)
+    const [showTour, setShowTour] = useState(() => !localStorage.getItem('ai-brainstorm-visited'))
     const [showPrev, setShowPrev] = useState(false)
     const [showValidation, setShowValidation] = useState(false)
     const [isSeedData, setIsSeedData] = useState(false)
@@ -86,13 +88,14 @@ export default function App() {
             if (e.key === 'Escape') {
                 if (showLogs) setShowLogs(false)
                 else if (showPrev) setShowPrev(false)
-                else if (showHelp) { localStorage.setItem('ai-brainstorm-visited', '1'); setShowHelp(false) }
+                else if (showTour) { localStorage.setItem('ai-brainstorm-visited', '1'); setShowTour(false) }
+                else if (showHelp) setShowHelp(false)
                 else if (showCfg) setShowCfg(false)
             }
         }
         document.addEventListener('keydown', handler)
         return () => document.removeEventListener('keydown', handler)
-    }, [showLogs, showPrev, showHelp, showCfg])
+    }, [showLogs, showPrev, showTour, showHelp, showCfg])
 
     // Progress simulation during loading
     useEffect(() => {
@@ -180,6 +183,7 @@ export default function App() {
                     isDark={isDark}
                     onToggleTheme={toggleTheme}
                     onShowHelp={() => setShowHelp(true)}
+                    onStartTour={() => setShowTour(true)}
                     onShowLogs={() => setShowLogs(true)}
                     showCfg={showCfg}
                     onToggleCfg={() => setShowCfg(s => !s)}
@@ -242,6 +246,7 @@ export default function App() {
                                         onClick={handleGenerate}
                                         disabled={loading}
                                         title='Cmd/Ctrl+Enter'
+                                        data-tour='generate'
                                         className={`relative flex items-center gap-1.5 px-5 py-2 rounded-lg font-semibold text-sm ${T.btnAccent} disabled:opacity-90 transition-all overflow-hidden`}
                                     >
                                         {loading && (
@@ -319,8 +324,9 @@ export default function App() {
                 </div>
             </div>
 
-            {/* Modals */}
-            {showHelp && <AppHelpModal onClose={() => { localStorage.setItem('ai-brainstorm-visited', '1'); setShowHelp(false) }} />}
+            {/* Tour & Modals */}
+            <AppTour enabled={showTour} onExit={() => { localStorage.setItem('ai-brainstorm-visited', '1'); setShowTour(false) }} />
+            {showHelp && <AppHelpModal onClose={() => setShowHelp(false)} />}
             {showPrev && report && (
                 <PreviewModal md={report} pn={usedName} onClose={() => setShowPrev(false)} />
             )}
