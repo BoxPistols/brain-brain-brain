@@ -5,9 +5,9 @@ export const isProMode = (apiKey: string): boolean => apiKey.trim().startsWith('
 
 const friendlyError = (status: number, body: string): string => {
   if (status === 429) return 'リクエストが集中しています。1分ほど待ってから「生成」ボタンを再度押してください。';
-  if (status === 401) return 'APIキーが正しくありません。右上の⚙設定ボタンからキーを確認・再入力してください。';
-  if (status === 403) return 'APIキーの権限が不足しています。右上の⚙設定ボタンからキーを確認してください。';
-  if (status === 404) return `選択中のAIモデルが利用できません。右上の⚙設定から別のモデルを選んでください。${body ? `（${body.slice(0, 80)}）` : ''}`;
+  if (status === 401) return 'APIキーが正しくありません。右上の設定パネルからキーを確認・再入力してください。';
+  if (status === 403) return 'APIキーの権限が不足しています。右上の設定パネルからキーを確認してください。';
+  if (status === 404) return `選択中のAIモデルが利用できません。設定パネルから別のモデルを選んでください。${body ? `（${body.slice(0, 80)}）` : ''}`;
   if (status === 500 || status === 502 || status === 503) return 'AIサービスが一時的に混み合っています。1〜2分後に再度お試しください。';
   return `通信エラーが発生しました。インターネット接続を確認し、再度お試しください。（${status}）`;
 };
