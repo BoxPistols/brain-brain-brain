@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Wifi, WifiOff, Loader, Key, Zap, HelpCircle, Eye, EyeOff, X, Trash2 } from 'lucide-react'
-import { MODELS, isProMode } from '../../constants/models'
+import { MODELS, AUTO_MODEL_ID, isProMode } from '../../constants/models'
 import { ConnStatus } from '../../types'
 import { T } from '../../constants/theme'
 import { HelpModal } from './HelpModal'
@@ -14,6 +14,9 @@ interface SettingsModalProps {
     runConnTest: (apiKey?: string) => void
     apiKey: string
     setApiKey: (key: string) => void
+    sessionCost?: number
+    lastUsedModel?: string | null
+    freeRemaining?: { remaining: number; limit: number; resetAt?: number } | null
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -24,6 +27,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     runConnTest,
     apiKey,
     setApiKey,
+    sessionCost = 0,
+    lastUsedModel,
+    freeRemaining,
 }) => {
     const [showKey, setShowKey] = useState(false)
     const [showHelp, setShowHelp] = useState(false)
@@ -51,6 +57,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             <>
                                 <span className='w-1.5 h-1.5 rounded-full bg-slate-400' />
                                 フリーモード
+                                {freeRemaining && (
+                                    <span className='ml-0.5 opacity-70'>
+                                        （{freeRemaining.limit - freeRemaining.remaining}/{freeRemaining.limit}件使用済み）
+                                    </span>
+                                )}
                             </>
                         )}
                     </span>
@@ -119,26 +130,43 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <div className={`pt-2 border-t ${T.div}`}>
                     <p className={`text-xs font-medium ${T.t2} mb-1.5`}>モデル</p>
                     <div className='flex gap-1.5 flex-wrap'>
-                        {MODELS.map((m) => (
-                            <button
-                                key={m.id}
-                                onClick={() => {
-                                    setModelId(m.id)
-                                    setConnStatus({ status: 'idle', msg: '' })
-                                }}
-                                className={`px-2.5 py-1.5 rounded-lg border transition text-xs text-left ${
-                                    modelId === m.id
-                                        ? 'bg-slate-800 dark:bg-slate-700 border-slate-600 dark:border-slate-500 text-slate-100 font-medium'
-                                        : `${T.btnGhost} border-slate-200 dark:border-slate-700/60`
-                                }`}
-                            >
-                                <span className='font-medium'>{m.label}</span>{' '}
-                                <span className={`${T.t3} font-normal`}>
-                                    {m.cost} · {m.t}
-                                </span>
-                            </button>
-                        ))}
+                        {MODELS.map((m) => {
+                            const isAuto = m.id === AUTO_MODEL_ID
+                            const isSelected = modelId === m.id
+                            let cls: string
+                            if (isSelected && isAuto) {
+                                cls = 'bg-emerald-600 dark:bg-emerald-700 border-emerald-500 dark:border-emerald-500 text-white font-medium'
+                            } else if (isSelected) {
+                                cls = 'bg-slate-800 dark:bg-slate-700 border-slate-600 dark:border-slate-500 text-slate-100 font-medium'
+                            } else if (isAuto) {
+                                cls = `${T.btnGhost} border-emerald-200 dark:border-emerald-700/60`
+                            } else {
+                                cls = `${T.btnGhost} border-slate-200 dark:border-slate-700/60`
+                            }
+                            return (
+                                <button
+                                    key={m.id}
+                                    onClick={() => {
+                                        setModelId(m.id)
+                                        setConnStatus({ status: 'idle', msg: '' })
+                                    }}
+                                    className={`px-2.5 py-1.5 rounded-lg border transition text-xs text-left ${cls}`}
+                                >
+                                    <span className='font-medium'>{m.label}</span>{' '}
+                                    <span className={isSelected ? 'opacity-70 font-normal' : `${T.t3} font-normal`}>
+                                        {m.cost} · {m.t}
+                                    </span>
+                                </button>
+                            )
+                        })}
                     </div>
+                    {/* セッションコスト / 最終使用モデル */}
+                    {(sessionCost > 0 || lastUsedModel) && (
+                        <div className={`mt-2 flex items-center gap-3 text-[10px] ${T.t3}`}>
+                            {sessionCost > 0 && <span>セッション累計: ¥{sessionCost.toFixed(2)}</span>}
+                            {lastUsedModel && <span>最終モデル: {lastUsedModel}</span>}
+                        </div>
+                    )}
                 </div>
 
                 {/* Connection test */}

@@ -71,9 +71,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'CAナレッジDB×ケーススタディ標準化', description: 'トップCAの「最初の15分の質問設計」「年収交渉のトークスクリプト」「内定後の不安解消フロー」をNotion動画+テキストでドキュメント化。月次ケーススタディ共有会と組み合わせ、新人CA立ち上がり6ヶ月→3ヶ月を目標に設計。', priority: 'Medium', effort: 'Low', impact: 'High' },
         { title: 'JD（求人票）AI品質改善', description: '企業クライアントの既存JDをAIで分析し「エンジニアが離脱するポイント」を特定。技術スタック・開発環境・チーム構成・意思決定スピードなどエンジニアが重視する情報を追記するテンプレートを提供。JD品質向上で応募率・内定承諾率の改善を同時に図る。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -104,9 +101,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'コンテンツアトリビューション計測基盤', description: 'GA4×Looker StudioでコンテンツごとのCV貢献度を可視化。「最終流入ページ」だけでなく「転職意向が上がった接点」をマルチタッチ計測し、ROIの高いコンテンツタイプを特定。量産継続か撤退かの意思決定基準を整備。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: 'AIOランディングページ新設', description: 'AI検索で想定される質問「エンジニア転職 [スキル名]」「[年収帯] エンジニア キャリア」に対応したQ&A形式のLPを20本新設。各LPにFAQ Schema・著者Schemaを実装し生成AI検索での引用を狙う。既存SEO資産を活用したリライト中心で開発コスト最小化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -135,9 +129,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'エンジニア向けイベント開催', description: '月1回の技術勉強会・ハッカソンで潜在候補者との接点を構築。イベント参加者の応募転換率は通常の5倍。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
         { title: '採用サイトのリニューアル', description: '技術スタック・開発文化・チーム紹介を中心にしたエンジニア特化の採用サイトに刷新。動画インタビュー+GitHub活動の可視化で透明性を担保。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -204,9 +195,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'ERP並行稼働コスト削減', description: '移行期間中の並行稼働コストを最小化するため機能別停止スケジュールを設計。年間8,000万円→移行完了時ゼロのロードマップを明示。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
         { title: 'COE（デジタル推進室）設立', description: 'IT部門とは別にビジネス理解のあるDX推進室を設置。外部DXコンサル1名常駐で内製化を加速。2年で内製比率70%を目標。', priority: 'Low', effort: 'Medium', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -236,9 +224,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '競合PoC比較分析', description: 'クボタ・ヤンマー・スタートアップのIoTソリューションをベンチマーク分析し差別化ポイントを特定。「食品メーカー×農家」の川上統合モデルを唯一の競合優位として設計。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
         { title: '投資回収シナリオ3案作成', description: 'Bull/Base/Bearの3シナリオでROI試算。投資回収5年以内・市場シェア3%のBaseシナリオを経営会議提出用に整備。Go/No-Goの判断基準を定量化。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -268,9 +253,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'パートナー販売チャネル開拓', description: 'SIer・コンサル10社とのリセラー契約でCAC/2を実現。紹介フィー設計とパートナー向けトレーニング資料を整備し間接販売比率30%を目標。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
         { title: 'プロダクトレッドGrowth要素追加', description: 'フリートライアルの活用データを分析し「アハモーメント」を特定。オンボーディングフローを最適化しトライアル→有料転換率を現状12%→20%へ。', priority: 'Low', effort: 'Medium', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -299,9 +281,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '配送ルート最適化AI', description: 'AIルート最適化ツール（Hacobu MOVO）を12拠点に展開。燃料費15%・残業時間20%削減を実現。ドライバー不足問題の緩和にも寄与。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '品質管理デジタル化', description: 'IoT温度センサー+QRコードで冷凍品の温度履歴を自動記録。不良品発生時の原因追跡を4時間→15分に短縮。食品安全基準への対応もトレーサビリティ強化で同時解決。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -330,9 +309,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'a11y自動テスト統合', description: 'axe-core+Storybookでa11yテストをCI/CDに組み込み。WCAG AA準拠チェックを自動化し新規コンポーネントのa11y違反を即座に検出。現状40%→100%の達成ロードマップ策定。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: 'DS採用インセンティブ制度', description: 'プロダクトチームのスプリントKPIにDS採用率を追加。「DS使用＝開発速度2倍」のデータを実証し自発的採用を促進。DS非採用のカスタム実装にはデザインレビューの承認を必須化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -361,9 +337,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'シンガポールPoC（6ヶ月）', description: 'シンガポールで日系企業10社をパイロット顧客として獲得。現地サポートはリモート+月1回の訪問で対応。NPS・解約率・拡張意欲のデータを取得し全市場展開の投資判断材料とする。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '現地規制サンドボックス活用', description: 'シンガポールMASのFinTechサンドボックス、タイのDigital Economyプログラムを活用し規制対応コストを補助金で賄う。各国のIT展示会（Gitex Asia・Slush Singapore）でブランド認知を獲得。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -393,9 +366,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '開発者生産性ダッシュボード', description: 'DORAメトリクス（デプロイ頻度・リードタイム・変更失敗率・復旧時間）を計測し週次レビューに組み込む。技術的負債削減の進捗を定量化し経営層への可視化を確保。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
         { title: 'AIコードレビュー導入', description: 'AIコードレビューツールを導入しコードレビュー工数を削減。セキュリティスキャン・バグ検出を自動化しレビュアーは設計判断に集中できる環境を整備。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -424,9 +394,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'IA（情報設計）リファクタリング', description: 'カードソーティング調査で現行のナビゲーション構造を検証し、ユーザーのメンタルモデルに合わせてサイドバー・設定画面を再設計。', priority: 'Medium', effort: 'High', impact: 'Medium' },
         { title: 'VOCダッシュボード整備', description: 'NPS・サポートチケット・セッション録画（Hotjar）を週次でレビューするVOCループを確立。定性フィードバックを優先度マトリクスに変換するプロセスを標準化。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -455,9 +422,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'アップセル導線の自動化', description: '利用量が閾値を超えた企業に自動でアップグレード提案。既存データから「次に必要になる機能」を予測しタイミング最適化。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '解約理由の構造化分析', description: '直近6ヶ月の解約企業全件にExitインタビューを実施し原因を5分類に構造化。再発防止策を優先度順に実装。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -486,9 +450,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'UGCレビュープログラム', description: '購入者にレビュー投稿インセンティブ（次回クーポン）を提供。リアルな口コミが新規CVRとリピート率の両方を改善。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
         { title: 'VIP顧客プログラム', description: '累計購入額上位10%にVIPステータスを付与。先行販売・限定商品・1on1カウンセリングで顧客単価+30%とLTV最大化を同時達成。', priority: 'Medium', effort: 'Medium', impact: 'High' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -517,9 +478,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'インシデント対応の自動化', description: 'PagerDuty+Runbook自動化で障害検知→初動対応を5分以内に短縮。ポストモーテム文化を定着させ再発防止を構造化。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '加盟店オンボーディングの効率化', description: 'API連携ドキュメント+サンドボックス環境を整備し、加盟店の技術検証期間を4週間→1週間に短縮。開発者体験の改善が加盟店獲得の加速要因。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -548,9 +506,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'カスタマーサクセス先行投資', description: '有料転換前からCSが伴走する「コンシェルジュ型トライアル」を上位20社に提供。転換率を個別対応で15%→30%に引き上げ成功パターンを型化。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: '導入事例の量産と横展開', description: 'PMFスコア高コホートの成功事例を3本制作。同業種への横展開で獲得効率を改善。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -579,9 +534,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'パーソナライズレコメンド実装', description: '閲覧・購入履歴ベースのAIレコメンドで回遊率と購入点数を改善。SKU 12,000点の強みを活かしクロスセル率+20%。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: 'カゴ落ちリカバリー自動化', description: 'カゴ落ち後30分・3時間・24時間のステップメール+LINE通知で回収率を改善。決済手段追加（BNPL）でカゴ落ち率-15%。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -610,9 +562,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '利用量ベースの従量課金追加', description: 'ストレージ・API呼出数・外部連携数に従量課金を追加。ヘビーユーザーから適正な対価を得つつ、小規模利用者の参入障壁を下げる。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
         { title: '価格改定コミュニケーション計画', description: '改定90日前の事前告知→60日前のFAQ公開→30日前の個別対応。CSチーム向けの想定Q&A50問を準備し、問い合わせ対応を標準化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -641,9 +590,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '産業医連携機能', description: '産業医面談のスケジュール管理+面談記録をアプリに統合。法定義務対応をワンストップ化し企業の管理負荷を削減。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
         { title: 'アノニマスレポート機能', description: '組織全体のメンタルヘルス傾向を匿名集計しダッシュボード化。人事が早期にリスクを把握でき、導入企業への提供価値を向上。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -672,9 +618,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '拠点間幹線輸送の最適化', description: '8拠点間の幹線輸送ルート・頻度を需要データに基づき再設計。空車回送率を現状25%→10%に改善し燃料費削減。', priority: 'Medium', effort: 'Medium', impact: 'High' },
         { title: 'エコドライブ研修+インセンティブ', description: '燃費データに基づくドライバー別エコドライブスコアを算出。上位者にインセンティブを付与し全体の燃費10%改善。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
   {
@@ -703,9 +646,6 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'ブランド浸透プログラム', description: '月次のブランドアンバサダー研修+社内ブランドポータルサイトで全社浸透を促進。浸透度を四半期サーベイで計測しPDCA。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
         { title: 'デザインベンダー統合', description: '3社別々のベンダーを1社に統合しコスト削減+品質統一。RFP実施でデザインシステム運用に対応可能なパートナーを選定。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
-      serviceUrl: '',
-      competitors: [],
-      kpis: [],
     },
   },
 ];

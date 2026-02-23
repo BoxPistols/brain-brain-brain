@@ -49,10 +49,10 @@ export const SupportAIChat: React.FC<Props> = ({ apiKey }) => {
                 { role: 'system' as const, content: SUPPORT_SYSTEM_PROMPT },
                 ...recent,
             ]
-            const reply = isProMode(apiKey)
+            const result = isProMode(apiKey)
                 ? await callAIWithKey(apiKey, SUPPORT_MODEL, chatMsgs, 512)
                 : await callAI(SUPPORT_MODEL, chatMsgs, 512)
-            setMessages(prev => [...prev, { role: 'assistant', content: reply }])
+            setMessages(prev => [...prev, { role: 'assistant', content: result.content }])
         } catch (err) {
             console.error('[SupportChat]', err)
             setMessages(prev => [...prev, {

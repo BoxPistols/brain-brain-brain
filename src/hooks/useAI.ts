@@ -3,8 +3,11 @@ import { isHRContext, getHRDomainContext } from '../constants/domainContext';
 import { parseAIJson } from '../utils/parseAIJson';
 import { BrainstormForm, AIResults, ChatMessage, ConnStatus, Idea } from '../types';
 import { callAI, callAIWithKey, testConn, DEFAULT_MODEL_ID, isProMode } from '../constants/models';
+import type { APICallResult } from '../constants/models';
 import { FREE_DEPTH, PRO_DEPTH } from '../constants/prompts';
 import { MAX_HIST, CHAT_MAX_TOKENS } from '../constants/config';
+import { selectModel, type TaskType, type ModelRouterInput } from '../utils/modelRouter';
+import { addUsage, resetCycle, getSessionTotal, checkBudget, type BudgetWarning } from '../utils/costTracker';
 
 /** 競合・データ情報のプロンプト文字列を生成 */
 function buildCompetitiveIntelContext(form: BrainstormForm): string {
@@ -41,6 +44,10 @@ export const useAI = () => {
   const [drillingDownId, setDrillingDownId] = useState<string | null>(null);
   const [hist, setHist] = useState<ChatMessage[]>([]);
   const [activeForm, setActiveForm] = useState<BrainstormForm | null>(null);
+  const [costWarning, setCostWarning] = useState<BudgetWarning | null>(null);
+  const [sessionCost, setSessionCost] = useState(0);
+  const [lastUsedModel, setLastUsedModel] = useState<string | null>(null);
+  const [freeRemaining, setFreeRemaining] = useState<{ remaining: number; limit: number; resetAt?: number } | null>(null);
 
   const runConnTest = useCallback(async (apiKey = '') => {
     setConnStatus({ status: 'testing', msg: '' });
@@ -51,6 +58,42 @@ export const useAI = () => {
       setConnStatus({ status: 'error', msg: e instanceof Error ? e.message : String(e) });
     }
   }, [modelId]);
+
+  /** API呼び出し + モデル自動選択 + コスト追跡 */
+  const callWithTracking = async (
+    taskType: TaskType,
+    msgs: ChatMessage[],
+    maxTokens: number,
+    jsonMode: boolean,
+    apiKey: string,
+    routerInput: ModelRouterInput,
+  ): Promise<{ content: string; resolvedModel: string }> => {
+    const pro = isProMode(apiKey);
+    const decision = selectModel(modelId, routerInput, pro);
+    const resolvedId = decision.modelId;
+
+    console.debug(`[modelRouter] ${taskType}: ${decision.reason} → ${resolvedId}`);
+
+    const result: APICallResult = pro
+      ? await callAIWithKey(apiKey.trim(), resolvedId, msgs, maxTokens, jsonMode)
+      : await callAI(resolvedId, msgs, maxTokens, jsonMode);
+
+    // コスト追跡
+    if (result.usage) {
+      const cost = addUsage({ modelId: resolvedId, promptTokens: result.usage.prompt_tokens, completionTokens: result.usage.completion_tokens });
+      setSessionCost(getSessionTotal());
+      const warning = checkBudget(cost, pro);
+      if (warning) setCostWarning(warning);
+    }
+
+    // Free mode: rate limit 残り回数更新
+    if (result.rateLimit != null) {
+      setFreeRemaining(result.rateLimit);
+    }
+
+    setLastUsedModel(resolvedId);
+    return { content: result.content, resolvedModel: resolvedId };
+  };
 
   const buildPrompt = (pn: string, form: BrainstormForm, dep: number, sesLabel: string, issueStr: string, proMode: boolean) => {
     const dc = proMode ? PRO_DEPTH[dep] : FREE_DEPTH[dep];
@@ -210,12 +253,12 @@ JSONのみ回答:
     setActiveForm(form);
 
     const prompt = buildPrompt(pn, form, dep, sesLabel, issueStr, proMode);
+    resetCycle();
 
     try {
       const msg: ChatMessage = { role: 'user', content: prompt };
-      const raw = proMode
-        ? await callAIWithKey(apiKey.trim(), modelId, [msg], dc.maxTokens, true)
-        : await callAI(modelId, [msg], dc.maxTokens, false);
+      const routerInput: ModelRouterInput = { taskType: 'generate', depth: dep, form, messages: [msg] };
+      const { content: raw } = await callWithTracking('generate', [msg], dc.maxTokens, true, apiKey, routerInput);
       const parsed = parseAIJson(raw);
       
       setResults(parsed);
@@ -254,7 +297,6 @@ JSONのみ回答:
     if (!reviewText.trim() || !results) return;
     setRefining(true);
     setError(null);
-    const proMode = isProMode(apiKey);
 
     try {
       // keyIssue / funnelStage を注入
@@ -300,9 +342,8 @@ ${pastRefinements ? `\n【過去のブラッシュアップ履歴】\n${pastRefi
 \`\`\`` };
       const recentHist = hist.slice(-MAX_HIST);
       const h2 = [systemMsg, ...recentHist, msg];
-      const raw = proMode
-        ? await callAIWithKey(apiKey.trim(), modelId, h2, CHAT_MAX_TOKENS)
-        : await callAI(modelId, h2, CHAT_MAX_TOKENS);
+      const routerInput: ModelRouterInput = { taskType: 'refine', depth: 2, messages: h2 };
+      const { content: raw } = await callWithTracking('refine', h2, CHAT_MAX_TOKENS, false, apiKey, routerInput);
 
       // JSONを抽出・パース（parseAIJsonで安全に処理）
       let structRes: AIResults | undefined;
@@ -417,7 +458,6 @@ ${pastRefinements ? `\n【過去のブラッシュアップ履歴】\n${pastRefi
     if (!results) return;
     setDiving(true);
     setError(null);
-    const proMode = isProMode(apiKey);
     const currentResults = results;
 
     try {
@@ -466,10 +506,8 @@ ${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}${ddCiCtx ? 
       // 会話履歴を活用
       const recentHist = hist.slice(-MAX_HIST);
       const messages: ChatMessage[] = [systemMsg, ...recentHist, userMsg];
-
-      const raw = proMode
-        ? await callAIWithKey(apiKey.trim(), modelId, messages, CHAT_MAX_TOKENS)
-        : await callAI(modelId, messages, CHAT_MAX_TOKENS);
+      const routerInput: ModelRouterInput = { taskType: 'deepDive', depth: 2, messages };
+      const { content: raw } = await callWithTracking('deepDive', messages, CHAT_MAX_TOKENS, false, apiKey, routerInput);
 
       setResults(p => p ? ({ ...p, deepDives: [...(p.deepDives || []), { question: q, answer: raw }] }) : p);
       // 深掘りの会話も履歴に追加
@@ -496,7 +534,6 @@ ${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}${ddCiCtx ? 
     const drillId = `${idea.title}-${ideaIndex}`;
     setDrillingDownId(drillId);
     setError(null);
-    const proMode = isProMode(apiKey);
 
     try {
       const systemMsg: ChatMessage = {
@@ -516,9 +553,9 @@ description には必ず「例: 」で始まる具体的な行動例を含め、
 [{"title":"具体的なサブアイデア名","description":"具体的アクションと期待効果","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High"}]`,
       };
 
-      const raw = proMode
-        ? await callAIWithKey(apiKey.trim(), modelId, [systemMsg, userMsg], CHAT_MAX_TOKENS)
-        : await callAI(modelId, [systemMsg, userMsg], CHAT_MAX_TOKENS);
+      const drillMsgs = [systemMsg, userMsg];
+      const routerInput: ModelRouterInput = { taskType: 'drillDown', depth: 2, messages: drillMsgs };
+      const { content: raw } = await callWithTracking('drillDown', drillMsgs, CHAT_MAX_TOKENS, false, apiKey, routerInput);
 
       // JSON配列を抽出・パース
       const jsonMatch = raw.match(/\[[\s\S]*\]/);
@@ -556,6 +593,11 @@ description には必ず「例: 」で始まる具体的な行動例を含め、
     generate,
     refine,
     deepDive,
-    drillDownIdea
+    drillDownIdea,
+    costWarning,
+    setCostWarning,
+    sessionCost,
+    lastUsedModel,
+    freeRemaining,
   };
 };

@@ -50,6 +50,7 @@ export default function App() {
         loading, results, setResults, error,
         reviewText, setReviewText, refining, diving, drillingDownId,
         generate, refine, deepDive, drillDownIdea,
+        costWarning, setCostWarning, sessionCost, lastUsedModel, freeRemaining,
     } = useAI()
 
     // Handle seed data injection into AI state
@@ -204,6 +205,8 @@ export default function App() {
                     onShowLogs={() => setShowLogs(true)}
                     showCfg={showCfg}
                     onToggleCfg={() => setShowCfg(s => !s)}
+                    lastUsedModel={lastUsedModel}
+                    freeRemaining={freeRemaining}
                 />
 
                 {/* ── Config Panel ── */}
@@ -216,6 +219,9 @@ export default function App() {
                         runConnTest={runConnTest}
                         apiKey={apiKey}
                         setApiKey={setApiKey}
+                        sessionCost={sessionCost}
+                        lastUsedModel={lastUsedModel}
+                        freeRemaining={freeRemaining}
                     />
                 )}
 
@@ -233,6 +239,25 @@ export default function App() {
                                 proMode={proMode}
                                 showValidation={showValidation}
                             />
+
+                            {costWarning && (
+                                <div className={`mb-3 p-2.5 rounded-lg flex items-start gap-2 border ${
+                                    costWarning.severity === 'critical' ? 'bg-red-50 dark:bg-red-900/15 border-red-200 dark:border-red-700/40' :
+                                    costWarning.severity === 'warn' ? 'bg-amber-50 dark:bg-amber-900/15 border-amber-200 dark:border-amber-700/40' :
+                                    'bg-blue-50 dark:bg-blue-900/15 border-blue-200 dark:border-blue-700/40'
+                                }`}>
+                                    <AlertCircle className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${
+                                        costWarning.severity === 'critical' ? 'text-red-500' :
+                                        costWarning.severity === 'warn' ? 'text-amber-500' : 'text-blue-500'
+                                    }`} />
+                                    <p className={`text-xs flex-1 ${
+                                        costWarning.severity === 'critical' ? 'text-red-700 dark:text-red-300' :
+                                        costWarning.severity === 'warn' ? 'text-amber-700 dark:text-amber-300' :
+                                        'text-blue-700 dark:text-blue-300'
+                                    }`}>{costWarning.message}</p>
+                                    <button onClick={() => setCostWarning(null)} className='text-xs opacity-50 hover:opacity-100'>✕</button>
+                                </div>
+                            )}
 
                             {error && (
                                 <div className='mb-3 p-2.5 rounded-lg bg-red-50 dark:bg-red-900/15 border border-red-200 dark:border-red-700/40 flex items-start gap-2'>
