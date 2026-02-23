@@ -28,7 +28,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '企業クライアントのサクセス設計', description: '採用後3ヶ月・6ヶ月のフォローアップを標準化し、入社者の定着率データを企業に提供。「採用して終わり」から「採用後の定着支援」に価値を拡張することで、リピート率と単価の両立を図る。定着率データはEEATの強化にも活用可能。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: 'CA業務 AI・DX化',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -54,7 +54,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'JD（求人票）AI品質改善', description: '企業クライアントの既存JDをAIで分析し「エンジニアが離脱するポイント」を特定。技術スタック・開発環境・チーム構成・意思決定スピードなどエンジニアが重視する情報を追記するテンプレートを提供。JD品質向上で応募率・内定承諾率の改善を同時に図る。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: '求人メディア AIO転換',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -81,7 +81,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'AIOランディングページ新設', description: 'AI検索で想定される質問「エンジニア転職 [スキル名]」「[年収帯] エンジニア キャリア」に対応したQ&A形式のLPを20本新設。各LPにFAQ Schema・著者Schemaを実装し生成AI検索での引用を狙う。既存SEO資産を活用したリライト中心で開発コスト最小化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: '採用ブランディング',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -106,7 +106,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '採用サイトのリニューアル', description: '技術スタック・開発文化・チーム紹介を中心にしたエンジニア特化の採用サイトに刷新。動画インタビュー+GitHub活動の可視化で透明性を担保。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: 'HR SaaS グロース',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 3,
@@ -139,7 +139,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       deepDive: `### PMF検証の定量アプローチは？\n\n## Rahul Vohra式PMFスコア適用\n\n| 指標 | 現状 | PMF水準 |\n|---|---|---|\n| 「なくなったら残念」% | 測定未 | **40%以上** |\n| NPS（51-200名） | +38 | 目標+50 |\n| 30日リテンション | 62% | 目標80% |\n| Organic比率 | 12% | 目標30% |\n\n## 推奨アクション\n\n1. **Sean Ellis Test** を既存顧客全件に実施（1週間で完了可能）\n2. セグメント別にNPS+40超の顧客コホートを特定 → ICP（理想顧客プロファイル）を再定義\n3. ICPに絞った新規獲得にリソース集中し、PMFスコアを月次計測`,
       refinement: `## 優先度付きロードマップ（90日）\n\n**Phase 1（〜30日）：止血**\n- オンボーディングフロー刷新（MVE設計）\n- ヘルススコアβ版リリース\n- 50名以下セグメントへの価格改定通知\n\n**Phase 2（31〜60日）：基盤**\n- PLGバイラル機能リリース\n- パートナー候補30社へのアウトリーチ\n- CS専任採用（1名）\n\n**Phase 3（61〜90日）：加速**\n- PLGフリーミアム正式ローンチ\n- AI機能PoC開始\n- QBRプログラム全顧客展開\n\n> **KPI確認ポイント**：Day30時点でチャーン4.5%以下、Day60でLTV/CAC>2.2を達成できていれば軌道上`,
     },
-  },,
+  },
   {
     label: 'DX推進 製造業',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -166,7 +166,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'COE（デジタル推進室）設立', description: 'IT部門とは別にビジネス理解のあるDX推進室を設置。外部DXコンサル1名常駐で内製化を加速。2年で内製比率70%を目標。', priority: 'Low', effort: 'Medium', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: '新規事業 PoC判断',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -192,7 +192,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '投資回収シナリオ3案作成', description: 'Bull/Base/Bearの3シナリオでROI試算。投資回収5年以内・市場シェア3%のBaseシナリオを経営会議提出用に整備。Go/No-Goの判断基準を定量化。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: 'マーケ GTM戦略',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -218,7 +218,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'プロダクトレッドGrowth要素追加', description: 'フリートライアルの活用データを分析し「アハモーメント」を特定。オンボーディングフローを最適化しトライアル→有料転換率を現状12%→20%へ。', priority: 'Low', effort: 'Medium', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: 'オペレーション改革',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -243,7 +243,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '品質管理デジタル化', description: 'IoT温度センサー+QRコードで冷凍品の温度履歴を自動記録。不良品発生時の原因追跡を4時間→15分に短縮。食品安全基準への対応もトレーサビリティ強化で同時解決。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: 'デザインシステム整備',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -268,7 +268,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'DS採用インセンティブ制度', description: 'プロダクトチームのスプリントKPIにDS採用率を追加。「DS使用＝開発速度2倍」のデータを実証し自発的採用を促進。DS非採用のカスタム実装にはデザインレビューの承認を必須化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: '海外展開戦略',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -293,7 +293,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '現地規制サンドボックス活用', description: 'シンガポールMASのFinTechサンドボックス、タイのDigital Economyプログラムを活用し規制対応コストを補助金で賄う。各国のIT展示会（Gitex Asia・Slush Singapore）でブランド認知を獲得。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: 'プロダクト ロードマップ',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -319,7 +319,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'AIコードレビュー導入', description: 'AIコードレビューツールを導入しコードレビュー工数を削減。セキュリティスキャン・バグ検出を自動化しレビュアーは設計判断に集中できる環境を整備。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: 'プロダクト UXリデザイン',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -344,7 +344,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'VOCダッシュボード整備', description: 'NPS・サポートチケット・セッション録画（Hotjar）を週次でレビューするVOCループを確立。定性フィードバックを優先度マトリクスに変換するプロセスを標準化。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: 'SaaS 解約防止',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -369,7 +369,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '解約理由の構造化分析', description: '直近6ヶ月の解約企業全件にExitインタビューを実施し原因を5分類に構造化。再発防止策を優先度順に実装。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: 'D2Cブランド CX設計',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -394,7 +394,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'VIP顧客プログラム', description: '累計購入額上位10%にVIPステータスを付与。先行販売・限定商品・1on1カウンセリングで顧客単価+30%とLTV最大化を同時達成。', priority: 'Medium', effort: 'Medium', impact: 'High' },
       ],
     },
-  },,
+  },
   {
     label: 'フィンテック規制対応',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -419,7 +419,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '加盟店オンボーディングの効率化', description: 'API連携ドキュメント+サンドボックス環境を整備し、加盟店の技術検証期間を4週間→1週間に短縮。開発者体験の改善が加盟店獲得の加速要因。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: '教育SaaS PMF検証',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -444,7 +444,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '導入事例の量産と横展開', description: 'PMFスコア高コホートの成功事例を3本制作。同業種への横展開で獲得効率を改善。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: 'ECリプレイス計画',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -469,7 +469,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'カゴ落ちリカバリー自動化', description: 'カゴ落ち後30分・3時間・24時間のステップメール+LINE通知で回収率を改善。決済手段追加（BNPL）でカゴ落ち率-15%。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: 'サブスク価格改定',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -494,7 +494,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '価格改定コミュニケーション計画', description: '改定90日前の事前告知→60日前のFAQ公開→30日前の個別対応。CSチーム向けの想定Q&A50問を準備し、問い合わせ対応を標準化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: 'ヘルスケアアプリ',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -519,7 +519,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'アノニマスレポート機能', description: '組織全体のメンタルヘルス傾向を匿名集計しダッシュボード化。人事が早期にリスクを把握でき、導入企業への提供価値を向上。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: '物流DX 配車最適化',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -544,7 +544,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'エコドライブ研修+インセンティブ', description: '燃費データに基づくドライバー別エコドライブスコアを算出。上位者にインセンティブを付与し全体の燃費10%改善。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
   {
     label: 'ブランド統一 リブランディング',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -569,7 +569,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'デザインベンダー統合', description: '3社別々のベンダーを1社に統合しコスト削減+品質統一。RFP実施でデザインシステム運用に対応可能なパートナーを選定。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },,
+  },
 ];
 
 export const SEEDS = ['Horizon','Prism','Meridian','Lattice','Helix','Nimbus','Vertex','Cadence','Sextant','Anvil','Loom','Beacon','Torque','Fulcrum','Mosaic','Pinnacle','Obsidian','Catalyst','Epoch','Tessera'];
