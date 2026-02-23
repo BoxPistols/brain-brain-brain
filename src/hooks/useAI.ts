@@ -189,7 +189,7 @@ JSONのみ回答:
       onSuccess(parsed, prompt);
     } catch (e: unknown) {
       console.error(e);
-      setError(`生成に失敗しました: ${e instanceof Error ? e.message : String(e)}\n代わりにテンプレート結果を表示しています。⚙設定からAPIキーを登録するとAI分析が利用できます。`);
+      setError(`生成に失敗しました: ${e instanceof Error ? e.message : String(e)}\nテンプレート結果を表示しています。設定パネルからAPIキーを登録するとAI分析が利用できます。`);
       const issues = form.issues.filter(x => x.text.trim()).map(x => x.text).join('、') || '未指定';
       setResults({
         understanding: `「${form.productService}」の${sesLabel}セッション（目標: ${form.teamGoals}）。現状課題「${issues}」を踏まえた戦略提案。APIとの通信に失敗したためフォールバック結果を表示しています。`,
