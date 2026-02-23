@@ -1,5 +1,5 @@
-import { Steps } from 'intro.js-react'
-import { useMemo } from 'react'
+import { useEffect, useCallback } from 'react'
+import introJs from 'intro.js'
 import 'intro.js/introjs.css'
 
 interface AppTourProps {
@@ -53,24 +53,22 @@ const ALL_STEPS = [
 ]
 
 export const AppTour: React.FC<AppTourProps> = ({ enabled, onExit }) => {
-    // DOM上に存在する要素のステップのみ渡す（存在しない要素でクラッシュを防ぐ）
-    const steps = useMemo(
-        () => enabled ? ALL_STEPS.filter(s => document.querySelector(s.element)) : ALL_STEPS,
-        [enabled],
-    )
+    const stableOnExit = useCallback(onExit, [onExit])
 
-    if (enabled && steps.length === 0) {
-        onExit()
-        return null
-    }
+    useEffect(() => {
+        if (!enabled) return
 
-    return (
-        <Steps
-            enabled={enabled}
-            steps={steps}
-            initialStep={0}
-            onExit={onExit}
-            options={{
+        // DOM が確実にレンダリングされた後に開始
+        const raf = requestAnimationFrame(() => {
+            const steps = ALL_STEPS.filter(s => document.querySelector(s.element))
+            if (steps.length === 0) {
+                stableOnExit()
+                return
+            }
+
+            const tour = introJs()
+            tour.setOptions({
+                steps,
                 nextLabel: '次へ',
                 prevLabel: '戻る',
                 doneLabel: '完了',
@@ -80,7 +78,19 @@ export const AppTour: React.FC<AppTourProps> = ({ enabled, onExit }) => {
                 exitOnOverlayClick: true,
                 scrollToElement: true,
                 disableInteraction: false,
-            }}
-        />
-    )
+            })
+            tour.onexit(() => stableOnExit())
+            tour.oncomplete(() => stableOnExit())
+            tour.start()
+
+            cleanup = () => {
+                try { tour.exit(true) } catch { /* すでに終了済み */ }
+            }
+        })
+
+        let cleanup = () => { cancelAnimationFrame(raf) }
+        return () => cleanup()
+    }, [enabled, stableOnExit])
+
+    return null
 }
