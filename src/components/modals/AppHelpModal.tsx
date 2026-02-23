@@ -2,7 +2,7 @@ import React from 'react'
 import {
     X, HelpCircle, Sparkles, Target, Layers, SlidersHorizontal,
     Search, FlaskConical, Database, Eye, Columns2,
-    Sun, Zap, Clock, ChevronRight, Play, Navigation,
+    Sun, Zap, Clock, ChevronRight, Play, Navigation, Github,
 } from 'lucide-react'
 import { T } from '../../constants/theme'
 
@@ -10,6 +10,7 @@ interface AppHelpModalProps {
     onClose: () => void
     onStartTour?: () => void
     onStartVideo?: () => void
+    onStartResultsTour?: () => void
 }
 
 const Section: React.FC<{ title: string; children: React.ReactNode; noBorder?: boolean }> = ({ title, children, noBorder }) => (
@@ -52,7 +53,7 @@ const shortcuts = [
     { keys: ['Esc'], desc: 'モーダルを閉じる' },
 ]
 
-export const AppHelpModal: React.FC<AppHelpModalProps> = ({ onClose, onStartTour, onStartVideo }) => {
+export const AppHelpModal: React.FC<AppHelpModalProps> = ({ onClose, onStartTour, onStartVideo, onStartResultsTour }) => {
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
             <div
@@ -212,7 +213,7 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({ onClose, onStartTour
                     </Section>
 
                     {/* もう一度見る */}
-                    {(onStartVideo || onStartTour) && (
+                    {(onStartVideo || onStartTour || onStartResultsTour) && (
                         <Section title='もう一度見る' noBorder>
                             <div className='flex flex-wrap gap-2'>
                                 {onStartVideo && (
@@ -230,7 +231,16 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({ onClose, onStartTour
                                         className='flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-200 dark:hover:border-blue-700/40 transition-colors'
                                     >
                                         <Navigation className={`w-4 h-4 ${T.accentTxt}`} />
-                                        <span className={T.t1}>ガイドツアーを開始</span>
+                                        <span className={T.t1}>入力画面ガイド</span>
+                                    </button>
+                                )}
+                                {onStartResultsTour && (
+                                    <button
+                                        onClick={() => { onClose(); onStartResultsTour() }}
+                                        className='flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-200 dark:hover:border-blue-700/40 transition-colors'
+                                    >
+                                        <Target className={`w-4 h-4 ${T.accentTxt}`} />
+                                        <span className={T.t1}>分析画面ガイド</span>
                                     </button>
                                 )}
                             </div>
@@ -246,10 +256,19 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({ onClose, onStartTour
                 </div>
 
                 {/* Footer */}
-                <div className='px-6 py-4 border-t border-slate-200/60 dark:border-white/10 shrink-0'>
+                <div className='px-6 py-4 border-t border-slate-200/60 dark:border-white/10 shrink-0 flex items-center gap-3'>
+                    <a
+                        href='https://github.com/BoxPistols/ai-strategic-brainstorm'
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className={`p-2.5 rounded-xl border border-slate-200/60 dark:border-white/10 bg-white/60 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors ${T.t2}`}
+                        title='GitHub リポジトリ'
+                    >
+                        <Github className='w-[18px] h-[18px]' />
+                    </a>
                     <button
                         onClick={onClose}
-                        className='w-full py-2.5 rounded-xl text-sm font-medium cursor-pointer bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition-colors duration-200'
+                        className='flex-1 py-2.5 rounded-xl text-sm font-medium cursor-pointer bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition-colors duration-200'
                         title='ガイドを閉じる'
                     >
                         閉じる

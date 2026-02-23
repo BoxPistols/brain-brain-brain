@@ -76,7 +76,7 @@ const AnalysisBlock: React.FC<{
     index?: number;
 }> = ({ results, onDrillDown, drillingDownId, index = 0 }) => (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-        <div className={`${T.card} p-5`}>
+        <div className={`${T.card} p-5`} data-tour='result-understanding'>
             {results.keyIssue && (
                 <div className='mb-3 p-3 rounded-lg bg-rose-50 dark:bg-rose-900/10 border border-rose-200 dark:border-rose-800/30'>
                     <div className='flex items-start gap-2'>
@@ -98,12 +98,12 @@ const AnalysisBlock: React.FC<{
             <RichText text={results.understanding} />
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3'>
+        <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3' data-tour='result-cards'>
             {results.ideas.map((idea, i) => (
-                <ResultCard 
-                    key={`${idea.title}-${i}-${index}`} 
-                    idea={idea} 
-                    index={i} 
+                <ResultCard
+                    key={`${idea.title}-${i}-${index}`}
+                    idea={idea}
+                    index={i}
                     onDrillDown={onDrillDown}
                     drillingDownId={drillingDownId}
                 />
@@ -178,7 +178,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
                         <button onClick={onShowPreview} className={`p-1.5 rounded-lg ${T.btnGhost}`} title='レポートプレビュー'><Eye className='w-3.5 h-3.5' /></button>
                     )}
                     {onDownload && (
-                        <div ref={dlRef} className='relative'>
+                        <div ref={dlRef} className='relative' data-tour='result-download'>
                             <button onClick={() => setShowDlMenu(s => !s)} className={`flex items-center gap-0.5 p-1.5 rounded-lg ${T.btnGhost}`}>
                                 <Download className='w-3.5 h-3.5' /><ChevronDown className='w-2.5 h-2.5 opacity-50' />
                             </button>
@@ -256,7 +256,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
             {/* Suggestions & Input area */}
             <div className="pt-6 space-y-4">
                 {/* Deep-dive suggestions */}
-                <div className={`${T.cardFlat} p-3`}>
+                <div className={`${T.cardFlat} p-3`} data-tour='dive-suggestions'>
                     <h4 className={`text-xs font-semibold ${T.t2} mb-2 flex items-center gap-1`}>
                         <Search className='w-3 h-3' />
                         全体深掘りサジェスト
@@ -291,7 +291,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
                 </div>
 
                 {/* Review input */}
-                <div className={`${T.cardFlat} p-4`}>
+                <div className={`${T.cardFlat} p-4`} data-tour='review-input'>
                     <h4 className={`text-xs font-semibold ${T.t2} mb-2 flex items-center gap-1`}>
                         <MessageSquarePlus className='w-3 h-3' />
                         レビュー & ブラッシュアップ（履歴に追加されます）
