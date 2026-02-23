@@ -39,6 +39,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({
               disabled={!!drillingDownId}
               className={`p-1 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-30 cursor-pointer`}
               title="このアイデアを深掘り"
+              {...(index === 0 && depth === 0 ? { 'data-tour': 'result-drilldown' } : {})}
             >
               {isDrilling ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
             </button>

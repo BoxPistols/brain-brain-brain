@@ -10,6 +10,7 @@ interface AppHelpModalProps {
     onClose: () => void
     onStartTour?: () => void
     onStartVideo?: () => void
+    onStartResultsTour?: () => void
 }
 
 const Section: React.FC<{ title: string; children: React.ReactNode; noBorder?: boolean }> = ({ title, children, noBorder }) => (
@@ -52,7 +53,7 @@ const shortcuts = [
     { keys: ['Esc'], desc: 'モーダルを閉じる' },
 ]
 
-export const AppHelpModal: React.FC<AppHelpModalProps> = ({ onClose, onStartTour, onStartVideo }) => {
+export const AppHelpModal: React.FC<AppHelpModalProps> = ({ onClose, onStartTour, onStartVideo, onStartResultsTour }) => {
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
             <div
@@ -212,7 +213,7 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({ onClose, onStartTour
                     </Section>
 
                     {/* もう一度見る */}
-                    {(onStartVideo || onStartTour) && (
+                    {(onStartVideo || onStartTour || onStartResultsTour) && (
                         <Section title='もう一度見る' noBorder>
                             <div className='flex flex-wrap gap-2'>
                                 {onStartVideo && (
@@ -230,7 +231,16 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({ onClose, onStartTour
                                         className='flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-200 dark:hover:border-blue-700/40 transition-colors'
                                     >
                                         <Navigation className={`w-4 h-4 ${T.accentTxt}`} />
-                                        <span className={T.t1}>ガイドツアーを開始</span>
+                                        <span className={T.t1}>入力画面ガイド</span>
+                                    </button>
+                                )}
+                                {onStartResultsTour && (
+                                    <button
+                                        onClick={() => { onClose(); onStartResultsTour() }}
+                                        className='flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-200 dark:hover:border-blue-700/40 transition-colors'
+                                    >
+                                        <Target className={`w-4 h-4 ${T.accentTxt}`} />
+                                        <span className={T.t1}>分析画面ガイド</span>
                                     </button>
                                 )}
                             </div>

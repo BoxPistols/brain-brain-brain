@@ -17,6 +17,7 @@ import { LogPanel } from './components/modals/LogPanel'
 import { SettingsModal } from './components/modals/SettingsModal'
 import { AppHelpModal } from './components/modals/AppHelpModal'
 import { AppTour } from './components/tour/AppTour'
+import { ResultsTour } from './components/tour/ResultsTour'
 import { SupportWidget } from './components/support/SupportWidget'
 
 // Remotion は重いため初回訪問時のみ lazy load
@@ -74,6 +75,7 @@ export default function App() {
     const [showHelp, setShowHelp] = useState(false)
     const [showWelcomeVideo, setShowWelcomeVideo] = useState(() => !localStorage.getItem('ai-brainstorm-welcomed'))
     const [showTour, setShowTour] = useState(false)
+    const [showResultsTour, setShowResultsTour] = useState(false)
     const [showPrev, setShowPrev] = useState(false)
     const [showValidation, setShowValidation] = useState(false)
     const [isSeedData, setIsSeedData] = useState(false)
@@ -92,6 +94,7 @@ export default function App() {
             if (e.key === 'Escape') {
                 if (showLogs) setShowLogs(false)
                 else if (showPrev) setShowPrev(false)
+                else if (showResultsTour) { localStorage.setItem('ai-brainstorm-results-toured', '1'); setShowResultsTour(false) }
                 else if (showTour) { localStorage.setItem('ai-brainstorm-visited', '1'); setShowTour(false) }
                 else if (showHelp) setShowHelp(false)
                 else if (showCfg) setShowCfg(false)
@@ -99,7 +102,7 @@ export default function App() {
         }
         document.addEventListener('keydown', handler)
         return () => document.removeEventListener('keydown', handler)
-    }, [showLogs, showPrev, showTour, showHelp, showCfg])
+    }, [showLogs, showPrev, showResultsTour, showTour, showHelp, showCfg])
 
     // Progress simulation during loading
     useEffect(() => {
@@ -140,6 +143,16 @@ export default function App() {
         }, 300)
         return () => clearInterval(tick)
     }, [refining, proMode])
+
+    // 初回の結果表示時に結果ツアーを自動起動
+    const resultsTourTriggered = useRef(false)
+    useEffect(() => {
+        if (results && !resultsTourTriggered.current && !localStorage.getItem('ai-brainstorm-results-toured')) {
+            resultsTourTriggered.current = true
+            // 結果のレンダリング完了を待つ
+            requestAnimationFrame(() => setShowResultsTour(true))
+        }
+    }, [results])
 
     const cm = MODELS.find((m) => m.id === modelId) || MODELS[0]
     const displaySuggestions = useMemo(
@@ -343,11 +356,13 @@ export default function App() {
                 </Suspense>
             )}
             <AppTour enabled={showTour} onExit={() => { localStorage.setItem('ai-brainstorm-visited', '1'); setShowTour(false) }} />
+            <ResultsTour enabled={showResultsTour} onExit={() => { localStorage.setItem('ai-brainstorm-results-toured', '1'); setShowResultsTour(false) }} />
             {showHelp && (
                 <AppHelpModal
                     onClose={() => setShowHelp(false)}
                     onStartTour={() => requestAnimationFrame(() => setShowTour(true))}
                     onStartVideo={() => setShowWelcomeVideo(true)}
+                    onStartResultsTour={results ? () => requestAnimationFrame(() => setShowResultsTour(true)) : undefined}
                 />
             )}
             {showPrev && report && (
