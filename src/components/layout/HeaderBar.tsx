@@ -153,9 +153,9 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                 </div>
                 <div className='hidden lg:flex items-center gap-0.5 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/40'>
                     {([
-                        { key: 'leftFocus', icon: PanelLeftClose, title: '左メイン (70:30)' },
+                        { key: 'leftFocus', icon: PanelRightClose, title: '左メイン (70:30)' },
                         { key: 'equal', icon: Columns2, title: '均等 (50:50)' },
-                        { key: 'rightFocus', icon: PanelRightClose, title: '右メイン (30:70)' },
+                        { key: 'rightFocus', icon: PanelLeftClose, title: '右メイン (30:70)' },
                     ] as const).map(({ key, icon: Icon, title }) => (
                         <button
                             key={key}
