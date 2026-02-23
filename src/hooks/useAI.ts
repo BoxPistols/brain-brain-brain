@@ -267,15 +267,12 @@ ${pastRefinements ? `\n【過去のブラッシュアップ履歴】\n${pastRefi
         ? await callAIWithKey(apiKey.trim(), modelId, h2, CHAT_MAX_TOKENS)
         : await callAI(modelId, h2, CHAT_MAX_TOKENS);
 
-      // JSONを抽出・パース
+      // JSONを抽出・パース（parseAIJsonで安全に処理）
       let structRes: AIResults | undefined;
       try {
-        const jsonMatch = raw.match(/```json\n([\s\S]*?)\n```/) || raw.match(/{[\s\S]*}/);
-        if (jsonMatch) {
-          structRes = JSON.parse(jsonMatch[1] || jsonMatch[0]);
-        }
-      } catch (e) {
-        console.warn('Structured JSON parse failed', e);
+        structRes = parseAIJson(raw);
+      } catch {
+        // Markdown 混在の回答ではJSON抽出できない場合がある（正常）
       }
 
       const entry = { review: reviewText, answer: raw, results: structRes };

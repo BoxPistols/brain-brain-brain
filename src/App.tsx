@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useEffect, useMemo, lazy, Suspense } from 'react'
 import { Sparkles, Eye, AlertCircle, GripVertical } from 'lucide-react'
 
 // Hooks
@@ -18,7 +18,9 @@ import { SettingsModal } from './components/modals/SettingsModal'
 import { AppHelpModal } from './components/modals/AppHelpModal'
 import { AppTour } from './components/tour/AppTour'
 import { SupportWidget } from './components/support/SupportWidget'
-import { WelcomeVideoModal } from './components/remotion/WelcomeVideoModal'
+
+// Remotion は重いため初回訪問時のみ lazy load
+const WelcomeVideoModal = lazy(() => import('./components/remotion/WelcomeVideoModal').then(m => ({ default: m.WelcomeVideoModal })))
 
 // Utils & Constants
 import { buildReportMd, buildReportCsv, mdToTxt, printReport, dlFile, downloadPdf, downloadPptx } from './utils/report'
@@ -328,10 +330,12 @@ export default function App() {
 
             {/* Welcome Video & Tour & Modals */}
             {showWelcomeVideo && (
-                <WelcomeVideoModal
-                    onClose={() => { localStorage.setItem('ai-brainstorm-welcomed', '1'); setShowWelcomeVideo(false) }}
-                    onStartTour={() => { localStorage.setItem('ai-brainstorm-welcomed', '1'); setShowWelcomeVideo(false); setShowTour(true) }}
-                />
+                <Suspense fallback={null}>
+                    <WelcomeVideoModal
+                        onClose={() => { localStorage.setItem('ai-brainstorm-welcomed', '1'); setShowWelcomeVideo(false) }}
+                        onStartTour={() => { localStorage.setItem('ai-brainstorm-welcomed', '1'); setShowWelcomeVideo(false); setShowTour(true) }}
+                    />
+                </Suspense>
             )}
             <AppTour enabled={showTour} onExit={() => { localStorage.setItem('ai-brainstorm-visited', '1'); setShowTour(false) }} />
             {showHelp && <AppHelpModal onClose={() => setShowHelp(false)} />}
