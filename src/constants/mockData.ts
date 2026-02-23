@@ -3,6 +3,111 @@ import { DEFAULT_MODEL_ID } from './models';
 
 export const MOCK_SCENARIOS: MockScenario[] = [
   {
+    label: 'IT人材紹介 事業戦略',
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
+    form: {
+      projectName: 'Nimbus-447',
+      productService: 'ITエンジニア特化の人材紹介エージェント（CA 15名・年間成約300件）',
+      teamGoals: '成約件数+40%・ハイスキル層（年収600万+）比率20%・CA一人当たり生産性1.5倍',
+      sessionType: 'other',
+      customSession: 'IT人材紹介 事業戦略',
+      issues: [
+        { text: 'ハイスキル層の獲得難', detail: '登録者の70%がジュニア・レガシー系、ハイスキル層の登録比率8%で成約単価が低い', sub: ['エンジニアのエージェント不信が強く登録障壁が高い', '技術系コミュニティ・SNSへのリーチがない'] },
+        { text: '直接採用・競合増加で差別化が困難', detail: 'LinkedIn等での直接採用が3年で2倍増、大手との価格競争に巻き込まれている', sub: ['差別化ポイントが「担当者の質」のみで再現性・スケールなし', 'フィー値下げ圧力でLTVが低下'] },
+        { text: 'CA業務の属人化とスカウト効率の低さ', detail: 'スカウト返信率2〜3%、CA工数の40%をスカウト文作成が占め、ノウハウが個人依存', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `IT人材紹介市場は構造的な転換期にある。直接採用・大手統合・AIマッチングの3つの圧力が同時に進行しており、「量×汎用」モデルの賞味期限が切れつつある。ハイスキルエンジニアは従来のエージェントモデルを嫌い、コミュニティや同業者の推薦を信頼する傾向が強まっている。差別化の軸は「エンジニアに信頼されるCA」から「エンジニアに信頼されるブランド・コミュニティ」への転換が必要。CA業務のAI化は生産性向上と同時にCA自身をより高付加価値な仕事（信頼構築・交渉）に集中させる基盤となる。`,
+      ideas: [
+        { title: 'ハイスキルエンジニア特化の独自ポジション確立', description: '「年収600万+のバックエンド・インフラ・ML系エンジニアに特化」など明確な絞り込みで大手との差別化を図る。特化することで求人の解像度が上がり、マッチング精度・内定率・フィー単価が同時に改善する。6ヶ月でニッチ1位ポジションの検証を実施。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'エンジニアコミュニティへの参入と信頼構築', description: 'Zenn・Qiita・技術系Discordへのスポンサーや勉強会共催でブランドをエンジニアのいる場所で構築。「エージェントではなく技術キャリアの相談相手」としてポジショニング。コミュニティ経由の自然流入は広告CAC比で1/5以下の実績が業界内で報告されている。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'AIスカウト×CA高付加価値化', description: '生成AIを活用しスキル×求人×過去成約データからパーソナライズドスカウト文を自動生成。CA工数を現状の40%→5%に削減し、浮いた時間を面談品質・クロージング・企業リレーション強化に再投資。返信率3%→8%を目標とした検証スプリントを設計。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'ユニットエコノミクスの再設計', description: 'セグメント別（スキル×年収帯）の成約率・フィー・CAC・LTVを計測し収益性の高いセグメントを特定。ジュニア・レガシー系は自動化（ローコスト対応）、ハイスキル系はCA集中投資のハイブリッドモデルに移行。現状「全員同じ対応」からの脱却。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: 'CA業務標準化×ナレッジDB構築', description: 'トップCAの面談ヒアリング・求人マッチング・クロージング手法を動画+テキストでドキュメント化。NotionベースのナレッジDBと月次ケーススタディ共有会で平均CAの成約率をトップCA比+50%に引き上げる。新人立ち上がり期間を6ヶ月→3ヶ月に短縮。', priority: 'Medium', effort: 'Medium', impact: 'High' },
+        { title: '企業クライアントのサクセス設計', description: '採用後3ヶ月・6ヶ月のフォローアップを標準化し、入社者の定着率データを企業に提供。「採用して終わり」から「採用後の定着支援」に価値を拡張することで、リピート率と単価の両立を図る。定着率データはEEATの強化にも活用可能。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+      ],
+    },
+  },,
+  {
+    label: 'CA業務 AI・DX化',
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
+    form: {
+      projectName: 'Anvil-583',
+      productService: 'ITエンジニア向け人材紹介（キャリアアドバイザー業務・Salesforce運用）',
+      teamGoals: 'CA一人当たり月次成約+50%・スカウト返信率3%→8%・CRM活用率80%達成',
+      sessionType: 'ops',
+      customSession: '',
+      issues: [
+        { text: 'CRM活用不足', detail: 'SalesforceはデータDB化に留まり、自動アクション・スコアリング・アラートに未活用', sub: ['求職者の転職意欲変化をリアルタイム把握できない', 'CA間での顧客情報共有がSlack依存'] },
+        { text: 'スカウト効率の低さ', detail: 'スカウト返信率2〜3%・CA工数の40%を占める・テンプレート文で個別最適化なし', sub: [] },
+        { text: 'CA業務の属人化', detail: 'トップCAのノウハウが個人依存で、退職リスクと新人育成遅延が慢性的に発生', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `CA業務の非効率は「CRMをDBとして使っている」「スカウトを量でカバーしている」「ノウハウを共有していない」の3つの構造問題が重なっている。Salesforceはレコード管理ではなく行動自動化ツールとして使うことで、CA一人当たりの対応キャパシティを30〜50%拡大できる。AIスカウト文生成はCAの単純労働を削減し、高付加価値な面談・交渉に集中させる投資対効果が最も高い施策。`,
+      ideas: [
+        { title: 'Salesforce活用度フェーズ別ロードマップ', description: 'CRM活用を「Level 1: データ入力」→「Level 2: 行動トリガー自動化」→「Level 3: スコアリング×予測」の3段階で設計。まず求職者の「ログイン・応募・資料閲覧」をトリガーにCA自動アラートを設定（Level 2）。工数ゼロでフォロータイミングが最適化され成約率+10〜15%の効果が見込める。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'AIスカウト文生成の内製化', description: '生成AIで「求職者スキルサマリー×求人JD×類似成約事例」を入力しパーソナライズドスカウト文を自動生成。CAはレビュー+送信のみに集中。スカウト作成工数を40%→5%に削減し、浮いた時間を面談・フォローに再配分。返信率3%→8%のABテストを4週間で実施。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: '転職意欲スコアリングの自動化', description: '求職者の行動データ（ログイン頻度・求人閲覧数・資料DL・面談後の反応速度）をSalesforceにイベント連携し意欲スコアを自動算出。スコア上昇時のCA自動通知で「タイミングを逃さないフォロー」を実現。CA経験値に依らない対応品質の底上げ。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'CAナレッジDB×ケーススタディ標準化', description: 'トップCAの「最初の15分の質問設計」「年収交渉のトークスクリプト」「内定後の不安解消フロー」をNotion動画+テキストでドキュメント化。月次ケーススタディ共有会と組み合わせ、新人CA立ち上がり6ヶ月→3ヶ月を目標に設計。', priority: 'Medium', effort: 'Low', impact: 'High' },
+        { title: 'JD（求人票）AI品質改善', description: '企業クライアントの既存JDをAIで分析し「エンジニアが離脱するポイント」を特定。技術スタック・開発環境・チーム構成・意思決定スピードなどエンジニアが重視する情報を追記するテンプレートを提供。JD品質向上で応募率・内定承諾率の改善を同時に図る。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+      ],
+    },
+  },,
+  {
+    label: '求人メディア AIO転換',
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
+    form: {
+      projectName: 'Lattice-291',
+      productService: 'ITエンジニア向け転職メディア（月間PV 60万・記事数3,500本）',
+      teamGoals: 'AI検索流入の確立・コンテンツCV率0.3%→1.5%・ターゲット適合ユーザー比率向上',
+      sessionType: 'marketing',
+      customSession: '',
+      issues: [
+        { text: 'SEO流入の質的低下', detail: 'PV維持もCV率0.3%→業界平均1.2%の1/4、ターゲット外流入が増加', sub: ['ボリューム優先でターゲット適合度を未計測', 'ネガティブ訴求記事が低意欲層を集めている'] },
+        { text: 'EEAT不足・AIO未対応', detail: '外注ライター中心でE(経験)/E(専門性)が担保されておらずAI検索からの流入がほぼゼロ', sub: ['著者情報・一次情報が皆無', '構造化データ（FAQ Schema等）未整備'] },
+        { text: 'ターゲットのメンタルモデル乖離', detail: '想定ユーザー（ハイスキルIT人材）と実来訪者（シニア・受け身層）が一致していない', sub: ['エンジニアの情報収集行動・意思決定フローの調査なし'] },
+      ],
+    },
+    results: {
+      understanding: `月間PV60万・記事3,500本でCV率0.3%は、量産SEOコンテンツが「転職に動かないユーザー」を大量に集めている構造的課題。人材紹介業界は市場縮小が続いており、旧来のSEO×量産モデルの費用対効果は今後さらに悪化する。AIO（AI Optimization）対応は生成AI検索エンジンからの流入を獲得する新チャネルであり、同時にEEAT強化はGoogleのHelpful Content Updateへの対応でもある。技術的なHTML構造改善（構造化データ・Core Web Vitals）は即効性があり、短期施策として優先度が高い。ターゲット再定義はSEO施策の前提条件であり、エンジニアのジョブ理論（JTBD）調査なしにコンテンツ戦略を立てても改善は見込めない。`,
+      ideas: [
+        { title: 'FAQ/HowTo Schema大量実装', description: '既存3,500記事のうち「〜とは」「〜の方法」形式の記事にFAQ SchemaとHowTo Schemaを自動付与するスクリプトを実装。AI検索エンジンはSchemaを優先的に参照するため、AIO対応の最速施策。実装工数：エンジニア1人×2週間。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: 'エンジニア当事者コンテンツの新設', description: '現役エンジニア10名と業務委託契約し「転職判断の実体験」「年収交渉の実例」を月4本公開。著者プロフィールにGitHub/Zennリンクを掲載しEEATを技術的に担保。AI検索での引用率向上とターゲット層の信頼獲得を同時達成。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'ターゲットJTBD調査×コンテンツ戦略再設計', description: 'ハイスキルITエンジニア30名にインタビューし「転職を考え始めるトリガー」「情報収集の行動順序」「意思決定の最終判断基準」を特定。現行コンテンツのターゲット適合率を計測し、適合度の低いボリューム記事は更新停止または削除を判断。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'Core Web Vitals一括改善', description: 'LCP・CLS・INPを計測し上位流入200記事の技術改善を優先実施。画像のWebP変換・遅延読み込み・不要なJSの削除でLCP 2.5秒以内を達成。Googleの評価改善と直帰率低下（＝CV率改善）の両立。', priority: 'High', effort: 'Low', impact: 'Medium' },
+        { title: 'コンテンツアトリビューション計測基盤', description: 'GA4×Looker StudioでコンテンツごとのCV貢献度を可視化。「最終流入ページ」だけでなく「転職意向が上がった接点」をマルチタッチ計測し、ROIの高いコンテンツタイプを特定。量産継続か撤退かの意思決定基準を整備。', priority: 'Medium', effort: 'Medium', impact: 'High' },
+        { title: 'AIOランディングページ新設', description: 'AI検索で想定される質問「エンジニア転職 [スキル名]」「[年収帯] エンジニア キャリア」に対応したQ&A形式のLPを20本新設。各LPにFAQ Schema・著者Schemaを実装し生成AI検索での引用を狙う。既存SEO資産を活用したリライト中心で開発コスト最小化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+      ],
+    },
+  },,
+  {
+    label: '採用ブランディング',
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
+    form: {
+      projectName: 'Aura-629',
+      productService: 'IT企業の採用広報（エンジニア採用年間50名目標）',
+      teamGoals: '応募数2倍・内定承諾率60%→80%・採用単価30%削減',
+      sessionType: 'marketing',
+      customSession: '',
+      issues: [
+        { text: '応募数の不足', detail: '求人媒体依存度80%、自社チャネルからの応募がほぼゼロ', sub: ['技術ブログ・採用サイトが形骸化'] },
+        { text: '内定辞退率の高さ', detail: '内定承諾率60%、競合オファーに負けるケースが多い', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `エンジニア採用は「選ばれる側」の競争。求人媒体依存からの脱却と、技術ブランドの構築が採用単価削減の本質的な解決策。内定辞退は候補者体験（CX）の設計不足。`,
+      ideas: [
+        { title: '技術ブログ再起動', description: 'エンジニア自身が技術課題と解決策を月4本発信。Zenn・Qiitaとのクロスポスト+SNS展開でエンジニアコミュニティでの認知を獲得。6ヶ月で自然応募比率30%を目標。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: '候補者体験の全面設計', description: '応募→面接→内定→入社の各タッチポイントを設計。面接後24時間以内のフィードバック、内定後の1on1メンター制度で承諾率80%を実現。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: 'リファラル採用プログラム', description: '社員紹介に30万円インセンティブ+紹介プロセスの簡略化。エンジニア同士の信頼ベースで質の高い候補者を獲得。採用単価は媒体比1/3。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: 'エンジニア向けイベント開催', description: '月1回の技術勉強会・ハッカソンで潜在候補者との接点を構築。イベント参加者の応募転換率は通常の5倍。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
+        { title: '採用サイトのリニューアル', description: '技術スタック・開発文化・チーム紹介を中心にしたエンジニア特化の採用サイトに刷新。動画インタビュー+GitHub活動の可視化で透明性を担保。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
+      ],
+    },
+  },,
+  {
     label: 'HR SaaS グロース',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 3,
     form: {
@@ -34,7 +139,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       deepDive: `### PMF検証の定量アプローチは？\n\n## Rahul Vohra式PMFスコア適用\n\n| 指標 | 現状 | PMF水準 |\n|---|---|---|\n| 「なくなったら残念」% | 測定未 | **40%以上** |\n| NPS（51-200名） | +38 | 目標+50 |\n| 30日リテンション | 62% | 目標80% |\n| Organic比率 | 12% | 目標30% |\n\n## 推奨アクション\n\n1. **Sean Ellis Test** を既存顧客全件に実施（1週間で完了可能）\n2. セグメント別にNPS+40超の顧客コホートを特定 → ICP（理想顧客プロファイル）を再定義\n3. ICPに絞った新規獲得にリソース集中し、PMFスコアを月次計測`,
       refinement: `## 優先度付きロードマップ（90日）\n\n**Phase 1（〜30日）：止血**\n- オンボーディングフロー刷新（MVE設計）\n- ヘルススコアβ版リリース\n- 50名以下セグメントへの価格改定通知\n\n**Phase 2（31〜60日）：基盤**\n- PLGバイラル機能リリース\n- パートナー候補30社へのアウトリーチ\n- CS専任採用（1名）\n\n**Phase 3（61〜90日）：加速**\n- PLGフリーミアム正式ローンチ\n- AI機能PoC開始\n- QBRプログラム全顧客展開\n\n> **KPI確認ポイント**：Day30時点でチャーン4.5%以下、Day60でLTV/CAC>2.2を達成できていれば軌道上`,
     },
-  },
+  },,
   {
     label: 'DX推進 製造業',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -61,7 +166,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'COE（デジタル推進室）設立', description: 'IT部門とは別にビジネス理解のあるDX推進室を設置。外部DXコンサル1名常駐で内製化を加速。2年で内製比率70%を目標。', priority: 'Low', effort: 'Medium', impact: 'Medium' },
       ],
     },
-  },
+  },,
   {
     label: '新規事業 PoC判断',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -87,7 +192,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '投資回収シナリオ3案作成', description: 'Bull/Base/Bearの3シナリオでROI試算。投資回収5年以内・市場シェア3%のBaseシナリオを経営会議提出用に整備。Go/No-Goの判断基準を定量化。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },
+  },,
   {
     label: 'マーケ GTM戦略',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -113,7 +218,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'プロダクトレッドGrowth要素追加', description: 'フリートライアルの活用データを分析し「アハモーメント」を特定。オンボーディングフローを最適化しトライアル→有料転換率を現状12%→20%へ。', priority: 'Low', effort: 'Medium', impact: 'Medium' },
       ],
     },
-  },
+  },,
   {
     label: 'オペレーション改革',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -138,7 +243,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '品質管理デジタル化', description: 'IoT温度センサー+QRコードで冷凍品の温度履歴を自動記録。不良品発生時の原因追跡を4時間→15分に短縮。食品安全基準への対応もトレーサビリティ強化で同時解決。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
       ],
     },
-  },
+  },,
   {
     label: 'デザインシステム整備',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -163,7 +268,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'DS採用インセンティブ制度', description: 'プロダクトチームのスプリントKPIにDS採用率を追加。「DS使用＝開発速度2倍」のデータを実証し自発的採用を促進。DS非採用のカスタム実装にはデザインレビューの承認を必須化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },
+  },,
   {
     label: '海外展開戦略',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -188,7 +293,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '現地規制サンドボックス活用', description: 'シンガポールMASのFinTechサンドボックス、タイのDigital Economyプログラムを活用し規制対応コストを補助金で賄う。各国のIT展示会（Gitex Asia・Slush Singapore）でブランド認知を獲得。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },
+  },,
   {
     label: 'プロダクト ロードマップ',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -214,87 +319,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'AIコードレビュー導入', description: 'AIコードレビューツールを導入しコードレビュー工数を削減。セキュリティスキャン・バグ検出を自動化しレビュアーは設計判断に集中できる環境を整備。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },
-  {
-    label: 'IT人材紹介 事業戦略',
-    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
-    form: {
-      projectName: 'Nimbus-447',
-      productService: 'ITエンジニア特化の人材紹介エージェント（CA 15名・年間成約300件）',
-      teamGoals: '成約件数+40%・ハイスキル層（年収600万+）比率20%・CA一人当たり生産性1.5倍',
-      sessionType: 'other',
-      customSession: 'IT人材紹介 事業戦略',
-      issues: [
-        { text: 'ハイスキル層の獲得難', detail: '登録者の70%がジュニア・レガシー系、ハイスキル層の登録比率8%で成約単価が低い', sub: ['エンジニアのエージェント不信が強く登録障壁が高い', '技術系コミュニティ・SNSへのリーチがない'] },
-        { text: '直接採用・競合増加で差別化が困難', detail: 'LinkedIn等での直接採用が3年で2倍増、大手との価格競争に巻き込まれている', sub: ['差別化ポイントが「担当者の質」のみで再現性・スケールなし', 'フィー値下げ圧力でLTVが低下'] },
-        { text: 'CA業務の属人化とスカウト効率の低さ', detail: 'スカウト返信率2〜3%、CA工数の40%をスカウト文作成が占め、ノウハウが個人依存', sub: [] },
-      ],
-    },
-    results: {
-      understanding: `IT人材紹介市場は構造的な転換期にある。直接採用・大手統合・AIマッチングの3つの圧力が同時に進行しており、「量×汎用」モデルの賞味期限が切れつつある。ハイスキルエンジニアは従来のエージェントモデルを嫌い、コミュニティや同業者の推薦を信頼する傾向が強まっている。差別化の軸は「エンジニアに信頼されるCA」から「エンジニアに信頼されるブランド・コミュニティ」への転換が必要。CA業務のAI化は生産性向上と同時にCA自身をより高付加価値な仕事（信頼構築・交渉）に集中させる基盤となる。`,
-      ideas: [
-        { title: 'ハイスキルエンジニア特化の独自ポジション確立', description: '「年収600万+のバックエンド・インフラ・ML系エンジニアに特化」など明確な絞り込みで大手との差別化を図る。特化することで求人の解像度が上がり、マッチング精度・内定率・フィー単価が同時に改善する。6ヶ月でニッチ1位ポジションの検証を実施。', priority: 'High', effort: 'Medium', impact: 'High' },
-        { title: 'エンジニアコミュニティへの参入と信頼構築', description: 'Zenn・Qiita・技術系Discordへのスポンサーや勉強会共催でブランドをエンジニアのいる場所で構築。「エージェントではなく技術キャリアの相談相手」としてポジショニング。コミュニティ経由の自然流入は広告CAC比で1/5以下の実績が業界内で報告されている。', priority: 'High', effort: 'Medium', impact: 'High' },
-        { title: 'AIスカウト×CA高付加価値化', description: '生成AIを活用しスキル×求人×過去成約データからパーソナライズドスカウト文を自動生成。CA工数を現状の40%→5%に削減し、浮いた時間を面談品質・クロージング・企業リレーション強化に再投資。返信率3%→8%を目標とした検証スプリントを設計。', priority: 'High', effort: 'Medium', impact: 'High' },
-        { title: 'ユニットエコノミクスの再設計', description: 'セグメント別（スキル×年収帯）の成約率・フィー・CAC・LTVを計測し収益性の高いセグメントを特定。ジュニア・レガシー系は自動化（ローコスト対応）、ハイスキル系はCA集中投資のハイブリッドモデルに移行。現状「全員同じ対応」からの脱却。', priority: 'High', effort: 'Low', impact: 'High' },
-        { title: 'CA業務標準化×ナレッジDB構築', description: 'トップCAの面談ヒアリング・求人マッチング・クロージング手法を動画+テキストでドキュメント化。NotionベースのナレッジDBと月次ケーススタディ共有会で平均CAの成約率をトップCA比+50%に引き上げる。新人立ち上がり期間を6ヶ月→3ヶ月に短縮。', priority: 'Medium', effort: 'Medium', impact: 'High' },
-        { title: '企業クライアントのサクセス設計', description: '採用後3ヶ月・6ヶ月のフォローアップを標準化し、入社者の定着率データを企業に提供。「採用して終わり」から「採用後の定着支援」に価値を拡張することで、リピート率と単価の両立を図る。定着率データはEEATの強化にも活用可能。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
-      ],
-    },
-  },
-  {
-    label: 'CA業務 AI・DX化',
-    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
-    form: {
-      projectName: 'Anvil-583',
-      productService: 'ITエンジニア向け人材紹介（キャリアアドバイザー業務・Salesforce運用）',
-      teamGoals: 'CA一人当たり月次成約+50%・スカウト返信率3%→8%・CRM活用率80%達成',
-      sessionType: 'ops',
-      customSession: '',
-      issues: [
-        { text: 'CRM活用不足', detail: 'SalesforceはデータDB化に留まり、自動アクション・スコアリング・アラートに未活用', sub: ['求職者の転職意欲変化をリアルタイム把握できない', 'CA間での顧客情報共有がSlack依存'] },
-        { text: 'スカウト効率の低さ', detail: 'スカウト返信率2〜3%・CA工数の40%を占める・テンプレート文で個別最適化なし', sub: [] },
-        { text: 'CA業務の属人化', detail: 'トップCAのノウハウが個人依存で、退職リスクと新人育成遅延が慢性的に発生', sub: [] },
-      ],
-    },
-    results: {
-      understanding: `CA業務の非効率は「CRMをDBとして使っている」「スカウトを量でカバーしている」「ノウハウを共有していない」の3つの構造問題が重なっている。Salesforceはレコード管理ではなく行動自動化ツールとして使うことで、CA一人当たりの対応キャパシティを30〜50%拡大できる。AIスカウト文生成はCAの単純労働を削減し、高付加価値な面談・交渉に集中させる投資対効果が最も高い施策。`,
-      ideas: [
-        { title: 'Salesforce活用度フェーズ別ロードマップ', description: 'CRM活用を「Level 1: データ入力」→「Level 2: 行動トリガー自動化」→「Level 3: スコアリング×予測」の3段階で設計。まず求職者の「ログイン・応募・資料閲覧」をトリガーにCA自動アラートを設定（Level 2）。工数ゼロでフォロータイミングが最適化され成約率+10〜15%の効果が見込める。', priority: 'High', effort: 'Medium', impact: 'High' },
-        { title: 'AIスカウト文生成の内製化', description: '生成AIで「求職者スキルサマリー×求人JD×類似成約事例」を入力しパーソナライズドスカウト文を自動生成。CAはレビュー+送信のみに集中。スカウト作成工数を40%→5%に削減し、浮いた時間を面談・フォローに再配分。返信率3%→8%のABテストを4週間で実施。', priority: 'High', effort: 'Medium', impact: 'High' },
-        { title: '転職意欲スコアリングの自動化', description: '求職者の行動データ（ログイン頻度・求人閲覧数・資料DL・面談後の反応速度）をSalesforceにイベント連携し意欲スコアを自動算出。スコア上昇時のCA自動通知で「タイミングを逃さないフォロー」を実現。CA経験値に依らない対応品質の底上げ。', priority: 'High', effort: 'Medium', impact: 'High' },
-        { title: 'CAナレッジDB×ケーススタディ標準化', description: 'トップCAの「最初の15分の質問設計」「年収交渉のトークスクリプト」「内定後の不安解消フロー」をNotion動画+テキストでドキュメント化。月次ケーススタディ共有会と組み合わせ、新人CA立ち上がり6ヶ月→3ヶ月を目標に設計。', priority: 'Medium', effort: 'Low', impact: 'High' },
-        { title: 'JD（求人票）AI品質改善', description: '企業クライアントの既存JDをAIで分析し「エンジニアが離脱するポイント」を特定。技術スタック・開発環境・チーム構成・意思決定スピードなどエンジニアが重視する情報を追記するテンプレートを提供。JD品質向上で応募率・内定承諾率の改善を同時に図る。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
-      ],
-    },
-  },
-  {
-    label: '求人メディア AIO転換',
-    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
-    form: {
-      projectName: 'Lattice-291',
-      productService: 'ITエンジニア向け転職メディア（月間PV 60万・記事数3,500本）',
-      teamGoals: 'AI検索流入の確立・コンテンツCV率0.3%→1.5%・ターゲット適合ユーザー比率向上',
-      sessionType: 'marketing',
-      customSession: '',
-      issues: [
-        { text: 'SEO流入の質的低下', detail: 'PV維持もCV率0.3%→業界平均1.2%の1/4、ターゲット外流入が増加', sub: ['ボリューム優先でターゲット適合度を未計測', 'ネガティブ訴求記事が低意欲層を集めている'] },
-        { text: 'EEAT不足・AIO未対応', detail: '外注ライター中心でE(経験)/E(専門性)が担保されておらずAI検索からの流入がほぼゼロ', sub: ['著者情報・一次情報が皆無', '構造化データ（FAQ Schema等）未整備'] },
-        { text: 'ターゲットのメンタルモデル乖離', detail: '想定ユーザー（ハイスキルIT人材）と実来訪者（シニア・受け身層）が一致していない', sub: ['エンジニアの情報収集行動・意思決定フローの調査なし'] },
-      ],
-    },
-    results: {
-      understanding: `月間PV60万・記事3,500本でCV率0.3%は、量産SEOコンテンツが「転職に動かないユーザー」を大量に集めている構造的課題。人材紹介業界は市場縮小が続いており、旧来のSEO×量産モデルの費用対効果は今後さらに悪化する。AIO（AI Optimization）対応は生成AI検索エンジンからの流入を獲得する新チャネルであり、同時にEEAT強化はGoogleのHelpful Content Updateへの対応でもある。技術的なHTML構造改善（構造化データ・Core Web Vitals）は即効性があり、短期施策として優先度が高い。ターゲット再定義はSEO施策の前提条件であり、エンジニアのジョブ理論（JTBD）調査なしにコンテンツ戦略を立てても改善は見込めない。`,
-      ideas: [
-        { title: 'FAQ/HowTo Schema大量実装', description: '既存3,500記事のうち「〜とは」「〜の方法」形式の記事にFAQ SchemaとHowTo Schemaを自動付与するスクリプトを実装。AI検索エンジンはSchemaを優先的に参照するため、AIO対応の最速施策。実装工数：エンジニア1人×2週間。', priority: 'High', effort: 'Low', impact: 'High' },
-        { title: 'エンジニア当事者コンテンツの新設', description: '現役エンジニア10名と業務委託契約し「転職判断の実体験」「年収交渉の実例」を月4本公開。著者プロフィールにGitHub/Zennリンクを掲載しEEATを技術的に担保。AI検索での引用率向上とターゲット層の信頼獲得を同時達成。', priority: 'High', effort: 'Medium', impact: 'High' },
-        { title: 'ターゲットJTBD調査×コンテンツ戦略再設計', description: 'ハイスキルITエンジニア30名にインタビューし「転職を考え始めるトリガー」「情報収集の行動順序」「意思決定の最終判断基準」を特定。現行コンテンツのターゲット適合率を計測し、適合度の低いボリューム記事は更新停止または削除を判断。', priority: 'High', effort: 'Medium', impact: 'High' },
-        { title: 'Core Web Vitals一括改善', description: 'LCP・CLS・INPを計測し上位流入200記事の技術改善を優先実施。画像のWebP変換・遅延読み込み・不要なJSの削除でLCP 2.5秒以内を達成。Googleの評価改善と直帰率低下（＝CV率改善）の両立。', priority: 'High', effort: 'Low', impact: 'Medium' },
-        { title: 'コンテンツアトリビューション計測基盤', description: 'GA4×Looker StudioでコンテンツごとのCV貢献度を可視化。「最終流入ページ」だけでなく「転職意向が上がった接点」をマルチタッチ計測し、ROIの高いコンテンツタイプを特定。量産継続か撤退かの意思決定基準を整備。', priority: 'Medium', effort: 'Medium', impact: 'High' },
-        { title: 'AIOランディングページ新設', description: 'AI検索で想定される質問「エンジニア転職 [スキル名]」「[年収帯] エンジニア キャリア」に対応したQ&A形式のLPを20本新設。各LPにFAQ Schema・著者Schemaを実装し生成AI検索での引用を狙う。既存SEO資産を活用したリライト中心で開発コスト最小化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
-      ],
-    },
-  },
+  },,
   {
     label: 'プロダクト UXリデザイン',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -319,7 +344,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'VOCダッシュボード整備', description: 'NPS・サポートチケット・セッション録画（Hotjar）を週次でレビューするVOCループを確立。定性フィードバックを優先度マトリクスに変換するプロセスを標準化。', priority: 'Low', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },
+  },,
   {
     label: 'SaaS 解約防止',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -344,7 +369,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '解約理由の構造化分析', description: '直近6ヶ月の解約企業全件にExitインタビューを実施し原因を5分類に構造化。再発防止策を優先度順に実装。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },
+  },,
   {
     label: 'D2Cブランド CX設計',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -369,7 +394,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'VIP顧客プログラム', description: '累計購入額上位10%にVIPステータスを付与。先行販売・限定商品・1on1カウンセリングで顧客単価+30%とLTV最大化を同時達成。', priority: 'Medium', effort: 'Medium', impact: 'High' },
       ],
     },
-  },
+  },,
   {
     label: 'フィンテック規制対応',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -394,7 +419,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '加盟店オンボーディングの効率化', description: 'API連携ドキュメント+サンドボックス環境を整備し、加盟店の技術検証期間を4週間→1週間に短縮。開発者体験の改善が加盟店獲得の加速要因。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },
+  },,
   {
     label: '教育SaaS PMF検証',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -419,7 +444,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '導入事例の量産と横展開', description: 'PMFスコア高コホートの成功事例を3本制作。同業種への横展開で獲得効率を改善。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },
+  },,
   {
     label: 'ECリプレイス計画',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -444,32 +469,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'カゴ落ちリカバリー自動化', description: 'カゴ落ち後30分・3時間・24時間のステップメール+LINE通知で回収率を改善。決済手段追加（BNPL）でカゴ落ち率-15%。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },
-  {
-    label: '採用ブランディング',
-    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
-    form: {
-      projectName: 'Aura-629',
-      productService: 'IT企業の採用広報（エンジニア採用年間50名目標）',
-      teamGoals: '応募数2倍・内定承諾率60%→80%・採用単価30%削減',
-      sessionType: 'marketing',
-      customSession: '',
-      issues: [
-        { text: '応募数の不足', detail: '求人媒体依存度80%、自社チャネルからの応募がほぼゼロ', sub: ['技術ブログ・採用サイトが形骸化'] },
-        { text: '内定辞退率の高さ', detail: '内定承諾率60%、競合オファーに負けるケースが多い', sub: [] },
-      ],
-    },
-    results: {
-      understanding: `エンジニア採用は「選ばれる側」の競争。求人媒体依存からの脱却と、技術ブランドの構築が採用単価削減の本質的な解決策。内定辞退は候補者体験（CX）の設計不足。`,
-      ideas: [
-        { title: '技術ブログ再起動', description: 'エンジニア自身が技術課題と解決策を月4本発信。Zenn・Qiitaとのクロスポスト+SNS展開でエンジニアコミュニティでの認知を獲得。6ヶ月で自然応募比率30%を目標。', priority: 'High', effort: 'Medium', impact: 'High' },
-        { title: '候補者体験の全面設計', description: '応募→面接→内定→入社の各タッチポイントを設計。面接後24時間以内のフィードバック、内定後の1on1メンター制度で承諾率80%を実現。', priority: 'High', effort: 'Low', impact: 'High' },
-        { title: 'リファラル採用プログラム', description: '社員紹介に30万円インセンティブ+紹介プロセスの簡略化。エンジニア同士の信頼ベースで質の高い候補者を獲得。採用単価は媒体比1/3。', priority: 'High', effort: 'Low', impact: 'High' },
-        { title: 'エンジニア向けイベント開催', description: '月1回の技術勉強会・ハッカソンで潜在候補者との接点を構築。イベント参加者の応募転換率は通常の5倍。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
-        { title: '採用サイトのリニューアル', description: '技術スタック・開発文化・チーム紹介を中心にしたエンジニア特化の採用サイトに刷新。動画インタビュー+GitHub活動の可視化で透明性を担保。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
-      ],
-    },
-  },
+  },,
   {
     label: 'サブスク価格改定',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -494,7 +494,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: '価格改定コミュニケーション計画', description: '改定90日前の事前告知→60日前のFAQ公開→30日前の個別対応。CSチーム向けの想定Q&A50問を準備し、問い合わせ対応を標準化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },
+  },,
   {
     label: 'ヘルスケアアプリ',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -519,7 +519,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'アノニマスレポート機能', description: '組織全体のメンタルヘルス傾向を匿名集計しダッシュボード化。人事が早期にリスクを把握でき、導入企業への提供価値を向上。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
       ],
     },
-  },
+  },,
   {
     label: '物流DX 配車最適化',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -544,7 +544,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'エコドライブ研修+インセンティブ', description: '燃費データに基づくドライバー別エコドライブスコアを算出。上位者にインセンティブを付与し全体の燃費10%改善。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },
+  },,
   {
     label: 'ブランド統一 リブランディング',
     prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
@@ -569,7 +569,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
         { title: 'デザインベンダー統合', description: '3社別々のベンダーを1社に統合しコスト削減+品質統一。RFP実施でデザインシステム運用に対応可能なパートナーを選定。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
       ],
     },
-  },
+  },,
 ];
 
 export const SEEDS = ['Horizon','Prism','Meridian','Lattice','Helix','Nimbus','Vertex','Cadence','Sextant','Anvil','Loom','Beacon','Torque','Fulcrum','Mosaic','Pinnacle','Obsidian','Catalyst','Epoch','Tessera'];
