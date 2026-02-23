@@ -9,8 +9,8 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       projectName: 'Nimbus-447',
       productService: 'ITエンジニア特化の人材紹介エージェント（CA 15名・年間成約300件）',
       teamGoals: '成約件数+40%・ハイスキル層（年収600万+）比率20%・CA一人当たり生産性1.5倍',
-      sessionType: 'other',
-      customSession: 'IT人材紹介 事業戦略',
+      sessionType: 'ops',
+      customSession: '',
       issues: [
         { text: 'ハイスキル層の獲得難', detail: '登録者の70%がジュニア・レガシー系、ハイスキル層の登録比率8%で成約単価が低い', sub: ['エンジニアのエージェント不信が強く登録障壁が高い', '技術系コミュニティ・SNSへのリーチがない'] },
         { text: '直接採用・競合増加で差別化が困難', detail: 'LinkedIn等での直接採用が3年で2倍増、大手との価格競争に巻き込まれている', sub: ['差別化ポイントが「担当者の質」のみで再現性・スケールなし', 'フィー値下げ圧力でLTVが低下'] },
