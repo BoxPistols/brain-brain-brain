@@ -343,7 +343,13 @@ export default function App() {
                 </Suspense>
             )}
             <AppTour enabled={showTour} onExit={() => { localStorage.setItem('ai-brainstorm-visited', '1'); setShowTour(false) }} />
-            {showHelp && <AppHelpModal onClose={() => setShowHelp(false)} />}
+            {showHelp && (
+                <AppHelpModal
+                    onClose={() => setShowHelp(false)}
+                    onStartTour={() => setShowTour(true)}
+                    onStartVideo={() => setShowWelcomeVideo(true)}
+                />
+            )}
             {showPrev && report && (
                 <PreviewModal md={report} pn={usedName} onClose={() => setShowPrev(false)} />
             )}
