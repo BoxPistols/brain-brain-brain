@@ -3,7 +3,8 @@
   "private": false,
   "version": "1.0.0",
   "description": "Expert-grade strategic ideation tool powered by multi-provider AI APIs",
-  "author": "",
+  "author": "BoxPistols",
+  "homepage": "https://ai-strategic-brainstorm.vercel.app",
   "license": "MIT",
   "type": "module",
   "scripts": {

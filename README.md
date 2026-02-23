@@ -9,6 +9,8 @@
 ![TypeScript Ready](https://img.shields.io/badge/Vite-5+-646CFF.svg)
 ![CI](https://github.com/BoxPistols/ai-strategic-brainstorm/actions/workflows/ci.yml/badge.svg)
 
+**Live Demo:** https://ai-strategic-brainstorm.vercel.app
+
 ## このツールについて
 
 事業課題の分析や新規施策の検討を進めるとき、「情報は集めたが、どこから手をつけるか決められない」「チームで議論しても、いつも同じ視点に偏る」という場面は少なくありません。
