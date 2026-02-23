@@ -1,4 +1,5 @@
-import { Steps } from 'intro.js-react'
+import { useEffect, useCallback } from 'react'
+import introJs from 'intro.js'
 import 'intro.js/introjs.css'
 
 interface AppTourProps {
@@ -6,7 +7,7 @@ interface AppTourProps {
     onExit: () => void
 }
 
-const STEPS = [
+const ALL_STEPS = [
     {
         element: '[data-tour="session-type"]',
         title: 'セッション種別',
@@ -51,22 +52,45 @@ const STEPS = [
     },
 ]
 
-export const AppTour: React.FC<AppTourProps> = ({ enabled, onExit }) => (
-    <Steps
-        enabled={enabled}
-        steps={STEPS}
-        initialStep={0}
-        onExit={onExit}
-        options={{
-            nextLabel: '次へ',
-            prevLabel: '戻る',
-            doneLabel: '完了',
-            skipLabel: 'スキップ',
-            showProgress: true,
-            showBullets: true,
-            exitOnOverlayClick: true,
-            scrollToElement: true,
-            disableInteraction: false,
-        }}
-    />
-)
+export const AppTour: React.FC<AppTourProps> = ({ enabled, onExit }) => {
+    const stableOnExit = useCallback(onExit, [onExit])
+
+    useEffect(() => {
+        if (!enabled) return
+
+        // DOM が確実にレンダリングされた後に開始
+        const raf = requestAnimationFrame(() => {
+            const steps = ALL_STEPS.filter(s => document.querySelector(s.element))
+            if (steps.length === 0) {
+                stableOnExit()
+                return
+            }
+
+            const tour = introJs()
+            tour.setOptions({
+                steps,
+                nextLabel: '次へ',
+                prevLabel: '戻る',
+                doneLabel: '完了',
+                skipLabel: 'スキップ',
+                showProgress: true,
+                showBullets: true,
+                exitOnOverlayClick: true,
+                scrollToElement: true,
+                disableInteraction: false,
+            })
+            tour.onexit(() => stableOnExit())
+            tour.oncomplete(() => stableOnExit())
+            tour.start()
+
+            cleanup = () => {
+                try { tour.exit(true) } catch { /* すでに終了済み */ }
+            }
+        })
+
+        let cleanup = () => { cancelAnimationFrame(raf) }
+        return () => cleanup()
+    }, [enabled, stableOnExit])
+
+    return null
+}

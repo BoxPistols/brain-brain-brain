@@ -2,12 +2,14 @@ import React from 'react'
 import {
     X, HelpCircle, Sparkles, Target, Layers, SlidersHorizontal,
     Search, FlaskConical, Database, Eye, Columns2,
-    Sun, Zap, Clock, ChevronRight,
+    Sun, Zap, Clock, ChevronRight, Play, Navigation,
 } from 'lucide-react'
 import { T } from '../../constants/theme'
 
 interface AppHelpModalProps {
     onClose: () => void
+    onStartTour?: () => void
+    onStartVideo?: () => void
 }
 
 const Section: React.FC<{ title: string; children: React.ReactNode; noBorder?: boolean }> = ({ title, children, noBorder }) => (
@@ -50,7 +52,7 @@ const shortcuts = [
     { keys: ['Esc'], desc: 'モーダルを閉じる' },
 ]
 
-export const AppHelpModal: React.FC<AppHelpModalProps> = ({ onClose }) => {
+export const AppHelpModal: React.FC<AppHelpModalProps> = ({ onClose, onStartTour, onStartVideo }) => {
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
             <div
@@ -208,6 +210,32 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({ onClose }) => {
                             ))}
                         </div>
                     </Section>
+
+                    {/* もう一度見る */}
+                    {(onStartVideo || onStartTour) && (
+                        <Section title='もう一度見る' noBorder>
+                            <div className='flex flex-wrap gap-2'>
+                                {onStartVideo && (
+                                    <button
+                                        onClick={() => { onClose(); onStartVideo() }}
+                                        className='flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-200 dark:hover:border-blue-700/40 transition-colors'
+                                    >
+                                        <Play className={`w-4 h-4 ${T.accentTxt}`} />
+                                        <span className={T.t1}>イントロ動画を再生</span>
+                                    </button>
+                                )}
+                                {onStartTour && (
+                                    <button
+                                        onClick={() => { onClose(); onStartTour() }}
+                                        className='flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-200 dark:hover:border-blue-700/40 transition-colors'
+                                    >
+                                        <Navigation className={`w-4 h-4 ${T.accentTxt}`} />
+                                        <span className={T.t1}>ガイドツアーを開始</span>
+                                    </button>
+                                )}
+                            </div>
+                        </Section>
+                    )}
 
                     {/* Tip */}
                     <div className='p-3.5 rounded-xl bg-amber-50/80 dark:bg-amber-900/15 border border-amber-200/60 dark:border-amber-700/30 backdrop-blur-sm' title='APIキー設定のヒント'>

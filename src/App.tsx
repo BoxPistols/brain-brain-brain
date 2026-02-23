@@ -333,12 +333,23 @@ export default function App() {
                 <Suspense fallback={null}>
                     <WelcomeVideoModal
                         onClose={() => { localStorage.setItem('ai-brainstorm-welcomed', '1'); setShowWelcomeVideo(false) }}
-                        onStartTour={() => { localStorage.setItem('ai-brainstorm-welcomed', '1'); setShowWelcomeVideo(false); setShowTour(true) }}
+                        onStartTour={() => {
+                            localStorage.setItem('ai-brainstorm-welcomed', '1')
+                            setShowWelcomeVideo(false)
+                            // 動画モーダルのアンマウント完了後にツアー開始
+                            requestAnimationFrame(() => setShowTour(true))
+                        }}
                     />
                 </Suspense>
             )}
             <AppTour enabled={showTour} onExit={() => { localStorage.setItem('ai-brainstorm-visited', '1'); setShowTour(false) }} />
-            {showHelp && <AppHelpModal onClose={() => setShowHelp(false)} />}
+            {showHelp && (
+                <AppHelpModal
+                    onClose={() => setShowHelp(false)}
+                    onStartTour={() => requestAnimationFrame(() => setShowTour(true))}
+                    onStartVideo={() => setShowWelcomeVideo(true)}
+                />
+            )}
             {showPrev && report && (
                 <PreviewModal md={report} pn={usedName} onClose={() => setShowPrev(false)} />
             )}

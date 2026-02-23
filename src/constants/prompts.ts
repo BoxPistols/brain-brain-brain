@@ -1,11 +1,11 @@
 export const TYPES: Record<string, string> = {
+  'other': '経営戦略・その他',
   'ops': '営業・業務オペレーション',
   'marketing': 'マーケティング・集客',
   'growth': 'グロース・収益拡大',
-  'dx': 'デジタル化・業務効率化',
-  'other': '経営戦略・その他',
   'cx': '顧客体験・関係構築',
   'product': 'サービス・事業改善',
+  'dx': 'デジタル化・業務効率化',
   'innovation': '新規事業・イノベーション',
   'design-system': 'ブランド・UI統一',
 };
