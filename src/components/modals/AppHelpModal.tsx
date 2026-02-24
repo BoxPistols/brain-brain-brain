@@ -370,7 +370,7 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
           </a>
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-medium cursor-pointer bg-brand hover:bg-brand text-white shadow-sm transition-colors duration-200"
+            className="flex-1 py-2.5 rounded-xl text-sm font-medium cursor-pointer bg-brand hover:bg-brand-dark text-white shadow-sm transition-colors duration-200"
             title="ガイドを閉じる"
           >
             閉じる

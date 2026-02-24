@@ -169,7 +169,7 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
                   dlFile(content, filename, mime);
                   setExportType(null);
                 }}
-                className="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-bold bg-brand hover:bg-brand text-white shadow-lg shadow-brand/20 active:scale-95 transition-all"
+                className="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-bold bg-brand hover:bg-brand-dark text-white shadow-lg shadow-brand/20 active:scale-95 transition-all"
               >
                 <Download className="w-4 h-4" />
                 {exportType.toUpperCase()}をダウンロード
