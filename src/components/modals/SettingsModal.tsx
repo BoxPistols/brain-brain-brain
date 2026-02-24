@@ -78,7 +78,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </label>
             <button
               onClick={() => setShowHelp(true)}
-              className={`flex items-center gap-0.5 text-xs ${T.t3} hover:text-brand transition`}
+              className={`flex items-center gap-0.5 text-xs ${T.t3} hover:text-brand dark:hover:text-brand-light transition`}
             >
               <HelpCircle className="w-3 h-3" />
               取得方法

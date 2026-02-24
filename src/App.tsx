@@ -330,7 +330,7 @@ export default function App() {
                         ? 'text-red-500'
                         : costWarning.severity === 'warn'
                           ? 'text-amber-500'
-                          : 'text-brand'
+                          : 'text-brand dark:text-brand-light'
                     }`}
                   />
                   <p

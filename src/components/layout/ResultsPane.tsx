@@ -163,7 +163,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
     {
       fmt: 'md',
       label: 'Markdown (.md)',
-      icon: <FileText className="w-3.5 h-3.5 text-brand" />,
+      icon: <FileText className="w-3.5 h-3.5 text-brand dark:text-brand-light" />,
     },
     {
       fmt: 'txt',

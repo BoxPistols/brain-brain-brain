@@ -181,7 +181,7 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <Icon className="w-[18px] h-[18px] text-brand" />
+                      <Icon className="w-[18px] h-[18px] text-brand dark:text-brand-light" />
                       <span className={`text-sm font-medium ${T.t1}`}>{label}</span>
                     </div>
                     <p className={`text-[13px] ${T.t3} mt-0.5 leading-relaxed`}>{desc}</p>
@@ -238,7 +238,7 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
                 title="自分のAPIキーで利用可能"
               >
                 <div className="flex items-center gap-2 mb-2.5">
-                  <Zap className="w-[18px] h-[18px] text-brand" />
+                  <Zap className="w-[18px] h-[18px] text-brand dark:text-brand-light" />
                   <span className="text-sm font-semibold text-brand-dark dark:text-brand-light">
                     プロモード
                   </span>

@@ -16,7 +16,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Key className="w-4 h-4 text-brand" />
+            <Key className="w-4 h-4 text-brand dark:text-brand-light" />
             <h2 className={`text-sm font-semibold ${T.t1}`}>APIキー設定ガイド</h2>
           </div>
           <button onClick={onClose} className={`p-1 rounded-lg ${T.btnGhost}`}>
@@ -52,7 +52,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
           </div>
           <div className="p-3 rounded-xl border border-brand-light/30 dark:border-brand-light/50 bg-brand-50 dark:bg-brand-light/20">
             <div className="flex items-center gap-1.5 mb-2">
-              <Zap className="w-3.5 h-3.5 text-brand" />
+              <Zap className="w-3.5 h-3.5 text-brand dark:text-brand-light" />
               <span className="text-xs font-semibold text-brand-dark dark:text-brand-light">
                 プロモード
               </span>
@@ -122,7 +122,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-0.5 text-xs text-brand hover:text-brand mt-0.5"
+                    className="inline-flex items-center gap-0.5 text-xs text-brand dark:text-brand-light hover:text-brand-dark dark:hover:text-white mt-0.5"
                   >
                     {urlLabel}
                     <ExternalLink className="w-2.5 h-2.5" />

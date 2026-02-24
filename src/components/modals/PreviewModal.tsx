@@ -69,7 +69,7 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
               </button>
             ) : (
               <div className="flex items-center gap-2">
-                <Eye className="w-4 h-4 text-brand" />
+                <Eye className="w-4 h-4 text-brand dark:text-brand-light" />
                 <span className={`text-sm font-bold ${T.t1}`}>レポートの確認</span>
               </div>
             )}
@@ -184,7 +184,7 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 ${T.t1} transition-all active:scale-95`}
               >
-                <FileText className="w-3.5 h-3.5 text-brand" />
+                <FileText className="w-3.5 h-3.5 text-brand dark:text-brand-light" />
                 Markdown
               </button>
               <button

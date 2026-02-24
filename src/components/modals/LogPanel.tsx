@@ -66,7 +66,7 @@ export const LogPanel: React.FC<LogPanelProps> = ({
       >
         <div className={`flex items-center justify-between px-4 py-2.5 border-b ${T.div} shrink-0`}>
           <div className="flex items-center gap-2">
-            <Database className="w-4 h-4 text-brand" />
+            <Database className="w-4 h-4 text-brand dark:text-brand-light" />
             <span id="log-panel-title" className={`text-sm font-semibold ${T.t1}`}>
               ログ管理
             </span>
