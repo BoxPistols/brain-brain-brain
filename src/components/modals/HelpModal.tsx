@@ -50,7 +50,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
               </li>
             </ul>
           </div>
-          <div className="p-3 rounded-xl border border-brand-light/30 dark:border-brand-light/50 bg-brand-50 dark:bg-brand-light/10">
+          <div className="p-3 rounded-xl border border-brand-light/30 dark:border-brand-light/50 bg-brand-50 dark:bg-brand-light/20">
             <div className="flex items-center gap-1.5 mb-2">
               <Zap className="w-3.5 h-3.5 text-brand" />
               <span className="text-xs font-semibold text-brand-dark dark:text-brand-light">

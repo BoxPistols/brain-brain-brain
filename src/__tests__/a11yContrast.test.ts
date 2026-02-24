@@ -116,6 +116,18 @@ describe('A11y コントラスト比: ダークモード', () => {
     const ratio = contrastRatio(TEXT_DARK, DARK_BG);
     expect(ratio).toBeGreaterThanOrEqual(AA_TEXT);
   });
+
+  it('t3 テキスト (slate-400) on slate-900 カード >= 3.0 (UI)', () => {
+    const SLATE_400 = '#94A3B8';
+    const ratio = contrastRatio(SLATE_400, CARD_DARK);
+    expect(ratio).toBeGreaterThanOrEqual(AA_UI);
+  });
+
+  it('t3 テキスト (slate-400) on slate-950 背景 >= 3.0 (UI)', () => {
+    const SLATE_400 = '#94A3B8';
+    const ratio = contrastRatio(SLATE_400, DARK_BG);
+    expect(ratio).toBeGreaterThanOrEqual(AA_UI);
+  });
 });
 
 describe('A11y コントラスト比: ロゴ', () => {

@@ -57,7 +57,7 @@ export const SupportPanel: React.FC<Props> = ({ apiKey }) => {
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors cursor-pointer`}
                 >
                   <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center bg-brand-50 dark:bg-brand-light/20 ${T.accentTxt} shrink-0`}
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center bg-brand-50 dark:bg-brand-light/30 ${T.accentTxt} shrink-0`}
                   >
                     <Icon className="w-4 h-4" />
                   </div>
