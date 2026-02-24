@@ -44,7 +44,7 @@ export const SupportFAQList: React.FC<Props> = ({ category, onAskAI }) => {
       <div className="pt-3 border-t border-slate-200 dark:border-slate-700/40">
         <button
           onClick={onAskAI}
-          className={`w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium ${T.accentTxt} hover:bg-blue-50 dark:hover:bg-blue-900/15 transition-colors cursor-pointer`}
+          className={`w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium ${T.accentTxt} hover:bg-brand-50 dark:hover:bg-brand-light/15 transition-colors cursor-pointer`}
         >
           <Bot className="w-3.5 h-3.5" />
           解決しない場合はAIに質問

@@ -34,7 +34,7 @@ const SLIDES: Slide[] = [
   },
   // 4. ツール紹介
   {
-    lines: ['AI Strategic Brainstorm'],
+    lines: ['BrainBrainBrain'],
     sub: '事業課題を構造化し、打ち手の選択肢を広げる',
     accent: true,
   },

@@ -87,7 +87,7 @@ const AnalysisBlock: React.FC<{
                   最重要イシュー
                 </span>
                 {results.funnelStage && (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700/40">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-brand-50 dark:bg-brand-light/30 text-brand-dark dark:text-white border border-brand-light/30 dark:border-brand-light/40">
                     {results.funnelStage}
                   </span>
                 )}
@@ -163,7 +163,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
     {
       fmt: 'md',
       label: 'Markdown (.md)',
-      icon: <FileText className="w-3.5 h-3.5 text-blue-500" />,
+      icon: <FileText className="w-3.5 h-3.5 text-brand" />,
     },
     {
       fmt: 'txt',
@@ -300,7 +300,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
           {results.deepDives.map((dd, i) => (
             <div
               key={i}
-              className={`${T.card} p-5 border-l-2 border-l-blue-400 dark:border-l-blue-600`}
+              className={`${T.card} p-5 border-l-2 border-l-brand-light dark:border-l-brand`}
             >
               <p className={`text-xs font-semibold ${T.t1} mb-2`}>{dd.question}</p>
               <RichText text={dd.answer} />
@@ -323,7 +323,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
                 key={i}
                 onClick={() => onDeepDive(q)}
                 disabled={diving}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border ${T.btnGhost} hover:border-blue-300 dark:hover:border-blue-700/50 hover:text-blue-600 dark:hover:text-blue-400 disabled:opacity-30 transition`}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border ${T.btnGhost} hover:border-brand-light dark:hover:border-brand-light/50 hover:text-brand dark:hover:text-brand-light disabled:opacity-30 transition`}
               >
                 <ChevronRight className="w-3 h-3" />
                 {q}
@@ -333,12 +333,12 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
           {diving && (
             <div className="mt-2 space-y-1.5">
               <div className={`flex items-center gap-1.5 text-xs ${T.t3}`}>
-                <div className="w-3 h-3 border-2 border-slate-300 dark:border-slate-600 border-t-blue-500 rounded-full animate-spin" />
+                <div className="w-3 h-3 border-2 border-slate-300 dark:border-slate-600 border-t-brand rounded-full animate-spin" />
                 分析中 {diveProgress}%
               </div>
               <div className="h-1 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
                 <div
-                  className="h-full bg-blue-500 rounded-full transition-all duration-300"
+                  className="h-full bg-brand rounded-full transition-all duration-300"
                   style={{ width: `${diveProgress}%` }}
                 />
               </div>

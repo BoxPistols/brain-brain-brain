@@ -325,7 +325,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
               title="セッションタイプに応じた目標候補から選択できます"
               className={`flex items-center gap-1 text-xs transition-all duration-300 cursor-pointer ${
                 shouldNudgeGoal
-                  ? 'px-2.5 py-1 rounded-lg border border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-sm shadow-blue-200/50 dark:shadow-blue-900/30 animate-[nudge_2s_ease-in-out_1]'
+                  ? 'px-2.5 py-1 rounded-lg border border-brand-light dark:border-brand bg-brand-50 dark:bg-brand-light/20 text-brand dark:text-white shadow-sm shadow-brand-light/50 dark:shadow-brand/30 animate-[nudge_2s_ease-in-out_1]'
                   : `${T.t3} hover:text-slate-600 dark:hover:text-slate-300`
               }`}
             >
@@ -351,7 +351,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                       onClick={() => toggleGoal(g)}
                       className={`px-2 py-0.5 rounded-full text-xs border transition ${
                         selected
-                          ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300'
+                          ? 'bg-brand-50 dark:bg-brand-light/30 border-brand-light dark:border-brand text-brand-dark dark:text-white'
                           : T.btnGhost
                       }`}
                     >
@@ -468,7 +468,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                 <button
                   key={i}
                   onClick={() => addIssueWithDetail(tpl)}
-                  className={`w-full text-left p-2 rounded-lg border cursor-pointer ${T.cardFlat} hover:border-blue-300 dark:hover:border-blue-500 transition`}
+                  className={`w-full text-left p-2 rounded-lg border cursor-pointer ${T.cardFlat} hover:border-brand-light dark:hover:border-brand transition`}
                 >
                   <div className={`text-xs font-medium ${T.t1}`}>{tpl.text}</div>
                   <div className={`text-xs ${T.t3} mt-0.5`}>{tpl.detail}</div>

@@ -88,7 +88,7 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
   },
 ];
 
-export const SUPPORT_SYSTEM_PROMPT = `あなたは「AI Strategic Brainstorm」の操作サポートアシスタントです。
+export const SUPPORT_SYSTEM_PROMPT = `あなたは「BrainBrainBrain」の操作サポートアシスタントです。
 ユーザーの質問に対し、以下のアプリ情報に基づいて自然な日本語で回答してください。
 
 【アプリ概要】

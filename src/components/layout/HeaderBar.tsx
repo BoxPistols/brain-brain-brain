@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
-  Sparkles,
   Database,
   Settings,
   FlaskConical,
@@ -97,20 +96,23 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
       <div className="flex items-center gap-2.5">
         <div
-          className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center"
-          title="AI Strategic Brainstorm"
+          className="w-8 h-8 rounded-lg flex items-center justify-center"
+          style={{ backgroundColor: '#4F46E5' }}
+          title="BrainBrainBrain"
         >
-          <Sparkles className="w-4 h-4 text-white" />
+          <span className="font-bold text-sm leading-none" style={{ color: '#fff' }}>
+            B<sup style={{ color: '#FBBF24', fontSize: '9px' }}>3</sup>
+          </span>
         </div>
         <div>
-          <h1 className={`text-sm font-semibold ${T.t1}`}>AI Strategic Brainstorm</h1>
-          <p className={`text-xs ${T.t3}`}>Expert-grade ideation</p>
+          <h1 className={`text-sm font-semibold ${T.t1}`}>BrainBrainBrain</h1>
+          <p className={`text-xs ${T.t3}`}>考える力を、社内に。</p>
         </div>
       </div>
       <div className="flex items-center gap-1.5">
         {proMode && (
           <div
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border border-blue-200 dark:border-blue-700/50 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border border-brand-light/30 dark:border-brand-light/50 bg-brand-50 dark:bg-brand-light/20 text-brand-dark dark:text-white"
             title="プロモード有効（自分のAPIキー使用中）"
           >
             <Zap className="w-3.5 h-3.5" />
@@ -162,7 +164,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
           )}
           {connStatus.status === 'testing' && (
             <div
-              className="w-3 h-3 border-2 border-slate-300 dark:border-slate-600 border-t-blue-500 rounded-full animate-spin"
+              className="w-3 h-3 border-2 border-slate-300 dark:border-slate-600 border-t-brand rounded-full animate-spin"
               title="接続テスト中..."
             />
           )}
@@ -230,7 +232,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
               onClick={() => onPreset(PRESETS[key])}
               title={title}
               aria-label={title}
-              className={`p-1.5 rounded transition cursor-pointer ${activePreset === key ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : `${T.t3} hover:${T.t2}`}`}
+              className={`p-1.5 rounded transition cursor-pointer ${activePreset === key ? 'bg-brand-50 dark:bg-brand-light/30 text-brand dark:text-white' : `${T.t3} hover:${T.t2}`}`}
             >
               <Icon className="w-4 h-4" />
             </button>
@@ -270,7 +272,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         </button>
         <button
           onClick={onToggleCfg}
-          className={`p-2 rounded-lg cursor-pointer transition-colors ${showCfg ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 text-blue-600 dark:text-blue-400' : T.btnGhost} border`}
+          className={`p-2 rounded-lg cursor-pointer transition-colors ${showCfg ? 'bg-brand-50 dark:bg-brand-light/20 border border-brand-light/30 dark:border-brand-light/50 text-brand dark:text-white' : T.btnGhost} border`}
           title={showCfg ? '設定パネルを閉じる' : '設定パネルを開く'}
           aria-label={showCfg ? '設定パネルを閉じる' : '設定パネルを開く'}
           data-tour="settings"

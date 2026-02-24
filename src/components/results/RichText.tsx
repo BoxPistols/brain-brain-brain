@@ -37,7 +37,7 @@ export const RichText: React.FC<RichTextProps> = React.memo(({ text }) => {
         parts.push(
           <code
             key={m.index}
-            className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-700/60 text-blue-600 dark:text-blue-300 text-xs font-mono"
+            className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-700/60 text-brand dark:text-brand-light text-xs font-mono"
           >
             {m[6]}
           </code>,
@@ -49,7 +49,7 @@ export const RichText: React.FC<RichTextProps> = React.memo(({ text }) => {
             href={m[9]}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-0.5"
+            className="text-brand dark:text-brand-light hover:underline inline-flex items-center gap-0.5"
           >
             {m[8]}
             <ExternalLink className="w-2.5 h-2.5" />
@@ -62,7 +62,7 @@ export const RichText: React.FC<RichTextProps> = React.memo(({ text }) => {
             href={m[10]}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-0.5 break-all"
+            className="text-brand dark:text-brand-light hover:underline inline-flex items-center gap-0.5 break-all"
           >
             {m[10].length > 60 ? m[10].slice(0, 57) + '…' : m[10]}
             <ExternalLink className="w-2.5 h-2.5" />

@@ -66,7 +66,7 @@ export const LogPanel: React.FC<LogPanelProps> = ({
       >
         <div className={`flex items-center justify-between px-4 py-2.5 border-b ${T.div} shrink-0`}>
           <div className="flex items-center gap-2">
-            <Database className="w-4 h-4 text-blue-500" />
+            <Database className="w-4 h-4 text-brand" />
             <span id="log-panel-title" className={`text-sm font-semibold ${T.t1}`}>
               ログ管理
             </span>
@@ -86,7 +86,7 @@ export const LogPanel: React.FC<LogPanelProps> = ({
               onClick={() => onSettings({ ...settings, logMode: m })}
               className={`px-2 py-1 rounded-lg border transition text-xs ${
                 settings.logMode === m
-                  ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700/50 text-blue-700 dark:text-blue-300'
+                  ? 'bg-brand-50 dark:bg-brand-light/20 border-brand-light dark:border-brand-light/50 text-brand-dark dark:text-white'
                   : `${T.btnGhost} border-slate-200 dark:border-slate-700/60`
               }`}
             >

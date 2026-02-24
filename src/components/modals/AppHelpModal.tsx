@@ -138,7 +138,7 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/60 dark:border-white/10 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-600/90 backdrop-blur-sm flex items-center justify-center shadow-sm">
+            <div className="w-8 h-8 rounded-lg bg-brand/90 backdrop-blur-sm flex items-center justify-center shadow-sm">
               <HelpCircle className="w-[18px] h-[18px] text-white" />
             </div>
             <h2 id="app-help-title" className={`text-base font-semibold ${T.t1}`}>
@@ -158,13 +158,13 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-6 py-5 overscroll-contain">
           {/* 概要 */}
-          <div className="p-4 rounded-xl mb-5 bg-blue-50/80 dark:bg-blue-900/20 border border-blue-200/60 dark:border-blue-700/30 backdrop-blur-sm">
-            <p className="text-sm text-blue-700 dark:text-blue-300 leading-relaxed">
-              <strong>AI Strategic Brainstorm</strong>{' '}
+          <div className="p-4 rounded-xl mb-5 bg-brand-50/80 dark:bg-brand-light/20 border border-brand-light/60 dark:border-brand-light/30 backdrop-blur-sm">
+            <p className="text-sm text-brand-dark dark:text-brand-light leading-relaxed">
+              <strong>BrainBrainBrain</strong>{' '}
               は、AIを活用してビジネス戦略のアイデアを生成・深掘りするツールです。
               サービスや事業の課題を入力すると、優先度・実行難易度・インパクト付きの戦略提案を受け取れます。
             </p>
-            <p className="text-[13px] text-blue-600/80 dark:text-blue-400/80 mt-2 leading-relaxed">
+            <p className="text-[13px] text-brand/80 dark:text-brand-light/80 mt-2 leading-relaxed">
               フリーモードでもお試しいただけますが、より高品質な分析には
               <strong>ご自身のOpenAI APIキー</strong>の設定を推奨しています。
               設定画面から簡単に登録でき、分析深度Lv4やすべての深掘り機能が解放されます。
@@ -176,12 +176,12 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
             <div className="space-y-3.5">
               {steps.map(({ icon: Icon, label, desc }, i) => (
                 <div key={i} className="flex gap-3" title={`Step ${i + 1}: ${label}`}>
-                  <div className="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-brand text-white flex items-center justify-center text-sm font-bold shrink-0">
                     {i + 1}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <Icon className="w-[18px] h-[18px] text-blue-500" />
+                      <Icon className="w-[18px] h-[18px] text-brand" />
                       <span className={`text-sm font-medium ${T.t1}`}>{label}</span>
                     </div>
                     <p className={`text-[13px] ${T.t3} mt-0.5 leading-relaxed`}>{desc}</p>
@@ -234,16 +234,16 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
                 </ul>
               </div>
               <div
-                className="p-3.5 rounded-xl border border-blue-200/60 dark:border-blue-700/40 bg-blue-50/80 dark:bg-blue-900/15 backdrop-blur-sm"
+                className="p-3.5 rounded-xl border border-brand-light/60 dark:border-brand-light/40 bg-brand-50/80 dark:bg-brand-light/15 backdrop-blur-sm"
                 title="自分のAPIキーで利用可能"
               >
                 <div className="flex items-center gap-2 mb-2.5">
-                  <Zap className="w-[18px] h-[18px] text-blue-500" />
-                  <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
+                  <Zap className="w-[18px] h-[18px] text-brand" />
+                  <span className="text-sm font-semibold text-brand-dark dark:text-brand-light">
                     プロモード
                   </span>
                 </div>
-                <ul className="text-[13px] text-blue-700/80 dark:text-blue-300/80 space-y-1.5">
+                <ul className="text-[13px] text-brand-dark/80 dark:text-brand-light/80 space-y-1.5">
                   {[
                     'Lv1 Quick — 概要（〜5分）',
                     'Lv2 Standard — 標準（〜15分）',
@@ -311,7 +311,7 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
                       onClose();
                       onStartVideo();
                     }}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-200 dark:hover:border-blue-700/40 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 hover:bg-brand-50 dark:hover:bg-brand-light/20 hover:border-brand-light/30 dark:hover:border-brand-light/40 transition-colors"
                   >
                     <Play className={`w-4 h-4 ${T.accentTxt}`} />
                     <span className={T.t1}>イントロ動画を再生</span>
@@ -323,7 +323,7 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
                       onClose();
                       onStartTour();
                     }}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-200 dark:hover:border-blue-700/40 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 hover:bg-brand-50 dark:hover:bg-brand-light/20 hover:border-brand-light/30 dark:hover:border-brand-light/40 transition-colors"
                   >
                     <Navigation className={`w-4 h-4 ${T.accentTxt}`} />
                     <span className={T.t1}>入力画面ガイド</span>
@@ -335,7 +335,7 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
                       onClose();
                       onStartResultsTour();
                     }}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-200 dark:hover:border-blue-700/40 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium cursor-pointer bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 hover:bg-brand-50 dark:hover:bg-brand-light/20 hover:border-brand-light/30 dark:hover:border-brand-light/40 transition-colors"
                   >
                     <Target className={`w-4 h-4 ${T.accentTxt}`} />
                     <span className={T.t1}>分析画面ガイド</span>
@@ -370,7 +370,7 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
           </a>
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-medium cursor-pointer bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition-colors duration-200"
+            className="flex-1 py-2.5 rounded-xl text-sm font-medium cursor-pointer bg-brand hover:bg-brand text-white shadow-sm transition-colors duration-200"
             title="ガイドを閉じる"
           >
             閉じる

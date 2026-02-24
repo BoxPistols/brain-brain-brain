@@ -321,7 +321,7 @@ export default function App() {
                       ? 'bg-red-50 dark:bg-red-900/15 border-red-200 dark:border-red-700/40'
                       : costWarning.severity === 'warn'
                         ? 'bg-amber-50 dark:bg-amber-900/15 border-amber-200 dark:border-amber-700/40'
-                        : 'bg-blue-50 dark:bg-blue-900/15 border-blue-200 dark:border-blue-700/40'
+                        : 'bg-brand-50 dark:bg-brand-light/15 border-brand-light/30 dark:border-brand-light/40'
                   }`}
                 >
                   <AlertCircle
@@ -330,7 +330,7 @@ export default function App() {
                         ? 'text-red-500'
                         : costWarning.severity === 'warn'
                           ? 'text-amber-500'
-                          : 'text-blue-500'
+                          : 'text-brand'
                     }`}
                   />
                   <p
@@ -339,7 +339,7 @@ export default function App() {
                         ? 'text-red-700 dark:text-red-300'
                         : costWarning.severity === 'warn'
                           ? 'text-amber-700 dark:text-amber-300'
-                          : 'text-blue-700 dark:text-blue-300'
+                          : 'text-brand-dark dark:text-white'
                     }`}
                   >
                     {costWarning.message}
@@ -418,10 +418,10 @@ export default function App() {
           <div
             onMouseDown={startDrag}
             onTouchStart={startTouchDrag}
-            className={`hidden lg:flex items-center justify-center shrink-0 cursor-col-resize group transition-colors self-stretch ${isDragging ? 'w-1.5 bg-blue-500/40' : 'w-4 hover:bg-blue-500/10'}`}
+            className={`hidden lg:flex items-center justify-center shrink-0 cursor-col-resize group transition-colors self-stretch ${isDragging ? 'w-1.5 bg-brand/40' : 'w-4 hover:bg-brand/10'}`}
           >
             <GripVertical
-              className={`w-3 h-3 transition-colors ${isDragging ? 'text-blue-500' : 'text-slate-300 dark:text-slate-600 group-hover:text-blue-400'}`}
+              className={`w-3 h-3 transition-colors ${isDragging ? 'text-brand' : 'text-slate-300 dark:text-slate-600 group-hover:text-brand-light'}`}
             />
           </div>
 

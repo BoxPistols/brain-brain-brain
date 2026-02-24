@@ -57,7 +57,7 @@ export const SupportPanel: React.FC<Props> = ({ apiKey }) => {
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors cursor-pointer`}
                 >
                   <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center bg-blue-50 dark:bg-blue-900/20 ${T.accentTxt} shrink-0`}
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center bg-brand-50 dark:bg-brand-light/20 ${T.accentTxt} shrink-0`}
                   >
                     <Icon className="w-4 h-4" />
                   </div>
@@ -74,9 +74,9 @@ export const SupportPanel: React.FC<Props> = ({ apiKey }) => {
             <div className="pt-3 border-t border-slate-200 dark:border-slate-700/40">
               <button
                 onClick={() => setView('ai')}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-blue-50 dark:hover:bg-blue-900/15 transition-colors cursor-pointer`}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-brand-50 dark:hover:bg-brand-light/15 transition-colors cursor-pointer`}
               >
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-600 text-white shrink-0">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-brand text-white shrink-0">
                   <Bot className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">

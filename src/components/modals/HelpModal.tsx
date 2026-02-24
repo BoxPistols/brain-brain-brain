@@ -16,7 +16,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Key className="w-4 h-4 text-blue-500" />
+            <Key className="w-4 h-4 text-brand" />
             <h2 className={`text-sm font-semibold ${T.t1}`}>APIキー設定ガイド</h2>
           </div>
           <button onClick={onClose} className={`p-1 rounded-lg ${T.btnGhost}`}>
@@ -50,14 +50,14 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
               </li>
             </ul>
           </div>
-          <div className="p-3 rounded-xl border border-blue-200 dark:border-blue-700/50 bg-blue-50 dark:bg-blue-900/10">
+          <div className="p-3 rounded-xl border border-brand-light/30 dark:border-brand-light/50 bg-brand-50 dark:bg-brand-light/10">
             <div className="flex items-center gap-1.5 mb-2">
-              <Zap className="w-3.5 h-3.5 text-blue-500" />
-              <span className="text-xs font-semibold text-blue-700 dark:text-blue-300">
+              <Zap className="w-3.5 h-3.5 text-brand" />
+              <span className="text-xs font-semibold text-brand-dark dark:text-brand-light">
                 プロモード
               </span>
             </div>
-            <ul className="text-xs text-blue-700/80 dark:text-blue-300/80 space-y-1">
+            <ul className="text-xs text-brand-dark/80 dark:text-brand-light/80 space-y-1">
               <li className="flex items-start gap-1">
                 <ChevronRight className="w-3 h-3 mt-0.5 shrink-0" />
                 自前APIキー使用
@@ -111,7 +111,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
             },
           ].map(({ step, title, desc, url, urlLabel }) => (
             <div key={step} className="flex gap-3">
-              <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+              <div className="w-5 h-5 rounded-full bg-brand text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
                 {step}
               </div>
               <div>
@@ -122,7 +122,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-0.5 text-xs text-blue-500 hover:text-blue-600 mt-0.5"
+                    className="inline-flex items-center gap-0.5 text-xs text-brand hover:text-brand mt-0.5"
                   >
                     {urlLabel}
                     <ExternalLink className="w-2.5 h-2.5" />

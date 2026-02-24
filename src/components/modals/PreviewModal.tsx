@@ -69,7 +69,7 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
               </button>
             ) : (
               <div className="flex items-center gap-2">
-                <Eye className="w-4 h-4 text-blue-500" />
+                <Eye className="w-4 h-4 text-brand" />
                 <span className={`text-sm font-bold ${T.t1}`}>レポートの確認</span>
               </div>
             )}
@@ -96,7 +96,7 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
                 onClick={() => setViewMode('preview')}
                 className={`px-3 py-1 text-[11px] font-medium rounded-md transition-all ${
                   viewMode === 'preview'
-                    ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                    ? 'bg-white dark:bg-slate-700 text-brand dark:text-white shadow-sm'
                     : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                 }`}
               >
@@ -109,7 +109,7 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
                 onClick={() => setViewMode('source')}
                 className={`px-3 py-1 text-[11px] font-medium rounded-md transition-all ${
                   viewMode === 'source'
-                    ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                    ? 'bg-white dark:bg-slate-700 text-brand dark:text-white shadow-sm'
                     : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                 }`}
               >
@@ -169,7 +169,7 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
                   dlFile(content, filename, mime);
                   setExportType(null);
                 }}
-                className="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20 active:scale-95 transition-all"
+                className="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-bold bg-brand hover:bg-brand text-white shadow-lg shadow-brand/20 active:scale-95 transition-all"
               >
                 <Download className="w-4 h-4" />
                 {exportType.toUpperCase()}をダウンロード
@@ -184,7 +184,7 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 ${T.t1} transition-all active:scale-95`}
               >
-                <FileText className="w-3.5 h-3.5 text-blue-500" />
+                <FileText className="w-3.5 h-3.5 text-brand" />
                 Markdown
               </button>
               <button

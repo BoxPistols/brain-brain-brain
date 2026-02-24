@@ -29,18 +29,18 @@ export const PurposeCards: React.FC<Props> = ({ clusters, selectedId, onSelect }
           onClick={() => onSelect(c)}
           className={`text-left px-2.5 py-2 rounded-lg border transition cursor-pointer ${
             active
-              ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-600 ring-1 ring-blue-200 dark:ring-blue-800'
-              : `${T.cardFlat} hover:border-blue-200 dark:hover:border-blue-700/40`
+              ? 'bg-brand-50 dark:bg-slate-800 border border-brand dark:border-brand-light shadow-[0_0_0_1px] shadow-brand dark:shadow-brand-light'
+              : `${T.cardFlat} hover:border-brand/30 dark:hover:border-brand-light/40`
           }`}
         >
           <div
-            className={`flex items-center gap-1.5 text-xs font-semibold ${active ? 'text-blue-700 dark:text-blue-300' : T.t1}`}
+            className={`flex items-center gap-1.5 text-xs font-semibold ${active ? 'text-brand-dark dark:text-white' : T.t1}`}
           >
             {ICONS[c.id]}
             {c.label}
           </div>
           <div
-            className={`text-[10px] mt-0.5 ${active ? 'text-blue-600/70 dark:text-blue-400/70' : T.t3}`}
+            className={`text-[10px] mt-0.5 ${active ? 'text-brand/70 dark:text-slate-300' : T.t3}`}
           >
             {c.sublabel}
           </div>

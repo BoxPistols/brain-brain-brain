@@ -27,7 +27,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({
   return (
     <div className="space-y-3">
       <div
-        className={`${T.card} p-3.5 hover:border-blue-300 dark:hover:border-blue-700/50 transition-colors relative group`}
+        className={`${T.card} p-3.5 hover:border-brand-light dark:hover:border-brand-light/50 transition-colors relative group`}
       >
         <div className="flex items-start gap-2 mb-2">
           <div
@@ -41,7 +41,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({
             <button
               onClick={() => onDrillDown(idea, index)}
               disabled={!!drillingDownId}
-              className={`p-1 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-30 cursor-pointer`}
+              className={`p-1 rounded bg-brand-50 dark:bg-brand-light/20 text-brand dark:text-white opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-30 cursor-pointer`}
               title="このアイデアを深掘り"
               {...(index === 0 && depth === 0 ? { 'data-tour': 'result-drilldown' } : {})}
             >
@@ -85,8 +85,8 @@ export const ResultCard: React.FC<ResultCardProps> = ({
 
       {/* Sub-ideas (Recursive) */}
       {hasSubs && (
-        <div className="ml-6 pl-4 border-l-2 border-blue-100 dark:border-blue-900/30 space-y-3">
-          <div className="text-[10px] font-bold text-blue-500 uppercase tracking-wider mb-1">
+        <div className="ml-6 pl-4 border-l-2 border-brand-50 dark:border-brand-light/30/30 space-y-3">
+          <div className="text-[10px] font-bold text-brand uppercase tracking-wider mb-1">
             Sub-plans
           </div>
           {idea.subIdeas!.map((sub, i) => (

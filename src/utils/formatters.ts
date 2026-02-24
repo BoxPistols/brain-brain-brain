@@ -19,7 +19,7 @@ export const effortC = (v: string): string =>
   ({
     High: 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700/40',
     Medium:
-      'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700/40',
+      'bg-brand-50 dark:bg-brand-900/20 text-brand-dark dark:text-brand-light border-brand-light/30 dark:border-brand-dark/40',
     Low: 'bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-700/40',
   })[v] || 'bg-slate-100 dark:bg-slate-700/40 text-slate-600 dark:text-slate-400 border-slate-200';
 

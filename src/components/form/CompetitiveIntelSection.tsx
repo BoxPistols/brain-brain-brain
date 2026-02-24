@@ -74,7 +74,7 @@ export const CompetitiveIntelSection: React.FC<Props> = ({ form, setForm }) => {
           競合・データ情報
           <span className={`text-[10px] font-normal ${T.t3}`}>（任意）</span>
           {filledCount > 0 && (
-            <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+            <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-brand-50 dark:bg-brand-light/30 text-brand dark:text-white">
               {filledCount}件入力済
             </span>
           )}
@@ -196,7 +196,7 @@ export const CompetitiveIntelSection: React.FC<Props> = ({ form, setForm }) => {
                     key={s.label}
                     type="button"
                     onClick={() => addKpi(s.label, '')}
-                    className={`px-2 py-0.5 rounded-full text-[10px] border ${T.btnGhost} hover:border-blue-300 dark:hover:border-blue-700/50 cursor-pointer transition`}
+                    className={`px-2 py-0.5 rounded-full text-[10px] border ${T.btnGhost} hover:border-brand-light dark:hover:border-brand-light/50 cursor-pointer transition`}
                   >
                     + {s.label}
                   </button>

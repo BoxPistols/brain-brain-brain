@@ -44,7 +44,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           <span
             className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
               proMode
-                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700/50'
+                ? 'bg-brand-50 dark:bg-brand-light/30 text-brand-dark dark:text-white border border-brand-light/30 dark:border-brand-light/50'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50'
             }`}
           >
@@ -78,7 +78,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </label>
             <button
               onClick={() => setShowHelp(true)}
-              className={`flex items-center gap-0.5 text-xs ${T.t3} hover:text-blue-500 transition`}
+              className={`flex items-center gap-0.5 text-xs ${T.t3} hover:text-brand transition`}
             >
               <HelpCircle className="w-3 h-3" />
               取得方法
