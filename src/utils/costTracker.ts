@@ -56,6 +56,12 @@ export function resetCycle(): void {
   cycleTotal = 0;
 }
 
+/** テスト用: セッション・サイクル両方リセット */
+export function _resetAll(): void {
+  sessionTotal = 0;
+  cycleTotal = 0;
+}
+
 // ── localStorage 日次累計 ──
 interface DailyRecord {
   date: string;

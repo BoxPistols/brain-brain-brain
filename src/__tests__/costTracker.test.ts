@@ -7,6 +7,7 @@ import {
   resetCycle,
   checkBudget,
   getDailyTotal,
+  _resetAll,
 } from '../utils/costTracker';
 import { DAILY_COST_KEY } from '../constants/config';
 
@@ -47,8 +48,9 @@ describe('calculateCostJpy', () => {
 });
 
 describe('addUsage / getSessionTotal / getCycleTotal', () => {
-  // costTracker はモジュールレベル変数を使うため、
-  // テスト間で累積する点に注意（resetCycle でサイクルのみリセット可能）
+  beforeEach(() => {
+    _resetAll();
+  });
 
   it('addUsage でセッション・サイクル累計が増加する', () => {
     const before = getSessionTotal();
@@ -70,7 +72,7 @@ describe('addUsage / getSessionTotal / getCycleTotal', () => {
 
 describe('checkBudget', () => {
   beforeEach(() => {
-    resetCycle();
+    _resetAll();
     localStorageMock.clear();
   });
 
@@ -91,7 +93,6 @@ describe('checkBudget', () => {
   });
 
   it('予算内なら null を返す', () => {
-    resetCycle();
     const warning = checkBudget(0.05, true);
     expect(warning).toBeNull();
   });
@@ -100,7 +101,6 @@ describe('checkBudget', () => {
     // localStorage に高額の日次累計をセット
     const today = new Date().toISOString().slice(0, 10);
     localStorageMock.setItem(DAILY_COST_KEY, JSON.stringify({ date: today, total: 35 }));
-    resetCycle();
     const warning = checkBudget(0.01, false);
     expect(warning).not.toBeNull();
     expect(warning!.severity).toBe('info');
