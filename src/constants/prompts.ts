@@ -277,9 +277,9 @@ export const FREE_DEPTH: Record<
   number,
   { label: string; desc: string; ideas: number; wait: string; maxTokens: number }
 > = {
-  1: { label: 'Lite', desc: '速報', ideas: 3, wait: '〜1分', maxTokens: 6000 },
-  2: { label: 'Standard', desc: '標準', ideas: 5, wait: '1-3分', maxTokens: 12000 },
-  3: { label: 'Deep', desc: '詳細', ideas: 7, wait: '3-5分', maxTokens: 16000 },
+  1: { label: 'Lite', desc: '速報', ideas: 3, wait: '〜1分', maxTokens: 12000 },
+  2: { label: 'Standard', desc: '標準', ideas: 5, wait: '1-3分', maxTokens: 16000 },
+  3: { label: 'Deep', desc: '詳細', ideas: 7, wait: '3-5分', maxTokens: 24000 },
 };
 
 // Pro mode (user's own API key) — full tiers
