@@ -5,6 +5,7 @@ export default defineConfig({
   outputDir: './e2e/test-results',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
+  grepInvert: process.env.CI ? /@visual/ : undefined,
   retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',

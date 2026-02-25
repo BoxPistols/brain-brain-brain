@@ -192,7 +192,10 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             Seed
           </button>
           {seedOpen && (
-            <div className="absolute right-0 top-full mt-1 w-80 max-h-[28rem] overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg z-50">
+            <div
+              data-testid="seed-dropdown"
+              className="absolute right-0 top-full mt-1 w-80 max-h-[28rem] overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg z-50"
+            >
               {groupedSeeds.map((g) => (
                 <div key={g.type}>
                   <div

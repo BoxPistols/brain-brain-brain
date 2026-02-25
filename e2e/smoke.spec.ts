@@ -35,10 +35,10 @@ test.describe('スモークテスト', () => {
     const seedBtn = page.getByRole('button', { name: 'Seedデータ選択' });
     await seedBtn.hover();
     // ドロップダウンが表示される
-    const dropdown = page.locator('[data-tour="seed"] + div, .absolute.right-0.top-full');
-    await expect(dropdown.first()).toBeVisible({ timeout: 3000 });
+    const dropdown = page.getByTestId('seed-dropdown');
+    await expect(dropdown).toBeVisible({ timeout: 3000 });
     // 最初のシナリオをクリック
-    await dropdown.first().locator('button').first().click();
+    await dropdown.locator('button').first().click();
     // フォームにデータが入る
     const serviceInput = page.getByPlaceholder('プロダクト / サービスカテゴリ名');
     await expect(serviceInput).not.toHaveValue('');

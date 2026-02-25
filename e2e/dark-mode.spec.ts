@@ -47,7 +47,6 @@ test.describe('ダークモード', () => {
       while ((node = walker.nextNode() as Element | null)) {
         const style = getComputedStyle(node);
         const color = style.color;
-        const bg = style.backgroundColor;
 
         // 不可視要素はスキップ
         if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0')
@@ -89,7 +88,8 @@ test.describe('ダークモード', () => {
     ).toHaveLength(0);
   });
 
-  test('ダークモード: スクリーンショット', async ({ page }) => {
+  // スクリーンショットは OS フォント差異があるため CI ではスキップ
+  test('ダークモード: スクリーンショット', { tag: '@visual' }, async ({ page }) => {
     await page.goto('/');
 
     const html = page.locator('html');
@@ -105,7 +105,7 @@ test.describe('ダークモード', () => {
     });
   });
 
-  test('ライトモード: スクリーンショット', async ({ page }) => {
+  test('ライトモード: スクリーンショット', { tag: '@visual' }, async ({ page }) => {
     await page.goto('/');
 
     const html = page.locator('html');
