@@ -409,6 +409,9 @@ export default function App() {
                       )}
                     </span>
                   </button>
+                  <p className={`text-[10px] ${T.t3} text-center mt-1`}>
+                    入力内容は OpenAI API に送信されます。個人名・機密情報の入力はお控えください
+                  </p>
                 </div>
               </div>
             </div>

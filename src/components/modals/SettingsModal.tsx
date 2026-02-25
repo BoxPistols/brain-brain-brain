@@ -207,6 +207,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </p>
         </div>
 
+        {/* API 利用に関する注意 */}
+        <p className={`text-[10px] leading-relaxed ${T.t3}`}>
+          入力内容は OpenAI API に送信されます。個人名・機密情報の入力はお控えください。API
+          経由のデータはモデル学習には使用されません。
+        </p>
+
         {/* Reset Data */}
         <div className={`pt-3 mt-1 border-t ${T.div} flex justify-end`}>
           <button
