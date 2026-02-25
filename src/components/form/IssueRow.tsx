@@ -32,6 +32,7 @@ export const IssueRow: React.FC<IssueRowProps> = ({
       <div className="flex items-start gap-1.5">
         <button
           onClick={() => setOpen((o) => !o)}
+          aria-label={open ? '課題の詳細を閉じる' : '課題の詳細を開く'}
           className={`mt-1.5 p-0.5 rounded ${T.t3} hover:text-slate-600 dark:hover:text-slate-300 transition shrink-0`}
         >
           <ChevronRight className={`w-3 h-3 transition-transform ${open ? 'rotate-90' : ''}`} />
@@ -44,6 +45,7 @@ export const IssueRow: React.FC<IssueRowProps> = ({
         />
         <button
           onClick={() => onRemove(idx)}
+          aria-label="課題を削除"
           className="mt-1 p-1 rounded text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 transition shrink-0"
         >
           <Minus className="w-3 h-3" />

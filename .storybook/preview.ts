@@ -2,6 +2,31 @@ import type { Preview } from '@storybook/react-vite';
 import '../src/index.css';
 
 const preview: Preview = {
+  globalTypes: {
+    theme: {
+      description: 'テーマ切替',
+      toolbar: {
+        title: 'Theme',
+        icon: 'mirror',
+        items: [
+          { value: 'light', title: 'Light', icon: 'sun' },
+          { value: 'dark', title: 'Dark', icon: 'moon' },
+        ],
+        dynamicTitle: true,
+      },
+    },
+  },
+  initialGlobals: {
+    theme: 'light',
+  },
+  decorators: [
+    (Story, context) => {
+      const theme = context.globals.theme || 'light';
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+      document.body.style.backgroundColor = theme === 'dark' ? '#020617' : '#f8fafc';
+      return Story();
+    },
+  ],
   parameters: {
     controls: {
       matchers: {
@@ -9,11 +34,7 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
-
     a11y: {
-      // 'todo' - show a11y violations in the test UI only
-      // 'error' - fail CI on a11y violations
-      // 'off' - skip a11y checks entirely
       test: 'todo',
     },
   },
