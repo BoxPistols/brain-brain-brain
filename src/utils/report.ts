@@ -2,6 +2,13 @@ import { BrainstormForm, AIResults } from '../types';
 import { TYPES, PRO_DEPTH } from '../constants/prompts';
 import { ll } from './formatters';
 
+/** HTML エスケープ */
+const escHtml = (s: string) =>
+  s.replace(
+    /[&<>"']/g,
+    (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m] || m,
+  );
+
 export const buildReportMd = (
   pn: string,
   form: BrainstormForm,
@@ -12,26 +19,28 @@ export const buildReportMd = (
 ): string => {
   const now = new Date().toLocaleString('ja-JP');
   const ses = form.sessionType === 'other' ? form.customSession : TYPES[form.sessionType];
+  const e = escHtml;
+
   let md = `# BrainBrainBrain Report\n\n`;
-  md += `- **プロジェクト**: ${pn}\n`;
-  md += `- **プロダクト/サービス**: ${form.productService}\n`;
-  md += `- **セッション種別**: ${ses}\n`;
+  md += `- **プロジェクト**: ${e(pn)}\n`;
+  md += `- **プロダクト/サービス**: ${e(form.productService)}\n`;
+  md += `- **セッション種別**: ${e(ses || '')}\n`;
   md += `- **分析深度**: ${PRO_DEPTH[dep]?.label ?? `Lv${dep}`}\n`;
-  md += `- **使用モデル**: ${provN} / ${mL}\n`;
+  md += `- **使用モデル**: ${e(provN)} / ${e(mL)}\n`;
   md += `- **生成日時**: ${now}\n\n`;
 
-  md += `## 目標\n${form.teamGoals}\n\n`;
+  md += `## 目標\n${e(form.teamGoals)}\n\n`;
 
   const iss = form.issues.filter((x) => x.text.trim());
   if (iss.length) {
     md += `## 課題\n`;
     iss.forEach((x) => {
-      md += `- **${x.text}**${x.detail ? `: ${x.detail}` : ''}${
+      md += `- **${e(x.text)}**${x.detail ? `: ${e(x.detail)}` : ''}${
         x.sub?.filter(Boolean).length
           ? '\n' +
             x.sub
               .filter(Boolean)
-              .map((s) => `  - ${s}`)
+              .map((s) => `  - ${e(s)}`)
               .join('\n')
           : ''
       }\n`;
@@ -41,13 +50,13 @@ export const buildReportMd = (
 
   // 競合・データ情報
   if (form.serviceUrl?.trim()) {
-    md += `## 自社サービス\n${form.serviceUrl}\n\n`;
+    md += `## 自社サービス\n${e(form.serviceUrl)}\n\n`;
   }
   const comps = (form.competitors || []).filter((c) => c.name.trim());
   if (comps.length) {
     md += `## 競合情報\n`;
     comps.forEach((c) => {
-      md += `- **${c.name}**${c.url ? ` (${c.url})` : ''}${c.note ? ` — ${c.note}` : ''}\n`;
+      md += `- **${e(c.name)}**${c.url ? ` (${e(c.url)})` : ''}${c.note ? ` — ${e(c.note)}` : ''}\n`;
     });
     md += '\n';
   }
@@ -55,45 +64,45 @@ export const buildReportMd = (
   if (kpis.length) {
     md += `## 主要KPI実績値\n\n| KPI | 値 |\n|---|---|\n`;
     kpis.forEach((k) => {
-      md += `| ${k.label} | ${k.value} |\n`;
+      md += `| ${e(k.label)} | ${e(k.value)} |\n`;
     });
     md += '\n';
   }
 
   if (results.keyIssue) {
     md += `## 最重要イシュー\n\n`;
-    if (results.funnelStage) md += `**ボトルネック段階**: ${results.funnelStage}\n\n`;
-    md += `${results.keyIssue}\n\n`;
+    if (results.funnelStage) md += `**ボトルネック段階**: ${e(results.funnelStage)}\n\n`;
+    md += `${e(results.keyIssue)}\n\n`;
   }
 
-  md += `---\n\n## AI分析\n\n${results.understanding}\n\n---\n\n## 戦略アイデア\n\n`;
+  md += `---\n\n## AI分析\n\n${e(results.understanding)}\n\n---\n\n## 戦略アイデア\n\n`;
 
   const hasFeasibility = results.ideas.some((d) => d.feasibility);
   results.ideas.forEach((d, i) => {
-    md += `### ${i + 1}. ${d.title}\n\n${d.description}\n\n| 優先度 | 工数 | インパクト |${hasFeasibility ? ' 実現可能性 |' : ''}\n|---|---|---|${hasFeasibility ? '---|' : ''}\n| ${ll(d.priority)} | ${ll(d.effort)} | ${ll(d.impact)} |${hasFeasibility ? ` ${d.feasibility?.total ?? '-'}/100 |` : ''}\n\n`;
+    md += `### ${i + 1}. ${e(d.title)}\n\n${e(d.description)}\n\n| 優先度 | 工数 | インパクト |${hasFeasibility ? ' 実現可能性 |' : ''}\n|---|---|---|${hasFeasibility ? '---|' : ''}\n| ${ll(d.priority)} | ${ll(d.effort)} | ${ll(d.impact)} |${hasFeasibility ? ` ${d.feasibility?.total ?? '-'}/100 |` : ''}\n\n`;
     if (d.feasibility) {
-      md += `> リソース: ${d.feasibility.resource} / 技術容易性: ${d.feasibility.techDifficulty} / 組織受容性: ${d.feasibility.orgAcceptance}\n\n`;
+      md += `> リソース: ${e(d.feasibility.resource.toString())} / 技術容易性: ${e(d.feasibility.techDifficulty.toString())} / 組織受容性: ${e(d.feasibility.orgAcceptance.toString())}\n\n`;
     }
   });
 
   if (results.refinements?.length) {
     md += `---\n\n## ブラッシュアップ\n\n`;
     results.refinements.forEach((r, i) => {
-      if (results.refinements!.length > 1) md += `### ${i + 1}. レビュー: ${r.review}\n\n`;
-      else md += `> レビュー: ${r.review}\n\n`;
-      md += `${r.answer}\n\n`;
+      if (results.refinements!.length > 1) md += `### ${i + 1}. レビュー: ${e(r.review)}\n\n`;
+      else md += `> レビュー: ${e(r.review)}\n\n`;
+      md += `${e(r.answer)}\n\n`;
     });
   } else if (results.refinement) {
-    md += `---\n\n## ブラッシュアップ\n\n${results.refinement}\n`;
+    md += `---\n\n## ブラッシュアップ\n\n${e(results.refinement)}\n`;
   }
 
   if (results.deepDives?.length) {
     md += `---\n\n## 深掘り\n\n`;
     results.deepDives.forEach((dd, i) => {
-      md += `### ${i + 1}. ${dd.question}\n\n${dd.answer}\n\n`;
+      md += `### ${i + 1}. ${e(dd.question)}\n\n${e(dd.answer)}\n\n`;
     });
   } else if (results.deepDive) {
-    md += `---\n\n## 深掘り\n\n${results.deepDive}\n`;
+    md += `---\n\n## 深掘り\n\n${e(results.deepDive)}\n`;
   }
 
   md += `\n---\n*Generated by BrainBrainBrain*`;
@@ -235,13 +244,6 @@ export const downloadPdf = async (md: string, pn: string) => {
     .from(container)
     .save();
 };
-
-/** HTML エスケープ */
-const escHtml = (s: string) =>
-  s.replace(
-    /[&<>"']/g,
-    (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m] || m,
-  );
 
 /** 個別の深掘り結果を PDF ダウンロード */
 export const downloadDeepDivePdf = async (question: string, answer: string) => {
@@ -1132,9 +1134,9 @@ export const downloadPptxHighClass = async (
     color: C.blue,
   });
   closing.addText(
-    `${pn}  |  ${now}\n本資料はAI分析結果に基づく参考情報です。意思決定には追加検証を推奨します。`,
-    { x: 0.8, y: 3.5, w: 8.4, fontSize: 9, color: C.gray },
+    `${pn}  |  ${now}\n本資料はAI分析に基づく「叩き台」です。各スライドの内容を加筆・修正してご活用ください。\n意思決定には追加検証を推奨します。`,
+    { x: 0.8, y: 3.3, w: 8.4, fontSize: 9, color: C.gray, lineSpacingMultiple: 1.5 },
   );
 
-  await pptx.writeFile({ fileName: `${pn}_HighClass.pptx` });
+  await pptx.writeFile({ fileName: `${pn}_コンサル版.pptx` });
 };

@@ -1,5 +1,15 @@
 import React, { useState, useMemo } from 'react';
-import { Download, FileText, Printer, X, Eye, ArrowLeft, Code } from 'lucide-react';
+import {
+  Download,
+  FileText,
+  FileSpreadsheet,
+  Printer,
+  Presentation,
+  X,
+  Eye,
+  ArrowLeft,
+  Code,
+} from 'lucide-react';
 import { RichText } from '../results/RichText';
 import { dlFile } from '../../utils/report';
 import { T } from '../../constants/theme';
@@ -8,11 +18,12 @@ interface PreviewProps {
   md: string;
   pn: string;
   onClose: () => void;
+  onDownload?: (format: string) => void;
 }
 
 type ViewMode = 'preview' | 'source';
 
-export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
+export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose, onDownload }) => {
   const [exportType, setExportType] = useState<'md' | 'txt' | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('preview');
 
@@ -40,6 +51,8 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
     w.document.close();
     setTimeout(() => w.print(), 300);
   };
+
+  const btnCls = `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 ${T.t1} transition-all active:scale-95`;
 
   return (
     <div
@@ -176,13 +189,13 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
               </button>
             </>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={() => {
                   setExportType('md');
                   setViewMode('preview');
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 ${T.t1} transition-all active:scale-95`}
+                className={btnCls}
               >
                 <FileText className="w-3.5 h-3.5 text-brand dark:text-brand-light" />
                 Markdown
@@ -192,18 +205,35 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
                   setExportType('txt');
                   setViewMode('source');
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 ${T.t1} transition-all active:scale-95`}
+                className={btnCls}
               >
                 <FileText className="w-3.5 h-3.5 text-green-500" />
                 テキスト
               </button>
+              {onDownload && (
+                <>
+                  <button onClick={() => onDownload('csv')} className={btnCls}>
+                    <FileSpreadsheet className="w-3.5 h-3.5 text-green-500" />
+                    CSV
+                  </button>
+                  <button onClick={() => onDownload('pdfDl')} className={btnCls}>
+                    <Download className="w-3.5 h-3.5 text-rose-500" />
+                    PDF
+                  </button>
+                  <button onClick={() => onDownload('pptx')} className={btnCls}>
+                    <Presentation className="w-3.5 h-3.5 text-orange-500" />
+                    PowerPoint
+                  </button>
+                  <button onClick={() => onDownload('pptxHc')} className={btnCls}>
+                    <Presentation className="w-3.5 h-3.5 text-amber-500" />
+                    コンサル版
+                  </button>
+                </>
+              )}
               <div className={`w-px h-4 mx-1 ${T.div}`}></div>
-              <button
-                onClick={doPrint}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 ${T.t1} transition-all active:scale-95`}
-              >
+              <button onClick={doPrint} className={btnCls}>
                 <Printer className="w-3.5 h-3.5 text-slate-500" />
-                PDF / 印刷
+                印刷
               </button>
             </div>
           )}

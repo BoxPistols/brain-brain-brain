@@ -102,6 +102,7 @@ const callAPI = async (
     body: JSON.stringify({
       model: modelId,
       ...tokenParam,
+      temperature: 0.85,
       messages: msgs,
       ...(jsonMode ? { response_format: { type: 'json_object' } } : {}),
     }),

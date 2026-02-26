@@ -288,10 +288,10 @@ export const PRO_DEPTH: Record<
   number,
   { label: string; desc: string; ideas: number; wait: string; maxTokens: number }
 > = {
-  1: { label: 'Quick', desc: '概要', ideas: 3, wait: '〜5分', maxTokens: 8000 },
-  2: { label: 'Standard', desc: '標準', ideas: 6, wait: '〜15分', maxTokens: 16000 },
-  3: { label: 'Deep', desc: '詳細', ideas: 8, wait: '〜30分', maxTokens: 24000 },
-  4: { label: 'High-Class', desc: 'トップティア', ideas: 10, wait: '30分+', maxTokens: 32000 },
+  1: { label: 'Quick', desc: '概要', ideas: 3, wait: '〜1分', maxTokens: 8000 },
+  2: { label: 'Standard', desc: '標準', ideas: 6, wait: '1-3分', maxTokens: 16000 },
+  3: { label: 'Deep', desc: '詳細', ideas: 8, wait: '3-5分', maxTokens: 24000 },
+  4: { label: 'Expert', desc: 'コンサル級', ideas: 10, wait: '3-5分', maxTokens: 28000 },
 };
 
 export const EXAMPLE_PRODUCTS: Record<string, string[]> = {

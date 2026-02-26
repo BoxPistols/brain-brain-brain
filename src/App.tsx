@@ -541,6 +541,7 @@ export default function App() {
               loading={loading}
               results={results}
               error={error}
+              progress={progress}
               isSeedData={isSeedData}
               displaySuggestions={displaySuggestions}
               diving={diving}
@@ -638,7 +639,36 @@ export default function App() {
         />
       )}
       {showPrev && report && (
-        <PreviewModal md={report} pn={usedName} onClose={() => setShowPrev(false)} />
+        <PreviewModal
+          md={report}
+          pn={usedName}
+          onClose={() => setShowPrev(false)}
+          onDownload={
+            results
+              ? (fmt) => {
+                  const ts = new Date().toISOString().slice(0, 16).replace(/[T:]/g, '-');
+                  switch (fmt) {
+                    case 'csv':
+                      dlFile(
+                        buildReportCsv(usedName, form, results, modelLabel, dep),
+                        `${usedName}_${ts}.csv`,
+                        'text/csv',
+                      );
+                      break;
+                    case 'pdfDl':
+                      downloadPdf(report, `${usedName}_${ts}`);
+                      break;
+                    case 'pptx':
+                      downloadPptx(usedName, form, results, modelLabel, dep);
+                      break;
+                    case 'pptxHc':
+                      downloadPptxHighClass(usedName, form, results, modelLabel, dep);
+                      break;
+                  }
+                }
+              : undefined
+          }
+        />
       )}
       {showLogs && (
         <LogPanel

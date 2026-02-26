@@ -44,12 +44,26 @@ interface ResultsPaneProps {
   onDownload?: (format: DlFormat) => void;
   onDrillDown?: (idea: Idea, index: number) => void;
   drillingDownId?: string | null;
+  progress?: number;
 }
 
-const LoadingSkeleton = () => (
+const LoadingSkeleton: React.FC<{ progress?: number }> = ({ progress = 0 }) => (
   <div className="space-y-4 animate-pulse">
     <div className={`${T.card} p-5 space-y-3`}>
-      <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4" />
+      <div className="flex items-center justify-between mb-1">
+        <div className={`flex items-center gap-2 text-xs font-medium ${T.t2}`}>
+          <div className="w-3.5 h-3.5 border-2 border-slate-300 dark:border-slate-600 border-t-brand rounded-full animate-spin" />
+          AI分析中…
+        </div>
+        <span className={`text-xs font-bold tabular-nums ${T.accentTxt}`}>{progress}%</span>
+      </div>
+      <div className="h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+        <div
+          className="h-full bg-brand rounded-full transition-all duration-300"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+      <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mt-3" />
       <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-full" />
       <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-5/6" />
     </div>
@@ -68,14 +82,19 @@ const LoadingSkeleton = () => (
 const DeepDiveCard: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
   const [copied, setCopied] = useState(false);
   const [isSavingPdf, setIsSavingPdf] = useState(false);
+  const [isCopying, setIsCopying] = useState(false);
 
   const handleCopy = async () => {
+    if (isCopying) return;
     try {
+      setIsCopying(true);
       await navigator.clipboard.writeText(answer);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch (err) {
       console.error('Failed to copy text:', err);
+    } finally {
+      setIsCopying(false);
     }
   };
 
@@ -207,6 +226,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
   onDownload,
   onDrillDown,
   drillingDownId,
+  progress = 0,
 }) => {
   const [showDlMenu, setShowDlMenu] = useState(false);
   const dlRef = useRef<HTMLDivElement>(null);
@@ -228,7 +248,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
     }
   }, [refining, diving, results?.refinements?.length, results?.deepDives?.length]);
 
-  if (loading && !results) return <LoadingSkeleton />;
+  if (loading && !results) return <LoadingSkeleton progress={progress} />;
   if (!results) return <EmptyState />;
 
   const dlOptions: { fmt: DlFormat; label: string; icon: React.ReactNode }[] = [
@@ -255,7 +275,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
     },
     {
       fmt: 'pptxHc',
-      label: 'PowerPoint High-Class (.pptx)',
+      label: 'PowerPoint コンサル版 (.pptx)',
       icon: <Presentation className="w-3.5 h-3.5 text-amber-500" />,
     },
     {
