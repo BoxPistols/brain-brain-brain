@@ -106,7 +106,7 @@ export const SupportAIChat: React.FC<Props> = ({ apiKey }) => {
             if (e.key === 'Enter' && !e.nativeEvent.isComposing) handleSend();
           }}
           placeholder="質問を入力..."
-          className={`flex-1 px-3 py-2 rounded-lg text-xs ${T.inp}`}
+          className={`flex-1 px-3 py-2 rounded-lg text-base md:text-xs ${T.inp}`}
           disabled={loading}
         />
         <button

@@ -172,7 +172,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="sk-..."
-                className={`${T.inp} pr-16 font-mono text-xs`}
+                className={`${T.inp} pr-16 font-mono md:text-xs`}
                 autoComplete="off"
               />
               <div className="absolute right-1.5 top-1.5 flex items-center gap-1">
@@ -216,7 +216,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 value={localEndpoint}
                 onChange={(e) => setLocalEndpoint(e.target.value)}
                 placeholder={PROVIDER_DEFAULTS[provider].endpoint}
-                className={`${T.inp} font-mono text-xs`}
+                className={`${T.inp} font-mono md:text-xs`}
               />
             </div>
             <div>
@@ -258,7 +258,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   value={localModelId}
                   onChange={(e) => setLocalModelId(e.target.value)}
                   placeholder={provider === 'ollama' ? 'llama3.2:latest' : 'モデル名を入力'}
-                  className={`${T.inp} font-mono text-xs`}
+                  className={`${T.inp} font-mono md:text-xs`}
                 />
               )}
             </div>

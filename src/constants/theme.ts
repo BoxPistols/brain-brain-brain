@@ -9,9 +9,9 @@ export const T = {
   t2: 'text-slate-600 dark:text-slate-400',
   t3: 'text-slate-400 dark:text-slate-400',
   // Inputs
-  inp: 'w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:border-brand-light dark:focus:border-brand-light transition',
+  inp: 'w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-base md:text-sm focus:outline-none focus:border-brand-light dark:focus:border-brand-light transition',
   inpSm:
-    'w-full px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-brand-light dark:focus:border-brand-light transition',
+    'w-full px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-base md:text-xs focus:outline-none focus:border-brand-light dark:focus:border-brand-light transition',
   // Buttons
   btnGhost:
     'bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700/60 transition',
