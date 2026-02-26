@@ -32,7 +32,13 @@ export function selectModel(
   currentModelId: string,
   input: ModelRouterInput,
   isProMode: boolean,
+  isLocal = false,
 ): ModelDecision {
+  // ローカルLLM → 指定モデルをそのまま使用
+  if (isLocal) {
+    return { modelId: currentModelId, reason: 'ローカルLLM: 指定モデル使用' };
+  }
+
   // 手動選択 → そのまま
   if (currentModelId !== AUTO_MODEL_ID) {
     return { modelId: currentModelId, reason: '手動選択' };

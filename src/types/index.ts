@@ -116,6 +116,8 @@ export interface ModelInfo {
   cost: string;
 }
 
+export type LLMProvider = 'openai' | 'ollama' | 'lmstudio';
+
 export interface MockScenario {
   label: string;
   prov: string;

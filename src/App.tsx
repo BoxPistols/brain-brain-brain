@@ -36,8 +36,16 @@ import {
   downloadPptx,
 } from './utils/report';
 import { T } from './constants/theme';
-import { MODELS, isProMode } from './constants/models';
+import {
+  MODELS,
+  isProMode,
+  isLocalProvider,
+  PROVIDER_DEFAULTS,
+  fetchOllamaModels,
+  fetchLMStudioModels,
+} from './constants/models';
 import { FREE_DEPTH, PRO_DEPTH } from './constants/prompts';
+import type { LLMProvider } from './types';
 
 export default function App() {
   // Global hooks
@@ -114,7 +122,69 @@ export default function App() {
     localStorage.setItem('userApiKey', key);
     if (!isProMode(key) && dep > 3) setDep(3);
   };
-  const proMode = isProMode(apiKey);
+  // Provider config (persisted)
+  const [provider, setProviderState] = useState<LLMProvider>(() => {
+    try {
+      return (localStorage.getItem('ai-brainstorm-provider') as LLMProvider) || 'openai';
+    } catch {
+      return 'openai';
+    }
+  });
+  const [localEndpoint, setLocalEndpointState] = useState(() => {
+    try {
+      return localStorage.getItem('ai-brainstorm-endpoint') || '';
+    } catch {
+      return '';
+    }
+  });
+  const [localModels, setLocalModels] = useState<string[]>([]);
+  const [fetchingModels, setFetchingModels] = useState(false);
+  const [localModelId, setLocalModelIdState] = useState(() => {
+    try {
+      return localStorage.getItem('ai-brainstorm-local-model') || '';
+    } catch {
+      return '';
+    }
+  });
+
+  const setProvider = (p: LLMProvider) => {
+    setProviderState(p);
+    localStorage.setItem('ai-brainstorm-provider', p);
+    // エンドポイントが空 or 前プロバイダーのデフォルトなら新プロバイダーのデフォルトに更新
+    const prevDefault = PROVIDER_DEFAULTS[provider].endpoint;
+    if (!localEndpoint || localEndpoint === prevDefault) {
+      const ep = PROVIDER_DEFAULTS[p].endpoint;
+      setLocalEndpointState(ep);
+      localStorage.setItem('ai-brainstorm-endpoint', ep);
+    }
+  };
+  const setLocalEndpoint = (url: string) => {
+    setLocalEndpointState(url);
+    localStorage.setItem('ai-brainstorm-endpoint', url);
+  };
+  const setLocalModelId = (id: string) => {
+    setLocalModelIdState(id);
+    localStorage.setItem('ai-brainstorm-local-model', id);
+  };
+
+  const handleFetchLocalModels = async () => {
+    const ep = localEndpoint || PROVIDER_DEFAULTS[provider].endpoint;
+    setFetchingModels(true);
+    try {
+      const models =
+        provider === 'ollama' ? await fetchOllamaModels(ep) : await fetchLMStudioModels(ep);
+      setLocalModels(models);
+      if (models.length > 0 && !localModelId) setLocalModelId(models[0]);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : '接続エラー');
+    } finally {
+      setFetchingModels(false);
+    }
+  };
+
+  const isLocal = isLocalProvider(provider);
+  const proMode = isLocal || isProMode(apiKey);
+  const effectiveEndpoint = localEndpoint || PROVIDER_DEFAULTS[provider].endpoint;
 
   // Local UI state
   const [showCfg, setShowCfg] = useState(false);
@@ -224,9 +294,11 @@ export default function App() {
     () => (results?.suggestions?.length ? results.suggestions : suggestions),
     [results?.suggestions, suggestions],
   );
+  const providerLabel = isLocal ? PROVIDER_DEFAULTS[provider].label : 'OpenAI';
+  const modelLabel = isLocal ? localModelId : cm.label;
   const report = useMemo(
-    () => (results ? buildReportMd(usedName, form, results, 'OpenAI', cm.label, dep) : null),
-    [results, usedName, form, cm.label, dep],
+    () => (results ? buildReportMd(usedName, form, results, providerLabel, modelLabel, dep) : null),
+    [results, usedName, form, providerLabel, modelLabel, dep],
   );
 
   const handleGenerate = () => {
@@ -245,17 +317,26 @@ export default function App() {
       sesLabel,
       issueStr,
       (res, prompt) => {
-        if (stgSettings.autoSave) saveLog(pn, form, res, prompt, cm.label, dep);
+        if (stgSettings.autoSave) saveLog(pn, form, res, prompt, modelLabel, dep);
       },
       apiKey,
+      provider,
+      effectiveEndpoint,
+      localModelId,
     );
   };
   handleGenerateRef.current = handleGenerate;
 
   const handleRefine = () => {
-    refine((res, text) => {
-      if (stgSettings.autoSave) saveLog(usedName, form, res, text, cm.label, dep);
-    }, apiKey);
+    refine(
+      (res, text) => {
+        if (stgSettings.autoSave) saveLog(usedName, form, res, text, modelLabel, dep);
+      },
+      apiKey,
+      provider,
+      effectiveEndpoint,
+      localModelId,
+    );
   };
 
   return (
@@ -294,6 +375,15 @@ export default function App() {
             sessionCost={sessionCost}
             lastUsedModel={lastUsedModel}
             freeRemaining={freeRemaining}
+            provider={provider}
+            setProvider={setProvider}
+            localEndpoint={localEndpoint}
+            setLocalEndpoint={setLocalEndpoint}
+            localModels={localModels}
+            onFetchLocalModels={handleFetchLocalModels}
+            localModelId={localModelId}
+            setLocalModelId={setLocalModelId}
+            fetchingModels={fetchingModels}
           />
         )}
 
@@ -435,7 +525,7 @@ export default function App() {
               displaySuggestions={displaySuggestions}
               diving={diving}
               diveProgress={diveProgress}
-              onDeepDive={(q) => deepDive(q, apiKey)}
+              onDeepDive={(q) => deepDive(q, apiKey, provider, effectiveEndpoint, localModelId)}
               onClearDeepDives={() => setResults((p) => (p ? { ...p, deepDives: [] } : p))}
               reviewText={reviewText}
               onReviewTextChange={setReviewText}
@@ -443,7 +533,9 @@ export default function App() {
               refineProgress={refineProgress}
               onRefine={handleRefine}
               onShowPreview={results ? () => setShowPrev(true) : undefined}
-              onDrillDown={(idea, index) => drillDownIdea(idea, index, apiKey)}
+              onDrillDown={(idea, index) =>
+                drillDownIdea(idea, index, apiKey, provider, effectiveEndpoint, localModelId)
+              }
               drillingDownId={drillingDownId}
               onDownload={
                 report && results
@@ -458,7 +550,7 @@ export default function App() {
                           break;
                         case 'csv':
                           dlFile(
-                            buildReportCsv(usedName, form, results, cm.label, dep),
+                            buildReportCsv(usedName, form, results, modelLabel, dep),
                             `${usedName}_${ts}.csv`,
                             'text/csv',
                           );
@@ -467,7 +559,7 @@ export default function App() {
                           downloadPdf(report, `${usedName}_${ts}`);
                           break;
                         case 'pptx':
-                          downloadPptx(usedName, form, results, cm.label, dep);
+                          downloadPptx(usedName, form, results, modelLabel, dep);
                           break;
                         case 'pdf':
                           printReport(mdToTxt(report), usedName);

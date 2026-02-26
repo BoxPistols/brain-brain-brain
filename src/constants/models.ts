@@ -1,4 +1,4 @@
-import { ModelInfo, ChatMessage } from '../types';
+import { ModelInfo, ChatMessage, LLMProvider } from '../types';
 
 /** APIキーがPro mode（ユーザー所有）か判定 */
 export const isProMode = (apiKey: string): boolean => apiKey.trim().startsWith('sk-');
@@ -21,6 +21,23 @@ export const AUTO_MODEL_ID = 'auto';
 export const DEFAULT_MODEL_ID = AUTO_MODEL_ID;
 
 const API_ENDPOINT = '/api/openai';
+
+/** プロバイダー別デフォルト設定 */
+export const PROVIDER_DEFAULTS: Record<
+  LLMProvider,
+  { label: string; endpoint: string; desc: string }
+> = {
+  openai: { label: 'OpenAI', endpoint: '/api/openai', desc: 'クラウドAPI' },
+  ollama: { label: 'Ollama', endpoint: 'http://localhost:11434', desc: 'ローカルLLM（無料）' },
+  lmstudio: {
+    label: 'LM Studio',
+    endpoint: 'http://localhost:1234',
+    desc: 'ローカルLLM（無料）',
+  },
+};
+
+/** ローカルプロバイダー判定 */
+export const isLocalProvider = (p: LLMProvider): boolean => p !== 'openai';
 
 export const MODELS: ModelInfo[] = [
   { id: AUTO_MODEL_ID, label: 'Auto', t: '自動選択', cost: '$~$$' },
@@ -139,3 +156,91 @@ export const callAIWithKey = async (
   maxTokens = 4096,
   jsonMode = false,
 ): Promise<APICallResult> => callAPI(modelId, msgs, maxTokens, jsonMode, apiKey);
+
+/* ────────── ローカル LLM（Ollama / LM Studio）────────── */
+
+const localFriendlyError = (status: number, body: string): string => {
+  if (status === 0 || !status)
+    return 'ローカルLLMに接続できません。サーバーが起動しているか確認してください。';
+  if (status === 404)
+    return `指定のモデルが見つかりません。モデル名を確認してください。${body ? `（${body.slice(0, 80)}）` : ''}`;
+  return `ローカルLLMエラー（${status}）: ${body.slice(0, 120)}`;
+};
+
+/** ローカルLLM用 API 呼び出し */
+export const callAILocal = async (
+  endpoint: string,
+  modelId: string,
+  msgs: ChatMessage[],
+  maxTokens = 4096,
+  _jsonMode = false,
+): Promise<APICallResult> => {
+  const url = `${endpoint.replace(/\/$/, '')}/v1/chat/completions`;
+  let r: Response;
+  try {
+    r = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: modelId,
+        max_tokens: maxTokens,
+        messages: msgs,
+      }),
+    });
+  } catch {
+    throw new Error('ローカルLLMに接続できません。サーバーが起動しているか確認してください。');
+  }
+  if (!r.ok) throw new Error(localFriendlyError(r.status, (await r.text()).slice(0, 300)));
+  const data = await r.json();
+  const content = data.choices?.[0]?.message?.content || '';
+  return {
+    content,
+    usage: data.usage
+      ? {
+          prompt_tokens: data.usage.prompt_tokens ?? 0,
+          completion_tokens: data.usage.completion_tokens ?? 0,
+        }
+      : null,
+  };
+};
+
+/** ローカルLLM 接続テスト */
+export const testConnLocal = async (endpoint: string, modelId: string): Promise<string> => {
+  const url = `${endpoint.replace(/\/$/, '')}/v1/chat/completions`;
+  let r: Response;
+  try {
+    r = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: modelId,
+        max_tokens: 100,
+        messages: [{ role: 'user', content: 'Say exactly: OK' }],
+      }),
+    });
+  } catch {
+    throw new Error('ローカルLLMに接続できません。サーバーが起動しているか確認してください。');
+  }
+  if (!r.ok) {
+    const body = await r.text().catch(() => '');
+    throw new Error(localFriendlyError(r.status, body));
+  }
+  const d = await r.json();
+  return d.model || modelId;
+};
+
+/** Ollama モデル一覧取得 */
+export const fetchOllamaModels = async (endpoint: string): Promise<string[]> => {
+  const r = await fetch(`${endpoint.replace(/\/$/, '')}/api/tags`);
+  if (!r.ok) throw new Error(`Ollama に接続できません（${r.status}）`);
+  const d = await r.json();
+  return (d.models || []).map((m: { name: string }) => m.name);
+};
+
+/** LM Studio モデル一覧取得 */
+export const fetchLMStudioModels = async (endpoint: string): Promise<string[]> => {
+  const r = await fetch(`${endpoint.replace(/\/$/, '')}/v1/models`);
+  if (!r.ok) throw new Error(`LM Studio に接続できません（${r.status}）`);
+  const d = await r.json();
+  return (d.data || []).map((m: { id: string }) => m.id);
+};
