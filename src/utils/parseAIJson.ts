@@ -149,3 +149,36 @@ function validateStructure(data: unknown): AIResults {
     funnelStage: typeof obj.funnelStage === 'string' ? obj.funnelStage : undefined,
   };
 }
+
+/**
+ * AI応答からMarkdownテキストを抽出する。
+ * - コードフェンス除去
+ * - JSON wrapper `{"markdown": "..."}` / `{"content": "..."}` からテキスト抽出
+ * - リテラル `\n` → 実際の改行に変換
+ * - JSONでなければそのまま返す
+ */
+export function extractMarkdown(raw: string): string {
+  let text = raw.trim();
+  // コードフェンス除去
+  text = text
+    .replace(/^```(?:json|markdown)?\n?/gm, '')
+    .replace(/```$/gm, '')
+    .trim();
+  // JSON wrapper 検出
+  if (text.startsWith('{')) {
+    try {
+      const obj = JSON.parse(text);
+      if (typeof obj === 'object' && obj !== null) {
+        const md = obj.markdown || obj.content || obj.answer || obj.text;
+        if (typeof md === 'string') text = md;
+      }
+    } catch {
+      // JSONパース失敗 → そのまま使う
+    }
+  }
+  // リテラル \n → 実改行（JSON.parse 済みなら不要だが安全策）
+  if (text.includes('\\n')) {
+    text = text.replace(/\\n/g, '\n');
+  }
+  return text.trim();
+}

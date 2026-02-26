@@ -2,6 +2,13 @@ import { BrainstormForm, AIResults } from '../types';
 import { TYPES, PRO_DEPTH } from '../constants/prompts';
 import { ll } from './formatters';
 
+/** HTML エスケープ */
+const escHtml = (s: string) =>
+  s.replace(
+    /[&<>"']/g,
+    (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m] || m,
+  );
+
 export const buildReportMd = (
   pn: string,
   form: BrainstormForm,
@@ -12,26 +19,28 @@ export const buildReportMd = (
 ): string => {
   const now = new Date().toLocaleString('ja-JP');
   const ses = form.sessionType === 'other' ? form.customSession : TYPES[form.sessionType];
+  const e = escHtml;
+
   let md = `# BrainBrainBrain Report\n\n`;
-  md += `- **プロジェクト**: ${pn}\n`;
-  md += `- **プロダクト/サービス**: ${form.productService}\n`;
-  md += `- **セッション種別**: ${ses}\n`;
+  md += `- **プロジェクト**: ${e(pn)}\n`;
+  md += `- **プロダクト/サービス**: ${e(form.productService)}\n`;
+  md += `- **セッション種別**: ${e(ses || '')}\n`;
   md += `- **分析深度**: ${PRO_DEPTH[dep]?.label ?? `Lv${dep}`}\n`;
-  md += `- **使用モデル**: ${provN} / ${mL}\n`;
+  md += `- **使用モデル**: ${e(provN)} / ${e(mL)}\n`;
   md += `- **生成日時**: ${now}\n\n`;
 
-  md += `## 目標\n${form.teamGoals}\n\n`;
+  md += `## 目標\n${e(form.teamGoals)}\n\n`;
 
   const iss = form.issues.filter((x) => x.text.trim());
   if (iss.length) {
     md += `## 課題\n`;
     iss.forEach((x) => {
-      md += `- **${x.text}**${x.detail ? `: ${x.detail}` : ''}${
+      md += `- **${e(x.text)}**${x.detail ? `: ${e(x.detail)}` : ''}${
         x.sub?.filter(Boolean).length
           ? '\n' +
             x.sub
               .filter(Boolean)
-              .map((s) => `  - ${s}`)
+              .map((s) => `  - ${e(s)}`)
               .join('\n')
           : ''
       }\n`;
@@ -41,13 +50,13 @@ export const buildReportMd = (
 
   // 競合・データ情報
   if (form.serviceUrl?.trim()) {
-    md += `## 自社サービス\n${form.serviceUrl}\n\n`;
+    md += `## 自社サービス\n${e(form.serviceUrl)}\n\n`;
   }
   const comps = (form.competitors || []).filter((c) => c.name.trim());
   if (comps.length) {
     md += `## 競合情報\n`;
     comps.forEach((c) => {
-      md += `- **${c.name}**${c.url ? ` (${c.url})` : ''}${c.note ? ` — ${c.note}` : ''}\n`;
+      md += `- **${e(c.name)}**${c.url ? ` (${e(c.url)})` : ''}${c.note ? ` — ${e(c.note)}` : ''}\n`;
     });
     md += '\n';
   }
@@ -55,45 +64,45 @@ export const buildReportMd = (
   if (kpis.length) {
     md += `## 主要KPI実績値\n\n| KPI | 値 |\n|---|---|\n`;
     kpis.forEach((k) => {
-      md += `| ${k.label} | ${k.value} |\n`;
+      md += `| ${e(k.label)} | ${e(k.value)} |\n`;
     });
     md += '\n';
   }
 
   if (results.keyIssue) {
     md += `## 最重要イシュー\n\n`;
-    if (results.funnelStage) md += `**ボトルネック段階**: ${results.funnelStage}\n\n`;
-    md += `${results.keyIssue}\n\n`;
+    if (results.funnelStage) md += `**ボトルネック段階**: ${e(results.funnelStage)}\n\n`;
+    md += `${e(results.keyIssue)}\n\n`;
   }
 
-  md += `---\n\n## AI分析\n\n${results.understanding}\n\n---\n\n## 戦略アイデア\n\n`;
+  md += `---\n\n## AI分析\n\n${e(results.understanding)}\n\n---\n\n## 戦略アイデア\n\n`;
 
   const hasFeasibility = results.ideas.some((d) => d.feasibility);
   results.ideas.forEach((d, i) => {
-    md += `### ${i + 1}. ${d.title}\n\n${d.description}\n\n| 優先度 | 工数 | インパクト |${hasFeasibility ? ' 実現可能性 |' : ''}\n|---|---|---|${hasFeasibility ? '---|' : ''}\n| ${ll(d.priority)} | ${ll(d.effort)} | ${ll(d.impact)} |${hasFeasibility ? ` ${d.feasibility?.total ?? '-'}/100 |` : ''}\n\n`;
+    md += `### ${i + 1}. ${e(d.title)}\n\n${e(d.description)}\n\n| 優先度 | 工数 | インパクト |${hasFeasibility ? ' 実現可能性 |' : ''}\n|---|---|---|${hasFeasibility ? '---|' : ''}\n| ${ll(d.priority)} | ${ll(d.effort)} | ${ll(d.impact)} |${hasFeasibility ? ` ${d.feasibility?.total ?? '-'}/100 |` : ''}\n\n`;
     if (d.feasibility) {
-      md += `> リソース: ${d.feasibility.resource} / 技術容易性: ${d.feasibility.techDifficulty} / 組織受容性: ${d.feasibility.orgAcceptance}\n\n`;
+      md += `> リソース: ${e(d.feasibility.resource.toString())} / 技術容易性: ${e(d.feasibility.techDifficulty.toString())} / 組織受容性: ${e(d.feasibility.orgAcceptance.toString())}\n\n`;
     }
   });
 
   if (results.refinements?.length) {
     md += `---\n\n## ブラッシュアップ\n\n`;
     results.refinements.forEach((r, i) => {
-      if (results.refinements!.length > 1) md += `### ${i + 1}. レビュー: ${r.review}\n\n`;
-      else md += `> レビュー: ${r.review}\n\n`;
-      md += `${r.answer}\n\n`;
+      if (results.refinements!.length > 1) md += `### ${i + 1}. レビュー: ${e(r.review)}\n\n`;
+      else md += `> レビュー: ${e(r.review)}\n\n`;
+      md += `${e(r.answer)}\n\n`;
     });
   } else if (results.refinement) {
-    md += `---\n\n## ブラッシュアップ\n\n${results.refinement}\n`;
+    md += `---\n\n## ブラッシュアップ\n\n${e(results.refinement)}\n`;
   }
 
   if (results.deepDives?.length) {
     md += `---\n\n## 深掘り\n\n`;
     results.deepDives.forEach((dd, i) => {
-      md += `### ${i + 1}. ${dd.question}\n\n${dd.answer}\n\n`;
+      md += `### ${i + 1}. ${e(dd.question)}\n\n${e(dd.answer)}\n\n`;
     });
   } else if (results.deepDive) {
-    md += `---\n\n## 深掘り\n\n${results.deepDive}\n`;
+    md += `---\n\n## 深掘り\n\n${e(results.deepDive)}\n`;
   }
 
   md += `\n---\n*Generated by BrainBrainBrain*`;
@@ -186,41 +195,73 @@ const mdToHtml = (md: string): string =>
     })
     .replace(/(<tr>.*<\/tr>\n?)(?=<[^t]|$)/g, '$&</tbody></table>');
 
+/** PDF スタイル適用ヘルパー */
+const applyReportStyles = (container: HTMLElement) => {
+  container.style.cssText =
+    'font-family:-apple-system,"Hiragino Sans",sans-serif;font-size:12px;line-height:1.7;color:#1a1a1a;max-width:700px;padding:20px';
+  container.querySelectorAll('h1').forEach((el) => {
+    (el as HTMLElement).style.cssText =
+      'font-size:18px;margin:16px 0 8px;border-bottom:2px solid #2563eb;padding-bottom:4px';
+  });
+  container.querySelectorAll('h2').forEach((el) => {
+    (el as HTMLElement).style.cssText = 'font-size:15px;margin:14px 0 6px;color:#1e40af';
+  });
+  container.querySelectorAll('h3').forEach((el) => {
+    (el as HTMLElement).style.cssText = 'font-size:13px;margin:10px 0 4px;color:#334155';
+  });
+  container.querySelectorAll('table').forEach((el) => {
+    (el as HTMLElement).style.cssText =
+      'border-collapse:collapse;width:100%;margin:8px 0;font-size:11px';
+  });
+  container.querySelectorAll('th,td').forEach((el) => {
+    (el as HTMLElement).style.cssText = 'border:1px solid #cbd5e1;padding:4px 8px;text-align:left';
+  });
+  container.querySelectorAll('th').forEach((el) => {
+    (el as HTMLElement).style.cssText += ';background:#f1f5f9;font-weight:600';
+  });
+  container.querySelectorAll('blockquote').forEach((el) => {
+    (el as HTMLElement).style.cssText =
+      'border-left:3px solid #93c5fd;padding-left:12px;margin:8px 0;color:#475569';
+  });
+};
+
 /** PDF ダウンロード（html2pdf.js による生成） */
 export const downloadPdf = async (md: string, pn: string) => {
   const { default: html2pdf } = await import('html2pdf.js');
   const html = mdToHtml(md);
   const container = document.createElement('div');
   container.innerHTML = html;
-  container.style.cssText =
-    'font-family:-apple-system,"Hiragino Sans",sans-serif;font-size:12px;line-height:1.7;color:#1a1a1a;max-width:700px;padding:20px';
-  container.querySelectorAll('h1').forEach((el) => {
-    el.style.cssText =
-      'font-size:18px;margin:16px 0 8px;border-bottom:2px solid #2563eb;padding-bottom:4px';
-  });
-  container.querySelectorAll('h2').forEach((el) => {
-    el.style.cssText = 'font-size:15px;margin:14px 0 6px;color:#1e40af';
-  });
-  container.querySelectorAll('h3').forEach((el) => {
-    el.style.cssText = 'font-size:13px;margin:10px 0 4px;color:#334155';
-  });
-  container.querySelectorAll('table').forEach((el) => {
-    el.style.cssText = 'border-collapse:collapse;width:100%;margin:8px 0;font-size:11px';
-  });
-  container.querySelectorAll('th,td').forEach((el) => {
-    (el as HTMLElement).style.cssText = 'border:1px solid #cbd5e1;padding:4px 8px;text-align:left';
-  });
-  container.querySelectorAll('th').forEach((el) => {
-    el.style.cssText += ';background:#f1f5f9;font-weight:600';
-  });
-  container.querySelectorAll('blockquote').forEach((el) => {
-    el.style.cssText = 'border-left:3px solid #93c5fd;padding-left:12px;margin:8px 0;color:#475569';
-  });
+  applyReportStyles(container);
 
   await html2pdf()
     .set({
       margin: [10, 10, 10, 10],
-      filename: `${pn}.pdf`,
+      filename: `${pn}_${new Date().toISOString().slice(0, 10)}.pdf`,
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+    } as Record<string, unknown>)
+    .from(container)
+    .save();
+};
+
+/** 個別の深掘り結果を PDF ダウンロード */
+export const downloadDeepDivePdf = async (question: string, answer: string) => {
+  const { default: html2pdf } = await import('html2pdf.js');
+  // 入力をエスケープして XSS 対策
+  const safeQ = escHtml(question);
+  const safeA = escHtml(answer);
+  const md = `# ${safeQ}\n\n${safeA}`;
+  const html = mdToHtml(md);
+  const container = document.createElement('div');
+  container.innerHTML = html;
+  applyReportStyles(container);
+
+  const ts = new Date().toISOString().slice(0, 10);
+  await html2pdf()
+    .set({
+      margin: [10, 10, 10, 10],
+      filename: `深掘り_${ts}.pdf`,
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
@@ -331,7 +372,7 @@ export const downloadPptx = async (
   const headerRow = ['#', 'タイトル', '優先度', '工数', 'インパクト'];
   if (hasFeas) headerRow.push('実現可能性');
   const rows = results.ideas.map((d, i) => {
-    const row = [`${i + 1}`, d.title, d.priority, d.effort, d.impact];
+    const row = [`${i + 1}`, d.title, ll(d.priority), ll(d.effort), ll(d.impact)];
     if (hasFeas) row.push(d.feasibility ? `${d.feasibility.total}/100` : '-');
     return row;
   });
@@ -361,7 +402,7 @@ export const downloadPptx = async (
     });
     const desc = d.description.length > 600 ? d.description.slice(0, 600) + '…' : d.description;
     slide.addText(desc, { x: 0.5, y: 1.0, w: 9, h: 2.5, fontSize: 11, color: DARK, valign: 'top' });
-    const meta = `優先度: ${d.priority}  |  工数: ${d.effort}  |  インパクト: ${d.impact}`;
+    const meta = `優先度: ${ll(d.priority)}  |  工数: ${ll(d.effort)}  |  インパクト: ${ll(d.impact)}`;
     slide.addText(meta, { x: 0.5, y: 3.8, w: 9, fontSize: 10, color: GRAY });
     if (d.feasibility) {
       slide.addText(
@@ -371,5 +412,733 @@ export const downloadPptx = async (
     }
   });
 
-  await pptx.writeFile({ fileName: `${pn}.pptx` });
+  const ts = new Date().toISOString().slice(0, 10);
+  await pptx.writeFile({ fileName: `${pn}_${ts}.pptx` });
+};
+
+/** ハイクラス PPTX エクスポート（コンサルグレード） */
+export const downloadPptxHighClass = async (
+  pn: string,
+  form: BrainstormForm,
+  results: AIResults,
+  provN: string,
+  dep: number,
+) => {
+  const PptxGenJS = (await import('pptxgenjs')).default;
+  const pptx = new PptxGenJS();
+  pptx.layout = 'LAYOUT_16x9';
+  pptx.author = 'BrainBrainBrain';
+  pptx.title = pn;
+
+  const ses = form.sessionType === 'other' ? form.customSession : TYPES[form.sessionType];
+  const now = new Date().toLocaleString('ja-JP');
+
+  // ── デザイントークン ──
+  const C = {
+    navy: '0F172A',
+    blue: '2563EB',
+    blueLt: 'DBEAFE',
+    dark: '1E293B',
+    gray: '64748B',
+    grayLt: 'F1F5F9',
+    white: 'FFFFFF',
+    accent: '7C3AED',
+    green: '059669',
+    amber: 'D97706',
+    red: 'DC2626',
+  };
+
+  // ── ヘルパー ──
+  const priorityColor = (v: string) => (v === 'High' ? C.red : v === 'Low' ? C.green : C.amber);
+  const addFooter = (slide: ReturnType<typeof pptx.addSlide>, pageNum: number) => {
+    slide.addText(`${pn}  |  Confidential`, {
+      x: 0.5,
+      y: 5.05,
+      w: 6,
+      fontSize: 7,
+      color: C.gray,
+    });
+    slide.addText(`${pageNum}`, {
+      x: 9.0,
+      y: 5.05,
+      w: 0.5,
+      fontSize: 7,
+      color: C.gray,
+      align: 'right',
+    });
+    slide.addShape('rect' as unknown as Parameters<typeof slide.addShape>[0], {
+      x: 0,
+      y: 4.95,
+      w: 10,
+      h: 0.02,
+      fill: { color: C.blueLt },
+    });
+  };
+  let page = 0;
+
+  // ════════════════════════════════════════════
+  // SLIDE 1: 表紙
+  // ════════════════════════════════════════════
+  const cover = pptx.addSlide();
+  cover.addShape('rect' as unknown as Parameters<typeof cover.addShape>[0], {
+    x: 0,
+    y: 0,
+    w: 10,
+    h: 5.63,
+    fill: { color: C.navy },
+  });
+  cover.addShape('rect' as unknown as Parameters<typeof cover.addShape>[0], {
+    x: 0,
+    y: 4.3,
+    w: 10,
+    h: 0.04,
+    fill: { color: C.blue },
+  });
+  cover.addText(pn, {
+    x: 0.8,
+    y: 1.2,
+    w: 8.4,
+    fontSize: 32,
+    bold: true,
+    color: C.white,
+  });
+  cover.addText('戦略ブレインストーミング レポート', {
+    x: 0.8,
+    y: 2.2,
+    w: 8.4,
+    fontSize: 16,
+    color: C.blue,
+  });
+  cover.addText(`${form.productService}  |  ${ses}  |  ${PRO_DEPTH[dep]?.label ?? `Lv${dep}`}`, {
+    x: 0.8,
+    y: 3.2,
+    w: 8.4,
+    fontSize: 12,
+    color: C.gray,
+  });
+  cover.addText(`${provN}  |  ${now}`, {
+    x: 0.8,
+    y: 4.6,
+    w: 8.4,
+    fontSize: 9,
+    color: C.gray,
+  });
+
+  // ════════════════════════════════════════════
+  // SLIDE 2: エグゼクティブサマリー
+  // ════════════════════════════════════════════
+  page++;
+  const exec = pptx.addSlide();
+  addFooter(exec, page);
+  exec.addText('エグゼクティブサマリー', {
+    x: 0.5,
+    y: 0.2,
+    w: 9,
+    fontSize: 22,
+    bold: true,
+    color: C.navy,
+  });
+  exec.addShape('rect' as unknown as Parameters<typeof exec.addShape>[0], {
+    x: 0.5,
+    y: 0.65,
+    w: 2.5,
+    h: 0.03,
+    fill: { color: C.blue },
+  });
+
+  // 目標
+  exec.addText('目標', {
+    x: 0.5,
+    y: 0.85,
+    w: 2,
+    fontSize: 10,
+    bold: true,
+    color: C.blue,
+  });
+  exec.addText(form.teamGoals, {
+    x: 0.5,
+    y: 1.15,
+    w: 9,
+    h: 0.7,
+    fontSize: 11,
+    color: C.dark,
+    valign: 'top',
+  });
+
+  // 最重要イシュー
+  if (results.keyIssue) {
+    exec.addShape('rect' as unknown as Parameters<typeof exec.addShape>[0], {
+      x: 0.5,
+      y: 1.95,
+      w: 9,
+      h: 0.6,
+      fill: { color: 'FEF3C7' },
+      rectRadius: 0.05,
+    });
+    exec.addText(`最重要イシュー: ${results.keyIssue}`, {
+      x: 0.7,
+      y: 1.95,
+      w: 8.6,
+      h: 0.6,
+      fontSize: 10,
+      bold: true,
+      color: C.amber,
+      valign: 'middle',
+    });
+  }
+
+  // Top 3 施策
+  const topY = results.keyIssue ? 2.75 : 2.1;
+  exec.addText('主要施策', {
+    x: 0.5,
+    y: topY,
+    w: 3,
+    fontSize: 10,
+    bold: true,
+    color: C.blue,
+  });
+  const top3 = results.ideas.slice(0, 3);
+  top3.forEach((idea, i) => {
+    const y = topY + 0.35 + i * 0.65;
+    exec.addShape('rect' as unknown as Parameters<typeof exec.addShape>[0], {
+      x: 0.5,
+      y,
+      w: 0.3,
+      h: 0.5,
+      fill: { color: priorityColor(idea.priority) },
+      rectRadius: 0.03,
+    });
+    exec.addText(`${i + 1}`, {
+      x: 0.5,
+      y,
+      w: 0.3,
+      h: 0.5,
+      fontSize: 11,
+      bold: true,
+      color: C.white,
+      align: 'center',
+      valign: 'middle',
+    });
+    exec.addText(idea.title, {
+      x: 0.95,
+      y,
+      w: 5,
+      h: 0.5,
+      fontSize: 11,
+      bold: true,
+      color: C.dark,
+      valign: 'middle',
+    });
+    exec.addText(
+      `優先度: ${ll(idea.priority)}  |  工数: ${ll(idea.effort)}  |  インパクト: ${ll(idea.impact)}`,
+      {
+        x: 6.2,
+        y,
+        w: 3.3,
+        h: 0.5,
+        fontSize: 8,
+        color: C.gray,
+        valign: 'middle',
+      },
+    );
+  });
+
+  // ════════════════════════════════════════════
+  // SLIDE 3: 状況分析
+  // ════════════════════════════════════════════
+  page++;
+  const analysis = pptx.addSlide();
+  addFooter(analysis, page);
+  analysis.addText('状況分析', {
+    x: 0.5,
+    y: 0.2,
+    w: 9,
+    fontSize: 22,
+    bold: true,
+    color: C.navy,
+  });
+  analysis.addShape('rect' as unknown as Parameters<typeof analysis.addShape>[0], {
+    x: 0.5,
+    y: 0.65,
+    w: 2.5,
+    h: 0.03,
+    fill: { color: C.blue },
+  });
+
+  const underText =
+    results.understanding.length > 1200
+      ? results.understanding.slice(0, 1200) + '…'
+      : results.understanding;
+  analysis.addText(underText, {
+    x: 0.5,
+    y: 0.9,
+    w: 9,
+    h: 3.8,
+    fontSize: 10,
+    color: C.dark,
+    valign: 'top',
+    lineSpacingMultiple: 1.3,
+  });
+
+  // ════════════════════════════════════════════
+  // SLIDE 4: 課題 & KPI
+  // ════════════════════════════════════════════
+  const issues = form.issues.filter((x) => x.text.trim());
+  const kpis = (form.kpis || []).filter((k) => k.label.trim() && k.value.trim());
+  const comps = (form.competitors || []).filter((c) => c.name.trim());
+  if (issues.length || kpis.length || comps.length) {
+    page++;
+    const context = pptx.addSlide();
+    addFooter(context, page);
+    context.addText('課題 & データ', {
+      x: 0.5,
+      y: 0.2,
+      w: 9,
+      fontSize: 22,
+      bold: true,
+      color: C.navy,
+    });
+    context.addShape('rect' as unknown as Parameters<typeof context.addShape>[0], {
+      x: 0.5,
+      y: 0.65,
+      w: 2.5,
+      h: 0.03,
+      fill: { color: C.blue },
+    });
+
+    let cy = 0.9;
+    if (issues.length) {
+      context.addText('現状課題', {
+        x: 0.5,
+        y: cy,
+        w: 3,
+        fontSize: 10,
+        bold: true,
+        color: C.blue,
+      });
+      cy += 0.3;
+      issues.forEach((iss) => {
+        context.addText(`• ${iss.text}${iss.detail ? ` — ${iss.detail}` : ''}`, {
+          x: 0.7,
+          y: cy,
+          w: 8.5,
+          fontSize: 9,
+          color: C.dark,
+        });
+        cy += 0.35;
+      });
+      cy += 0.1;
+    }
+
+    if (kpis.length) {
+      context.addText('主要KPI実績', {
+        x: 0.5,
+        y: cy,
+        w: 3,
+        fontSize: 10,
+        bold: true,
+        color: C.blue,
+      });
+      cy += 0.3;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      context.addTable(
+        [
+          ['KPI', '値'].map((t) => ({
+            text: t,
+            options: {
+              bold: true,
+              fontSize: 9,
+              fill: { color: C.navy },
+              color: C.white,
+            },
+          })),
+          ...kpis.map((k) => [k.label, k.value]),
+        ] as any,
+        {
+          x: 0.5,
+          y: cy,
+          w: 5,
+          fontSize: 9,
+          border: { type: 'solid', pt: 0.5, color: 'CBD5E1' },
+          colW: [2.5, 2.5],
+          rowH: 0.3,
+        },
+      );
+      cy += 0.3 * (kpis.length + 1) + 0.2;
+    }
+
+    if (comps.length) {
+      context.addText('競合情報', {
+        x: 5.5,
+        y: 0.9,
+        w: 3,
+        fontSize: 10,
+        bold: true,
+        color: C.blue,
+      });
+      comps.forEach((c, i) => {
+        context.addText(
+          `${i + 1}. ${c.name}${c.url ? `\n   ${c.url}` : ''}${c.note ? `\n   ${c.note}` : ''}`,
+          {
+            x: 5.5,
+            y: 1.2 + i * 0.6,
+            w: 4,
+            fontSize: 8,
+            color: C.dark,
+          },
+        );
+      });
+    }
+  }
+
+  // ════════════════════════════════════════════
+  // SLIDE 5: 戦略アイデア マトリクス
+  // ════════════════════════════════════════════
+  page++;
+  const matrix = pptx.addSlide();
+  addFooter(matrix, page);
+  matrix.addText('戦略アイデア マトリクス', {
+    x: 0.5,
+    y: 0.2,
+    w: 9,
+    fontSize: 22,
+    bold: true,
+    color: C.navy,
+  });
+  matrix.addShape('rect' as unknown as Parameters<typeof matrix.addShape>[0], {
+    x: 0.5,
+    y: 0.65,
+    w: 2.5,
+    h: 0.03,
+    fill: { color: C.blue },
+  });
+
+  const hasFeas = results.ideas.some((d) => d.feasibility);
+  const header = ['#', 'タイトル', '優先度', '工数', 'インパクト'];
+  if (hasFeas) header.push('実現可能性');
+  const headerCells = header.map((t) => ({
+    text: t,
+    options: { bold: true, fontSize: 9, fill: { color: C.navy }, color: C.white },
+  }));
+  const dataRows = results.ideas.map((d, i) => {
+    const row = [
+      `${i + 1}`,
+      d.title,
+      { text: ll(d.priority), options: { color: priorityColor(d.priority), bold: true } },
+      ll(d.effort),
+      ll(d.impact),
+    ];
+    if (hasFeas) row.push(d.feasibility ? `${d.feasibility.total}/100` : '-');
+    return row;
+  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  matrix.addTable([headerCells, ...dataRows] as any, {
+    x: 0.3,
+    y: 0.85,
+    w: 9.4,
+    fontSize: 9,
+    border: { type: 'solid', pt: 0.5, color: 'CBD5E1' },
+    colW: hasFeas ? [0.35, 3.2, 1.1, 1.1, 1.1, 1.2] : [0.4, 4.2, 1.3, 1.3, 1.4],
+    rowH: 0.35,
+    autoPage: true,
+    autoPageRepeatHeader: true,
+  });
+
+  // ════════════════════════════════════════════
+  // SLIDES 6+: 各施策の詳細
+  // ════════════════════════════════════════════
+  results.ideas.forEach((idea, i) => {
+    page++;
+    const s = pptx.addSlide();
+    addFooter(s, page);
+
+    // ヘッダー
+    s.addShape('rect' as unknown as Parameters<typeof s.addShape>[0], {
+      x: 0.5,
+      y: 0.2,
+      w: 0.35,
+      h: 0.55,
+      fill: { color: priorityColor(idea.priority) },
+      rectRadius: 0.04,
+    });
+    s.addText(`${i + 1}`, {
+      x: 0.5,
+      y: 0.2,
+      w: 0.35,
+      h: 0.55,
+      fontSize: 16,
+      bold: true,
+      color: C.white,
+      align: 'center',
+      valign: 'middle',
+    });
+    s.addText(idea.title, {
+      x: 1.0,
+      y: 0.2,
+      w: 8.5,
+      h: 0.55,
+      fontSize: 18,
+      bold: true,
+      color: C.navy,
+      valign: 'middle',
+    });
+    s.addShape('rect' as unknown as Parameters<typeof s.addShape>[0], {
+      x: 0.5,
+      y: 0.85,
+      w: 9,
+      h: 0.02,
+      fill: { color: C.blueLt },
+    });
+
+    // 施策詳細（動的レイアウト）
+    const desc =
+      idea.description.length > 900 ? idea.description.slice(0, 900) + '…' : idea.description;
+    const descH = Math.min(2.5, Math.max(1.0, desc.length / 150));
+    s.addText(desc, {
+      x: 0.5,
+      y: 1.05,
+      w: 9,
+      h: descH,
+      fontSize: 10,
+      color: C.dark,
+      valign: 'top',
+      lineSpacingMultiple: 1.3,
+    });
+
+    // メトリクスバー（description に連動）
+    const metaY = 1.05 + descH + 0.15;
+    const metrics = [
+      { label: '優先度', value: idea.priority, color: priorityColor(idea.priority) },
+      {
+        label: '工数',
+        value: idea.effort,
+        color: idea.effort === 'High' ? C.red : idea.effort === 'Low' ? C.green : C.amber,
+      },
+      {
+        label: 'インパクト',
+        value: idea.impact,
+        color: idea.impact === 'High' ? C.green : idea.impact === 'Low' ? C.red : C.amber,
+      },
+    ];
+    metrics.forEach((m, mi) => {
+      const mx = 0.5 + mi * 2.2;
+      s.addText(m.label, { x: mx, y: metaY, w: 1.5, fontSize: 8, color: C.gray });
+      s.addShape('rect' as unknown as Parameters<typeof s.addShape>[0], {
+        x: mx,
+        y: metaY + 0.25,
+        w: 1.8,
+        h: 0.04,
+        fill: { color: C.grayLt },
+      });
+      s.addShape('rect' as unknown as Parameters<typeof s.addShape>[0], {
+        x: mx,
+        y: metaY + 0.25,
+        w: m.value === 'High' ? 1.8 : m.value === 'Medium' ? 1.1 : 0.5,
+        h: 0.04,
+        fill: { color: m.color },
+      });
+      s.addText(ll(m.value), {
+        x: mx,
+        y: metaY + 0.35,
+        w: 1.5,
+        fontSize: 9,
+        bold: true,
+        color: m.color,
+      });
+    });
+
+    // 実現可能性（動的y座標）
+    if (idea.feasibility) {
+      const fy = metaY + 0.65;
+      s.addText('実現可能性', {
+        x: 0.5,
+        y: fy,
+        w: 2,
+        fontSize: 8,
+        bold: true,
+        color: C.blue,
+      });
+      const bars = [
+        { label: '総合', val: idea.feasibility.total },
+        { label: 'リソース', val: idea.feasibility.resource },
+        { label: '技術容易性', val: idea.feasibility.techDifficulty },
+        { label: '組織受容性', val: idea.feasibility.orgAcceptance },
+      ];
+      bars.forEach((b, bi) => {
+        const bx = 0.5 + bi * 2.3;
+        s.addText(`${b.label}: ${b.val}`, {
+          x: bx,
+          y: fy + 0.2,
+          w: 2,
+          fontSize: 8,
+          color: C.gray,
+        });
+        s.addShape('rect' as unknown as Parameters<typeof s.addShape>[0], {
+          x: bx,
+          y: fy + 0.45,
+          w: 1.8,
+          h: 0.06,
+          fill: { color: C.grayLt },
+          rectRadius: 0.03,
+        });
+        s.addShape('rect' as unknown as Parameters<typeof s.addShape>[0], {
+          x: bx,
+          y: fy + 0.45,
+          w: (b.val / 100) * 1.8,
+          h: 0.06,
+          fill: { color: b.val >= 70 ? C.green : b.val >= 40 ? C.amber : C.red },
+          rectRadius: 0.03,
+        });
+      });
+    }
+
+    // サブアイデア（スペースが余っている場合）
+    const subStartY = idea.feasibility ? metaY + 1.3 : metaY + 0.65;
+    if (idea.subIdeas?.length && subStartY < 4.5) {
+      s.addText('サブプラン', {
+        x: 0.5,
+        y: subStartY,
+        w: 2,
+        fontSize: 8,
+        bold: true,
+        color: C.blue,
+      });
+      idea.subIdeas.slice(0, 3).forEach((sub, si) => {
+        const sy = subStartY + 0.25 + si * 0.3;
+        if (sy < 4.8) {
+          s.addText(`${si + 1}. ${sub.title}: ${sub.description.slice(0, 80)}`, {
+            x: 0.7,
+            y: sy,
+            w: 8.8,
+            fontSize: 8,
+            color: C.dark,
+          });
+        }
+      });
+    }
+  });
+
+  // ════════════════════════════════════════════
+  // 深掘り結果スライド
+  // ════════════════════════════════════════════
+  if (results.deepDives?.length) {
+    results.deepDives.forEach((dd) => {
+      page++;
+      const s = pptx.addSlide();
+      addFooter(s, page);
+      s.addText('深掘り分析', {
+        x: 0.5,
+        y: 0.2,
+        w: 9,
+        fontSize: 22,
+        bold: true,
+        color: C.navy,
+      });
+      s.addShape('rect' as unknown as Parameters<typeof s.addShape>[0], {
+        x: 0.5,
+        y: 0.65,
+        w: 2.5,
+        h: 0.03,
+        fill: { color: C.blue },
+      });
+      s.addText(dd.question, {
+        x: 0.5,
+        y: 0.85,
+        w: 9,
+        fontSize: 12,
+        bold: true,
+        color: C.dark,
+      });
+      const ans = dd.answer.length > 1200 ? dd.answer.slice(0, 1200) + '…' : dd.answer;
+      s.addText(ans, {
+        x: 0.5,
+        y: 1.4,
+        w: 9,
+        h: 3.3,
+        fontSize: 9,
+        color: C.dark,
+        valign: 'top',
+        lineSpacingMultiple: 1.3,
+      });
+    });
+  }
+
+  // ════════════════════════════════════════════
+  // ブラッシュアップスライド
+  // ════════════════════════════════════════════
+  if (results.refinements?.length) {
+    results.refinements.forEach((r) => {
+      page++;
+      const s = pptx.addSlide();
+      addFooter(s, page);
+      s.addText('ブラッシュアップ', {
+        x: 0.5,
+        y: 0.2,
+        w: 9,
+        fontSize: 22,
+        bold: true,
+        color: C.navy,
+      });
+      s.addShape('rect' as unknown as Parameters<typeof s.addShape>[0], {
+        x: 0.5,
+        y: 0.65,
+        w: 2.5,
+        h: 0.03,
+        fill: { color: C.blue },
+      });
+      s.addText(`レビュー: ${r.review}`, {
+        x: 0.5,
+        y: 0.85,
+        w: 9,
+        fontSize: 11,
+        italic: true,
+        color: C.gray,
+      });
+      const ans = r.answer.length > 1200 ? r.answer.slice(0, 1200) + '…' : r.answer;
+      s.addText(ans, {
+        x: 0.5,
+        y: 1.3,
+        w: 9,
+        h: 3.4,
+        fontSize: 9,
+        color: C.dark,
+        valign: 'top',
+        lineSpacingMultiple: 1.3,
+      });
+    });
+  }
+
+  // ════════════════════════════════════════════
+  // 最終スライド: クロージング
+  // ════════════════════════════════════════════
+  const closing = pptx.addSlide();
+  closing.addShape('rect' as unknown as Parameters<typeof closing.addShape>[0], {
+    x: 0,
+    y: 0,
+    w: 10,
+    h: 5.63,
+    fill: { color: C.navy },
+  });
+  closing.addText('Thank you', {
+    x: 0.8,
+    y: 1.5,
+    w: 8.4,
+    fontSize: 36,
+    bold: true,
+    color: C.white,
+  });
+  closing.addText('BrainBrainBrain — AI Strategic Brainstorm', {
+    x: 0.8,
+    y: 2.5,
+    w: 8.4,
+    fontSize: 14,
+    color: C.blue,
+  });
+  closing.addText(
+    `${pn}  |  ${now}\n本資料はAI分析に基づく「叩き台」です。各スライドの内容を加筆・修正してご活用ください。\n意思決定には追加検証を推奨します。`,
+    { x: 0.8, y: 3.3, w: 8.4, fontSize: 9, color: C.gray, lineSpacingMultiple: 1.5 },
+  );
+
+  const ts = new Date().toISOString().slice(0, 10);
+  await pptx.writeFile({ fileName: `${pn}_コンサル版_${ts}.pptx` });
 };

@@ -14,13 +14,16 @@ import {
   Presentation,
   ChevronDown,
   Loader2,
+  Clipboard,
+  Check,
 } from 'lucide-react';
 import { AIResults, Idea } from '../../types';
 import { T } from '../../constants/theme';
 import { ResultCard } from '../results/ResultCard';
 import { RichText } from '../results/RichText';
+import { downloadDeepDivePdf } from '../../utils/report';
 
-type DlFormat = 'md' | 'txt' | 'csv' | 'pdf' | 'pdfDl' | 'pptx';
+type DlFormat = 'md' | 'txt' | 'csv' | 'pdf' | 'pdfDl' | 'pptx' | 'pptxHc';
 
 interface ResultsPaneProps {
   loading: boolean;
@@ -41,12 +44,26 @@ interface ResultsPaneProps {
   onDownload?: (format: DlFormat) => void;
   onDrillDown?: (idea: Idea, index: number) => void;
   drillingDownId?: string | null;
+  progress?: number;
 }
 
-const LoadingSkeleton = () => (
+const LoadingSkeleton: React.FC<{ progress?: number }> = ({ progress = 0 }) => (
   <div className="space-y-4 animate-pulse">
     <div className={`${T.card} p-5 space-y-3`}>
-      <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4" />
+      <div className="flex items-center justify-between mb-1">
+        <div className={`flex items-center gap-2 text-xs font-medium ${T.t2}`}>
+          <div className="w-3.5 h-3.5 border-2 border-slate-300 dark:border-slate-600 border-t-brand rounded-full animate-spin" />
+          AI分析中…
+        </div>
+        <span className={`text-xs font-bold tabular-nums ${T.accentTxt}`}>{progress}%</span>
+      </div>
+      <div className="h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+        <div
+          className="h-full bg-brand rounded-full transition-all duration-300"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+      <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mt-3" />
       <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-full" />
       <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-5/6" />
     </div>
@@ -62,6 +79,74 @@ const LoadingSkeleton = () => (
   </div>
 );
 
+const DeepDiveCard: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
+  const [copied, setCopied] = useState(false);
+  const [isSavingPdf, setIsSavingPdf] = useState(false);
+  const [isCopying, setIsCopying] = useState(false);
+
+  const handleCopy = async () => {
+    if (isCopying) return;
+    try {
+      setIsCopying(true);
+      await navigator.clipboard.writeText(answer);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch (err) {
+      console.error('Failed to copy text:', err);
+    } finally {
+      setIsCopying(false);
+    }
+  };
+
+  const handleSavePdf = async () => {
+    if (isSavingPdf) return;
+    try {
+      setIsSavingPdf(true);
+      await downloadDeepDivePdf(question, answer);
+    } catch (err) {
+      console.error('Failed to save PDF:', err);
+    } finally {
+      setIsSavingPdf(false);
+    }
+  };
+
+  return (
+    <div className={`${T.card} p-5 border-l-2 border-l-brand-light dark:border-l-brand relative`}>
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <p className={`text-xs font-semibold ${T.t1} flex-1`}>{question}</p>
+        <div className="flex items-center gap-1 shrink-0">
+          <button
+            onClick={handleCopy}
+            className={`p-1.5 rounded-md ${T.btnGhost} border-0 transition`}
+            title="コピー"
+            aria-label="コピー"
+          >
+            {copied ? (
+              <Check className="w-3.5 h-3.5 text-emerald-500" />
+            ) : (
+              <Clipboard className="w-3.5 h-3.5" />
+            )}
+          </button>
+          <button
+            onClick={handleSavePdf}
+            disabled={isSavingPdf}
+            className={`p-1.5 rounded-md ${T.btnGhost} border-0 transition disabled:opacity-50`}
+            title="PDFで保存"
+            aria-label="PDFで保存"
+          >
+            {isSavingPdf ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-brand" />
+            ) : (
+              <Printer className="w-3.5 h-3.5" />
+            )}
+          </button>
+        </div>
+      </div>
+      <RichText text={answer} />
+    </div>
+  );
+};
+
 const EmptyState = () => (
   <div className="flex flex-col items-center justify-center py-20 text-center">
     <Loader2 className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-3" />
@@ -73,8 +158,9 @@ const AnalysisBlock: React.FC<{
   results: AIResults;
   onDrillDown?: (idea: Idea, index: number) => void;
   drillingDownId?: string | null;
+  diving?: boolean;
   index?: number;
-}> = ({ results, onDrillDown, drillingDownId, index = 0 }) => (
+}> = ({ results, onDrillDown, drillingDownId, diving = false, index = 0 }) => (
   <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
     <div className={`${T.card} p-5`} data-tour="result-understanding">
       {results.keyIssue && (
@@ -104,13 +190,18 @@ const AnalysisBlock: React.FC<{
 
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3" data-tour="result-cards">
       {results.ideas.map((idea, i) => (
-        <ResultCard
+        <div
           key={`${idea.title}-${i}-${index}`}
-          idea={idea}
-          index={i}
-          onDrillDown={onDrillDown}
-          drillingDownId={drillingDownId}
-        />
+          className={idea.subIdeas?.length ? 'col-span-full' : ''}
+        >
+          <ResultCard
+            idea={idea}
+            index={i}
+            onDrillDown={onDrillDown}
+            drillingDownId={drillingDownId}
+            diving={diving}
+          />
+        </div>
       ))}
     </div>
   </div>
@@ -135,6 +226,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
   onDownload,
   onDrillDown,
   drillingDownId,
+  progress = 0,
 }) => {
   const [showDlMenu, setShowDlMenu] = useState(false);
   const dlRef = useRef<HTMLDivElement>(null);
@@ -156,7 +248,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
     }
   }, [refining, diving, results?.refinements?.length, results?.deepDives?.length]);
 
-  if (loading && !results) return <LoadingSkeleton />;
+  if (loading && !results) return <LoadingSkeleton progress={progress} />;
   if (!results) return <EmptyState />;
 
   const dlOptions: { fmt: DlFormat; label: string; icon: React.ReactNode }[] = [
@@ -180,6 +272,11 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
       fmt: 'pptx',
       label: 'PowerPoint (.pptx)',
       icon: <Presentation className="w-3.5 h-3.5 text-orange-500" />,
+    },
+    {
+      fmt: 'pptxHc',
+      label: 'PowerPoint コンサル版 (.pptx)',
+      icon: <Presentation className="w-3.5 h-3.5 text-amber-500" />,
     },
     {
       fmt: 'pdf',
@@ -207,6 +304,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
               onClick={onShowPreview}
               className={`p-1.5 rounded-lg ${T.btnGhost}`}
               title="レポートプレビュー"
+              aria-label="レポートプレビュー"
             >
               <Eye className="w-3.5 h-3.5" />
             </button>
@@ -216,6 +314,8 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
               <button
                 onClick={() => setShowDlMenu((s) => !s)}
                 className={`flex items-center gap-0.5 p-1.5 rounded-lg ${T.btnGhost}`}
+                title="結果をダウンロード"
+                aria-label="結果をダウンロード"
               >
                 <Download className="w-3.5 h-3.5" />
                 <ChevronDown className="w-2.5 h-2.5 opacity-50" />
@@ -250,6 +350,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
           results={results}
           onDrillDown={onDrillDown}
           drillingDownId={drillingDownId}
+          diving={diving}
           index={0}
         />
       </section>
@@ -271,6 +372,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
                     results={r.results}
                     onDrillDown={onDrillDown}
                     drillingDownId={drillingDownId}
+                    diving={diving}
                     index={i + 1}
                   />
                 ) : (
@@ -298,13 +400,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
             </button>
           </div>
           {results.deepDives.map((dd, i) => (
-            <div
-              key={i}
-              className={`${T.card} p-5 border-l-2 border-l-brand-light dark:border-l-brand`}
-            >
-              <p className={`text-xs font-semibold ${T.t1} mb-2`}>{dd.question}</p>
-              <RichText text={dd.answer} />
-            </div>
+            <DeepDiveCard key={i} question={dd.question} answer={dd.answer} />
           ))}
         </div>
       )}
@@ -322,7 +418,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
               <button
                 key={i}
                 onClick={() => onDeepDive(q)}
-                disabled={diving}
+                disabled={diving || !!drillingDownId}
                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border ${T.btnGhost} hover:border-brand-light dark:hover:border-brand-light/50 hover:text-brand dark:hover:text-brand-light disabled:opacity-30 transition`}
               >
                 <ChevronRight className="w-3 h-3" />

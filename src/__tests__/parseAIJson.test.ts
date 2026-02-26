@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseAIJson } from '../utils/parseAIJson';
+import { parseAIJson, extractMarkdown } from '../utils/parseAIJson';
 
 describe('parseAIJson', () => {
   it('正常なJSONをパースできる', () => {
@@ -145,5 +145,68 @@ describe('parseAIJson', () => {
     expect(f.resource).toBe(0);
     expect(f.techDifficulty).toBe(50); // NaN → default 50
     expect(f.orgAcceptance).toBe(51); // rounded
+  });
+});
+
+describe('extractMarkdown', () => {
+  it('純粋なMarkdownテキストはそのまま返す', () => {
+    const md = '# 見出し\n\n本文テキスト\n\n- 箇条書き';
+    expect(extractMarkdown(md)).toBe(md);
+  });
+
+  it('JSON wrapper {"markdown": "..."} からテキストを抽出する', () => {
+    const input = JSON.stringify({ markdown: '# 見出し\n\n本文' });
+    expect(extractMarkdown(input)).toBe('# 見出し\n\n本文');
+  });
+
+  it('JSON wrapper {"content": "..."} からテキストを抽出する', () => {
+    const input = JSON.stringify({ content: '回答テキスト' });
+    expect(extractMarkdown(input)).toBe('回答テキスト');
+  });
+
+  it('JSON wrapper {"answer": "..."} からテキストを抽出する', () => {
+    const input = JSON.stringify({ answer: '回答テキスト' });
+    expect(extractMarkdown(input)).toBe('回答テキスト');
+  });
+
+  it('JSON wrapper {"text": "..."} からテキストを抽出する', () => {
+    const input = JSON.stringify({ text: 'テキスト内容' });
+    expect(extractMarkdown(input)).toBe('テキスト内容');
+  });
+
+  it('リテラル \\n を実改行に変換する', () => {
+    const input = '# 見出し\\n\\n本文\\n- リスト';
+    expect(extractMarkdown(input)).toBe('# 見出し\n\n本文\n- リスト');
+  });
+
+  it('JSON wrapper + リテラル \\n の複合パターン', () => {
+    // AI が {"markdown": "# 見出し\n本文"} を返すがJSON.parseで\nは復元される
+    const input = '{"markdown": "# 見出し\\n本文テキスト"}';
+    const result = extractMarkdown(input);
+    expect(result).toBe('# 見出し\n本文テキスト');
+  });
+
+  it('コードフェンス付きJSON wrapper を処理する', () => {
+    const input = '```json\n{"markdown": "# タイトル\\n内容"}\n```';
+    expect(extractMarkdown(input)).toBe('# タイトル\n内容');
+  });
+
+  it('コードフェンス付きMarkdownを処理する', () => {
+    const input = '```markdown\n# 見出し\n\n本文\n```';
+    expect(extractMarkdown(input)).toBe('# 見出し\n\n本文');
+  });
+
+  it('不正なJSONはそのままテキストとして返す', () => {
+    const input = '{ これは不正なJSON }';
+    expect(extractMarkdown(input)).toBe('{ これは不正なJSON }');
+  });
+
+  it('空文字は空文字を返す', () => {
+    expect(extractMarkdown('')).toBe('');
+  });
+
+  it('markdownキーがない通常のJSONオブジェクトはそのまま返す', () => {
+    const input = '{"foo": "bar", "baz": 123}';
+    expect(extractMarkdown(input)).toBe(input);
   });
 });
