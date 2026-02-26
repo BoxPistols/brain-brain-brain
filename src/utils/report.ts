@@ -236,7 +236,7 @@ export const downloadPdf = async (md: string, pn: string) => {
   await html2pdf()
     .set({
       margin: [10, 10, 10, 10],
-      filename: `${pn}.pdf`,
+      filename: `${pn}_${new Date().toISOString().slice(0, 10)}.pdf`,
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
@@ -412,7 +412,8 @@ export const downloadPptx = async (
     }
   });
 
-  await pptx.writeFile({ fileName: `${pn}.pptx` });
+  const ts = new Date().toISOString().slice(0, 10);
+  await pptx.writeFile({ fileName: `${pn}_${ts}.pptx` });
 };
 
 /** ハイクラス PPTX エクスポート（コンサルグレード） */
@@ -1138,5 +1139,6 @@ export const downloadPptxHighClass = async (
     { x: 0.8, y: 3.3, w: 8.4, fontSize: 9, color: C.gray, lineSpacingMultiple: 1.5 },
   );
 
-  await pptx.writeFile({ fileName: `${pn}_コンサル版.pptx` });
+  const ts = new Date().toISOString().slice(0, 10);
+  await pptx.writeFile({ fileName: `${pn}_コンサル版_${ts}.pptx` });
 };
