@@ -138,6 +138,18 @@ API 接続状態。
 | `status` | `string` | `idle` / `testing` / `ok` / `error` |
 | `msg` | `string` | ステータスメッセージ |
 
+## LLMProvider
+
+LLMプロバイダーを表す文字列リテラル型。
+
+| 値 | ラベル | 説明 |
+|---|--------|------|
+| `openai` | OpenAI | クラウドAPI（Free/Proモード） |
+| `ollama` | Ollama | ローカルLLM（`localhost:11434`） |
+| `lmstudio` | LM Studio | ローカルLLM（`localhost:1234`） |
+
+ローカルプロバイダー（`ollama` / `lmstudio`）選択時は Pro モード相当として全機能解放。
+
 ## ModelInfo
 
 モデルメタデータ。

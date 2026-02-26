@@ -18,6 +18,7 @@ import {
   Play,
   Navigation,
   Github,
+  Monitor,
 } from 'lucide-react';
 import { T } from '../../constants/theme';
 
@@ -166,8 +167,9 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
             </p>
             <p className="text-[13px] text-brand/80 dark:text-brand-light/80 mt-2 leading-relaxed">
               フリーモードでもお試しいただけますが、より高品質な分析には
-              <strong>ご自身のOpenAI APIキー</strong>の設定を推奨しています。
-              設定画面から簡単に登録でき、分析深度Lv4やすべての深掘り機能が解放されます。
+              <strong>ご自身のOpenAI APIキー</strong>の設定、または
+              <strong>ローカルLLM</strong>（Ollama / LM Studio）の利用を推奨しています。
+              設定画面から切り替えでき、分析深度Lv4やすべての深掘り機能が解放されます。
             </p>
           </div>
 
@@ -261,6 +263,58 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
             <p className={`text-[13px] ${T.t3} mt-2.5`}>
               プロモードは設定画面でOpenAI APIキーを入力すると有効になります。
             </p>
+          </Section>
+
+          {/* ローカルLLM */}
+          <Section title="ローカルLLM対応">
+            <p className={`text-[13px] ${T.t2} leading-relaxed mb-3`}>
+              Ollama や LM Studio を使えば、APIキー不要・完全無料でローカルPCのLLMを利用できます。
+              設定画面でプロバイダーを切り替えるだけで、すべての機能がプロモード相当で使えます。
+            </p>
+            <div className="space-y-3">
+              {[
+                {
+                  icon: Monitor,
+                  label: 'Ollama',
+                  steps: [
+                    'ollama.com からインストール',
+                    'ターミナルで ollama pull llama3.2 を実行',
+                    '設定画面で「Ollama」を選択 → モデル取得',
+                  ],
+                },
+                {
+                  icon: Monitor,
+                  label: 'LM Studio',
+                  steps: [
+                    'lmstudio.ai からインストール',
+                    'アプリ内でモデルをダウンロード → サーバー起動',
+                    '設定画面で「LM Studio」を選択 → モデル取得',
+                  ],
+                },
+              ].map(({ icon: Icon, label, steps: st }) => (
+                <div
+                  key={label}
+                  className="p-3 rounded-xl bg-white/60 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 backdrop-blur-sm"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Icon className={`w-[18px] h-[18px] ${T.t2}`} />
+                    <span className={`text-sm font-medium ${T.t1}`}>{label}</span>
+                  </div>
+                  <ol className={`text-[13px] ${T.t3} space-y-1 list-decimal list-inside`}>
+                    {st.map((s) => (
+                      <li key={s}>{s}</li>
+                    ))}
+                  </ol>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 p-3 rounded-xl bg-emerald-50/80 dark:bg-emerald-900/15 border border-emerald-200/60 dark:border-emerald-700/30 backdrop-blur-sm">
+              <p className="text-[13px] text-emerald-700 dark:text-emerald-300 leading-relaxed">
+                <strong>推奨モデル:</strong>{' '}
+                llama3.2（軽量・高速）、gemma2（バランス型）、qwen2.5（日本語対応）。 VRAM
+                8GB以上のGPUがあると快適です。CPU推論も可能ですが応答に時間がかかります。
+              </p>
+            </div>
           </Section>
 
           {/* 便利な機能 */}

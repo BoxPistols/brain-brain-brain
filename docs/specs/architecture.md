@@ -52,9 +52,16 @@ useAI.generate()
      │ buildPrompt() → system/user メッセージ構築
      │ HR キーワード検出 → ドメインコンテキスト注入
      ▼
-OpenAI API (/api/openai プロキシ)
-     │ Free: 環境変数 API キー
-     │ Pro: ユーザー API キー
+┌─ OpenAI モード ─────────────────────┐
+│ OpenAI API (/api/openai プロキシ)    │
+│   Free: 環境変数 API キー            │
+│   Pro: ユーザー API キー             │
+├─ ローカルLLM モード ────────────────┤
+│ Ollama / LM Studio (localhost)      │
+│   ブラウザから直接接続（プロキシ不要）│
+│   全機能プロモード相当               │
+└─────────────────────────────────────┘
+     │
      ▼
 parseAIJson() → AIResults
      │
@@ -73,16 +80,29 @@ parseAIJson() → AIResults
 | `useTheme` | `src/hooks/useTheme.ts` | ダーク/ライトモード切替 |
 | `usePanelResize` | `src/hooks/usePanelResize.ts` | スプリットパネル比率管理 |
 
-## API プロキシ構成
+## LLM プロバイダー構成
 
-### 開発環境（Vite dev server）
+3つのプロバイダーをサポート。`LLMProvider` 型で切替。
+
+| プロバイダー | 接続先 | 認証 | モード |
+|-------------|--------|------|--------|
+| `openai` | `/api/openai` プロキシ or OpenAI直接 | API キー | Free / Pro |
+| `ollama` | `http://localhost:11434` | 不要 | Pro相当 |
+| `lmstudio` | `http://localhost:1234` | 不要 | Pro相当 |
+
+ローカルLLM（Ollama / LM Studio）は OpenAI互換API（`/v1/chat/completions`）を使用。
+ブラウザから直接 localhost に接続し、プロキシ不要。`response_format`（JSON mode）は送信しない。
+
+### OpenAI API プロキシ
+
+#### 開発環境（Vite dev server）
 
 `vite.config.ts` の proxy 設定:
 - `/api/openai` → `https://api.openai.com`
 - Free モード: `OPENAI_API_KEY` 環境変数をプロキシ内で付与
 - Pro モード: クライアントから `x-api-key` ヘッダーで送信
 
-### 本番環境（Vercel）
+#### 本番環境（Vercel）
 
 `api/openai/[[...path]].ts` の Serverless Function:
 - Edge runtime でプロキシ
@@ -95,6 +115,9 @@ parseAIJson() → AIResults
 | `ai-brainstorm-logs` | localStorage | LogEntry[]（最大200件） |
 | `ai-brainstorm-settings` | localStorage | logMode, autoSave |
 | `userApiKey` | localStorage | OpenAI API キー（Pro モード） |
+| `ai-brainstorm-provider` | localStorage | LLMプロバイダー（openai/ollama/lmstudio） |
+| `ai-brainstorm-endpoint` | localStorage | ローカルLLMエンドポイントURL |
+| `ai-brainstorm-local-model` | localStorage | ローカルLLMモデルID |
 | `theme` | localStorage | ダーク/ライト設定 |
 | `ai-brainstorm-visited` | localStorage | 初回訪問フラグ |
 
