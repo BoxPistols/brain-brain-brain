@@ -23,7 +23,7 @@ import { ResultCard } from '../results/ResultCard';
 import { RichText } from '../results/RichText';
 import { downloadDeepDivePdf } from '../../utils/report';
 
-type DlFormat = 'md' | 'txt' | 'csv' | 'pdf' | 'pdfDl' | 'pptx';
+type DlFormat = 'md' | 'txt' | 'csv' | 'pdf' | 'pdfDl' | 'pptx' | 'pptxHc';
 
 interface ResultsPaneProps {
   loading: boolean;
@@ -224,6 +224,11 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
       fmt: 'pptx',
       label: 'PowerPoint (.pptx)',
       icon: <Presentation className="w-3.5 h-3.5 text-orange-500" />,
+    },
+    {
+      fmt: 'pptxHc',
+      label: 'PowerPoint High-Class (.pptx)',
+      icon: <Presentation className="w-3.5 h-3.5 text-amber-500" />,
     },
     {
       fmt: 'pdf',

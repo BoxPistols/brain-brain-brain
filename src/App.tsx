@@ -34,6 +34,7 @@ import {
   dlFile,
   downloadPdf,
   downloadPptx,
+  downloadPptxHighClass,
 } from './utils/report';
 import { T } from './constants/theme';
 import {
@@ -560,6 +561,9 @@ export default function App() {
                           break;
                         case 'pptx':
                           downloadPptx(usedName, form, results, modelLabel, dep);
+                          break;
+                        case 'pptxHc':
+                          downloadPptxHighClass(usedName, form, results, modelLabel, dep);
                           break;
                         case 'pdf':
                           printReport(mdToTxt(report), usedName);
