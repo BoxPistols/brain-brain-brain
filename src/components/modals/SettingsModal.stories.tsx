@@ -10,6 +10,15 @@ const meta = {
     setConnStatus: fn(),
     runConnTest: fn(),
     setApiKey: fn(),
+    provider: 'openai',
+    setProvider: fn(),
+    localEndpoint: '',
+    setLocalEndpoint: fn(),
+    localModels: [],
+    onFetchLocalModels: fn(),
+    localModelId: '',
+    setLocalModelId: fn(),
+    fetchingModels: false,
   },
 } satisfies Meta<typeof SettingsModal>;
 

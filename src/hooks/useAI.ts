@@ -1,8 +1,17 @@
 import { useState, useCallback } from 'react';
 import { isHRContext, getHRDomainContext } from '../constants/domainContext';
 import { parseAIJson } from '../utils/parseAIJson';
-import { BrainstormForm, AIResults, ChatMessage, ConnStatus, Idea } from '../types';
-import { callAI, callAIWithKey, testConn, DEFAULT_MODEL_ID, isProMode } from '../constants/models';
+import { BrainstormForm, AIResults, ChatMessage, ConnStatus, Idea, LLMProvider } from '../types';
+import {
+  callAI,
+  callAIWithKey,
+  callAILocal,
+  testConn,
+  testConnLocal,
+  DEFAULT_MODEL_ID,
+  isProMode,
+  isLocalProvider,
+} from '../constants/models';
 import type { APICallResult } from '../constants/models';
 import { FREE_DEPTH, PRO_DEPTH } from '../constants/prompts';
 import { MAX_HIST, CHAT_MAX_TOKENS } from '../constants/config';
@@ -91,10 +100,14 @@ export const useAI = () => {
   );
 
   const runConnTest = useCallback(
-    async (apiKey = '') => {
+    async (apiKey = '', provider: LLMProvider = 'openai', endpoint = '', localModelId = '') => {
       setConnStatus({ status: 'testing', msg: '' });
       try {
-        await testConn(modelId, apiKey);
+        if (isLocalProvider(provider)) {
+          await testConnLocal(endpoint, localModelId);
+        } else {
+          await testConn(modelId, apiKey);
+        }
         setConnStatus({ status: 'ok', msg: 'OK' });
       } catch (e: unknown) {
         setConnStatus({ status: 'error', msg: e instanceof Error ? e.message : String(e) });
@@ -111,19 +124,26 @@ export const useAI = () => {
     jsonMode: boolean,
     apiKey: string,
     routerInput: ModelRouterInput,
+    provider: LLMProvider = 'openai',
+    localEndpoint?: string,
+    localModel?: string,
   ): Promise<{ content: string; resolvedModel: string }> => {
-    const pro = isProMode(apiKey);
-    const decision = selectModel(modelId, routerInput, pro);
+    const isLocal = isLocalProvider(provider);
+    const pro = isLocal || isProMode(apiKey);
+    const currentModel = isLocal ? localModel || modelId : modelId;
+    const decision = selectModel(currentModel, routerInput, pro, isLocal);
     const resolvedId = decision.modelId;
 
     console.debug(`[modelRouter] ${taskType}: ${decision.reason} → ${resolvedId}`);
 
-    const result: APICallResult = pro
-      ? await callAIWithKey(apiKey.trim(), resolvedId, msgs, maxTokens, jsonMode)
-      : await callAI(resolvedId, msgs, maxTokens, jsonMode);
+    const result: APICallResult = isLocal
+      ? await callAILocal(localEndpoint!, resolvedId, msgs, maxTokens, jsonMode)
+      : pro
+        ? await callAIWithKey(apiKey.trim(), resolvedId, msgs, maxTokens, jsonMode)
+        : await callAI(resolvedId, msgs, maxTokens, jsonMode);
 
-    // コスト追跡
-    if (result.usage) {
+    // コスト追跡（ローカルはスキップ）
+    if (!isLocal && result.usage) {
       const cost = addUsage({
         modelId: resolvedId,
         promptTokens: result.usage.prompt_tokens,
@@ -310,13 +330,17 @@ JSONのみ回答:
       issueStr: string,
       onSuccess: (res: AIResults, prompt: string) => void,
       apiKey = '',
+      provider: LLMProvider = 'openai',
+      localEndpoint?: string,
+      localModel?: string,
     ) => {
       if (!form.productService || !form.teamGoals) {
         setError('必須項目（*）を入力');
         return;
       }
 
-      const proMode = isProMode(apiKey);
+      const isLocal = isLocalProvider(provider);
+      const proMode = isLocal || isProMode(apiKey);
       const depTable = proMode ? PRO_DEPTH : FREE_DEPTH;
       const dc = depTable[dep] || depTable[1];
 
@@ -345,6 +369,9 @@ JSONのみ回答:
           true,
           apiKey,
           routerInput,
+          provider,
+          localEndpoint,
+          localModel,
         );
         const parsed = parseAIJson(raw);
 
@@ -423,7 +450,13 @@ JSONのみ回答:
   );
 
   const refine = useCallback(
-    async (onSuccess: (res: AIResults, text: string) => void, apiKey = '') => {
+    async (
+      onSuccess: (res: AIResults, text: string) => void,
+      apiKey = '',
+      provider: LLMProvider = 'openai',
+      localEndpoint?: string,
+      localModel?: string,
+    ) => {
       if (!reviewText.trim() || !results) return;
       setRefining(true);
       setError(null);
@@ -488,6 +521,9 @@ ${pastRefinements ? `\n【過去のブラッシュアップ履歴】\n${pastRefi
           false,
           apiKey,
           routerInput,
+          provider,
+          localEndpoint,
+          localModel,
         );
 
         // JSONを抽出・パース（parseAIJsonで安全に処理）
@@ -631,7 +667,13 @@ ${pastRefinements ? `\n【過去のブラッシュアップ履歴】\n${pastRefi
   };
 
   const deepDive = useCallback(
-    async (q: string, apiKey = '') => {
+    async (
+      q: string,
+      apiKey = '',
+      provider: LLMProvider = 'openai',
+      localEndpoint?: string,
+      localModel?: string,
+    ) => {
       if (!results) return;
       setDiving(true);
       setError(null);
@@ -696,6 +738,9 @@ ${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}${ddCiCtx ? 
           false,
           apiKey,
           routerInput,
+          provider,
+          localEndpoint,
+          localModel,
         );
 
         setResults((p) =>
@@ -725,7 +770,14 @@ ${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}${ddCiCtx ? 
   );
 
   const drillDownIdea = useCallback(
-    async (idea: Idea, ideaIndex: number, apiKey = '') => {
+    async (
+      idea: Idea,
+      ideaIndex: number,
+      apiKey = '',
+      provider: LLMProvider = 'openai',
+      localEndpoint?: string,
+      localModel?: string,
+    ) => {
       if (!results) return;
       const drillId = `${idea.title}-${ideaIndex}`;
       setDrillingDownId(drillId);
@@ -762,6 +814,9 @@ description には必ず「例: 」で始まる具体的な行動例を含め、
           false,
           apiKey,
           routerInput,
+          provider,
+          localEndpoint,
+          localModel,
         );
 
         // JSON配列を抽出・パース
