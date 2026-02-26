@@ -228,10 +228,10 @@ export const useAI = () => {
           'KPI実績値が提供されている場合、業界平均と比較してボトルネックを特定し、数値から逆算した改善提案を行う',
           ...(hasCompetitors
             ? [
-                '競合企業名・URLからあなたの知識範囲内で事業モデル・主力サービス・ターゲット層・推定される強み/弱みを分析する。知識の確実性が低い情報には「推定」と明記する',
-                'ユーザー企業と競合の相対的なポジショニング差（規模・専門性・価格帯）を特定する',
-                '競合が構造的に苦手な領域を特定し、そこでの差別化を優先提案する',
-                '「競合の顧客が不満を感じるとしたら何か」を推定し、その不満を解消するサービス設計を提案する',
+                '【必須】understanding セクション内に「## 競合分析」サブセクションを設け、提供された各競合企業について以下4点を必ず記述すること: (1)事業概要（推定事業規模・主力サービス・ターゲット層） (2)強み（差別化要因・競争優位性） (3)弱み（構造的な限界・手薄な領域） (4)自社との差別化ポイント。知識の確実性が低い場合は「推定」と明記する',
+                'ユーザー企業と競合の相対的なポジショニング差（規模・専門性・価格帯・ターゲットセグメント）を明確に対比する',
+                '競合が構造的に苦手な領域を特定し、ideas にその領域での差別化施策を最低1つ含める',
+                '「競合の顧客が不満を感じるとしたら何か」を推定し、その不満を解消するサービス設計を ideas に反映する',
               ]
             : []),
           '深掘り質問（suggestions）は、提供データから回答可能な質問、または次に取得すべきデータを示す質問を優先する',
@@ -353,7 +353,7 @@ ${hrContext ? `\n${hrContext}` : ''}${compIntel ? `\n【競合・データ情報
 【出力形式】JSONのみ・コードブロック不要:
 {"understanding":"${dmap.understanding}",${hrJson}"ideas":[${dc.ideas}個: {"title":"8語以内の行動起点タイトル","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High","feasibility":{"total":0-100総合,"resource":0-100リソース充足度,"techDifficulty":0-100技術的容易性(高=容易),"orgAcceptance":0-100組織受容性}}],"suggestions":["深掘り質問を5個。抽象的な方向性の質問ではなく、(1)次に取得すべき具体的データを指定する質問 (2)仮説の検証に必要な情報を問う質問 (3)意思決定に直結する判断軸を問う質問 を優先すること"]}`;
     } else {
-      return `ビジネスコンサルとして建設的に分析。${rd.lens}の観点。${hrContext ? ` ${hrContext}` : ''}${compIntel ? ` [データ] ${compIntel.replace(/\n/g, ' ')}` : ''}
+      return `ビジネスコンサルとして建設的に分析。${rd.lens}の観点。${hrContext ? ` ${hrContext}` : ''}${compIntel ? ` [データ] ${compIntel.replace(/\n/g, ' ')}${hasCompetitors ? ' 【必須】各競合企業について事業概要・強み・弱みを understanding 内に含めること' : ''}` : ''}
 対象: ${form.productService} / 目標: ${form.teamGoals}${issueStr ? ` / 課題: ${issueStr}` : ''}
 JSONのみ回答:
 {"understanding":"${dmap.understanding}",${hrJson}"ideas":[${dc.ideas}個: {"title":"6語以内","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High","feasibility":{"total":0-100,"resource":0-100,"techDifficulty":0-100,"orgAcceptance":0-100}}],"suggestions":["深掘り質問を4個"]}`;
@@ -885,7 +885,7 @@ description には必ず「例: 」で始まる具体的な行動例を含め、
         setDrillingDownId(null);
       }
     },
-    [results, modelId],
+    [results, modelId, activeForm],
   );
 
   return {

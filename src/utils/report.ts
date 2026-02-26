@@ -186,36 +186,43 @@ const mdToHtml = (md: string): string =>
     })
     .replace(/(<tr>.*<\/tr>\n?)(?=<[^t]|$)/g, '$&</tbody></table>');
 
+/** PDF スタイル適用ヘルパー */
+const applyReportStyles = (container: HTMLElement) => {
+  container.style.cssText =
+    'font-family:-apple-system,"Hiragino Sans",sans-serif;font-size:12px;line-height:1.7;color:#1a1a1a;max-width:700px;padding:20px';
+  container.querySelectorAll('h1').forEach((el) => {
+    (el as HTMLElement).style.cssText =
+      'font-size:18px;margin:16px 0 8px;border-bottom:2px solid #2563eb;padding-bottom:4px';
+  });
+  container.querySelectorAll('h2').forEach((el) => {
+    (el as HTMLElement).style.cssText = 'font-size:15px;margin:14px 0 6px;color:#1e40af';
+  });
+  container.querySelectorAll('h3').forEach((el) => {
+    (el as HTMLElement).style.cssText = 'font-size:13px;margin:10px 0 4px;color:#334155';
+  });
+  container.querySelectorAll('table').forEach((el) => {
+    (el as HTMLElement).style.cssText =
+      'border-collapse:collapse;width:100%;margin:8px 0;font-size:11px';
+  });
+  container.querySelectorAll('th,td').forEach((el) => {
+    (el as HTMLElement).style.cssText = 'border:1px solid #cbd5e1;padding:4px 8px;text-align:left';
+  });
+  container.querySelectorAll('th').forEach((el) => {
+    (el as HTMLElement).style.cssText += ';background:#f1f5f9;font-weight:600';
+  });
+  container.querySelectorAll('blockquote').forEach((el) => {
+    (el as HTMLElement).style.cssText =
+      'border-left:3px solid #93c5fd;padding-left:12px;margin:8px 0;color:#475569';
+  });
+};
+
 /** PDF ダウンロード（html2pdf.js による生成） */
 export const downloadPdf = async (md: string, pn: string) => {
   const { default: html2pdf } = await import('html2pdf.js');
   const html = mdToHtml(md);
   const container = document.createElement('div');
   container.innerHTML = html;
-  container.style.cssText =
-    'font-family:-apple-system,"Hiragino Sans",sans-serif;font-size:12px;line-height:1.7;color:#1a1a1a;max-width:700px;padding:20px';
-  container.querySelectorAll('h1').forEach((el) => {
-    el.style.cssText =
-      'font-size:18px;margin:16px 0 8px;border-bottom:2px solid #2563eb;padding-bottom:4px';
-  });
-  container.querySelectorAll('h2').forEach((el) => {
-    el.style.cssText = 'font-size:15px;margin:14px 0 6px;color:#1e40af';
-  });
-  container.querySelectorAll('h3').forEach((el) => {
-    el.style.cssText = 'font-size:13px;margin:10px 0 4px;color:#334155';
-  });
-  container.querySelectorAll('table').forEach((el) => {
-    el.style.cssText = 'border-collapse:collapse;width:100%;margin:8px 0;font-size:11px';
-  });
-  container.querySelectorAll('th,td').forEach((el) => {
-    (el as HTMLElement).style.cssText = 'border:1px solid #cbd5e1;padding:4px 8px;text-align:left';
-  });
-  container.querySelectorAll('th').forEach((el) => {
-    el.style.cssText += ';background:#f1f5f9;font-weight:600';
-  });
-  container.querySelectorAll('blockquote').forEach((el) => {
-    el.style.cssText = 'border-left:3px solid #93c5fd;padding-left:12px;margin:8px 0;color:#475569';
-  });
+  applyReportStyles(container);
 
   await html2pdf()
     .set({
@@ -229,37 +236,24 @@ export const downloadPdf = async (md: string, pn: string) => {
     .save();
 };
 
+/** HTML エスケープ */
+const escHtml = (s: string) =>
+  s.replace(
+    /[&<>"']/g,
+    (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m] || m,
+  );
+
 /** 個別の深掘り結果を PDF ダウンロード */
 export const downloadDeepDivePdf = async (question: string, answer: string) => {
   const { default: html2pdf } = await import('html2pdf.js');
-  const md = `# ${question}\n\n${answer}`;
+  // 入力をエスケープして XSS 対策
+  const safeQ = escHtml(question);
+  const safeA = escHtml(answer);
+  const md = `# ${safeQ}\n\n${safeA}`;
   const html = mdToHtml(md);
   const container = document.createElement('div');
   container.innerHTML = html;
-  container.style.cssText =
-    'font-family:-apple-system,"Hiragino Sans",sans-serif;font-size:12px;line-height:1.7;color:#1a1a1a;max-width:700px;padding:20px';
-  container.querySelectorAll('h1').forEach((el) => {
-    el.style.cssText =
-      'font-size:18px;margin:16px 0 8px;border-bottom:2px solid #2563eb;padding-bottom:4px';
-  });
-  container.querySelectorAll('h2').forEach((el) => {
-    el.style.cssText = 'font-size:15px;margin:14px 0 6px;color:#1e40af';
-  });
-  container.querySelectorAll('h3').forEach((el) => {
-    el.style.cssText = 'font-size:13px;margin:10px 0 4px;color:#334155';
-  });
-  container.querySelectorAll('table').forEach((el) => {
-    el.style.cssText = 'border-collapse:collapse;width:100%;margin:8px 0;font-size:11px';
-  });
-  container.querySelectorAll('th,td').forEach((el) => {
-    (el as HTMLElement).style.cssText = 'border:1px solid #cbd5e1;padding:4px 8px;text-align:left';
-  });
-  container.querySelectorAll('th').forEach((el) => {
-    el.style.cssText += ';background:#f1f5f9;font-weight:600';
-  });
-  container.querySelectorAll('blockquote').forEach((el) => {
-    el.style.cssText = 'border-left:3px solid #93c5fd;padding-left:12px;margin:8px 0;color:#475569';
-  });
+  applyReportStyles(container);
 
   const ts = new Date().toISOString().slice(0, 10);
   await html2pdf()
@@ -376,7 +370,7 @@ export const downloadPptx = async (
   const headerRow = ['#', 'タイトル', '優先度', '工数', 'インパクト'];
   if (hasFeas) headerRow.push('実現可能性');
   const rows = results.ideas.map((d, i) => {
-    const row = [`${i + 1}`, d.title, d.priority, d.effort, d.impact];
+    const row = [`${i + 1}`, d.title, ll(d.priority), ll(d.effort), ll(d.impact)];
     if (hasFeas) row.push(d.feasibility ? `${d.feasibility.total}/100` : '-');
     return row;
   });
@@ -406,7 +400,7 @@ export const downloadPptx = async (
     });
     const desc = d.description.length > 600 ? d.description.slice(0, 600) + '…' : d.description;
     slide.addText(desc, { x: 0.5, y: 1.0, w: 9, h: 2.5, fontSize: 11, color: DARK, valign: 'top' });
-    const meta = `優先度: ${d.priority}  |  工数: ${d.effort}  |  インパクト: ${d.impact}`;
+    const meta = `優先度: ${ll(d.priority)}  |  工数: ${ll(d.effort)}  |  インパクト: ${ll(d.impact)}`;
     slide.addText(meta, { x: 0.5, y: 3.8, w: 9, fontSize: 10, color: GRAY });
     if (d.feasibility) {
       slide.addText(
@@ -633,7 +627,7 @@ export const downloadPptxHighClass = async (
       valign: 'middle',
     });
     exec.addText(
-      `優先度: ${idea.priority}  |  工数: ${idea.effort}  |  インパクト: ${idea.impact}`,
+      `優先度: ${ll(idea.priority)}  |  工数: ${ll(idea.effort)}  |  インパクト: ${ll(idea.impact)}`,
       {
         x: 6.2,
         y,
@@ -827,9 +821,9 @@ export const downloadPptxHighClass = async (
     const row = [
       `${i + 1}`,
       d.title,
-      { text: d.priority, options: { color: priorityColor(d.priority), bold: true } },
-      d.effort,
-      d.impact,
+      { text: ll(d.priority), options: { color: priorityColor(d.priority), bold: true } },
+      ll(d.effort),
+      ll(d.impact),
     ];
     if (hasFeas) row.push(d.feasibility ? `${d.feasibility.total}/100` : '-');
     return row;
@@ -893,22 +887,23 @@ export const downloadPptxHighClass = async (
       fill: { color: C.blueLt },
     });
 
-    // 施策詳細
+    // 施策詳細（動的レイアウト）
     const desc =
       idea.description.length > 900 ? idea.description.slice(0, 900) + '…' : idea.description;
+    const descH = Math.min(2.5, Math.max(1.0, desc.length / 150));
     s.addText(desc, {
       x: 0.5,
       y: 1.05,
       w: 9,
-      h: 2.5,
+      h: descH,
       fontSize: 10,
       color: C.dark,
       valign: 'top',
       lineSpacingMultiple: 1.3,
     });
 
-    // メトリクスバー
-    const metaY = 3.7;
+    // メトリクスバー（description に連動）
+    const metaY = 1.05 + descH + 0.15;
     const metrics = [
       { label: '優先度', value: idea.priority, color: priorityColor(idea.priority) },
       {
@@ -939,7 +934,7 @@ export const downloadPptxHighClass = async (
         h: 0.04,
         fill: { color: m.color },
       });
-      s.addText(m.value, {
+      s.addText(ll(m.value), {
         x: mx,
         y: metaY + 0.35,
         w: 1.5,
@@ -949,9 +944,9 @@ export const downloadPptxHighClass = async (
       });
     });
 
-    // 実現可能性
+    // 実現可能性（動的y座標）
     if (idea.feasibility) {
-      const fy = 4.3;
+      const fy = metaY + 0.65;
       s.addText('実現可能性', {
         x: 0.5,
         y: fy,
@@ -991,6 +986,31 @@ export const downloadPptxHighClass = async (
           fill: { color: b.val >= 70 ? C.green : b.val >= 40 ? C.amber : C.red },
           rectRadius: 0.03,
         });
+      });
+    }
+
+    // サブアイデア（スペースが余っている場合）
+    const subStartY = idea.feasibility ? metaY + 1.3 : metaY + 0.65;
+    if (idea.subIdeas?.length && subStartY < 4.5) {
+      s.addText('サブプラン', {
+        x: 0.5,
+        y: subStartY,
+        w: 2,
+        fontSize: 8,
+        bold: true,
+        color: C.blue,
+      });
+      idea.subIdeas.slice(0, 3).forEach((sub, si) => {
+        const sy = subStartY + 0.25 + si * 0.3;
+        if (sy < 4.8) {
+          s.addText(`${si + 1}. ${sub.title}: ${sub.description.slice(0, 80)}`, {
+            x: 0.7,
+            y: sy,
+            w: 8.8,
+            fontSize: 8,
+            color: C.dark,
+          });
+        }
       });
     }
   });

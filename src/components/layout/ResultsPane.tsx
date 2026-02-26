@@ -67,15 +67,30 @@ const LoadingSkeleton = () => (
 
 const DeepDiveCard: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
   const [copied, setCopied] = useState(false);
+  const [isSavingPdf, setIsSavingPdf] = useState(false);
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(answer);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
-    } catch {
-      // clipboard API unavailable (e.g. insecure context)
+    } catch (err) {
+      console.error('Failed to copy text:', err);
     }
   };
+
+  const handleSavePdf = async () => {
+    if (isSavingPdf) return;
+    try {
+      setIsSavingPdf(true);
+      await downloadDeepDivePdf(question, answer);
+    } catch (err) {
+      console.error('Failed to save PDF:', err);
+    } finally {
+      setIsSavingPdf(false);
+    }
+  };
+
   return (
     <div className={`${T.card} p-5 border-l-2 border-l-brand-light dark:border-l-brand relative`}>
       <div className="flex items-start justify-between gap-2 mb-2">
@@ -85,6 +100,7 @@ const DeepDiveCard: React.FC<{ question: string; answer: string }> = ({ question
             onClick={handleCopy}
             className={`p-1.5 rounded-md ${T.btnGhost} border-0 transition`}
             title="コピー"
+            aria-label="コピー"
           >
             {copied ? (
               <Check className="w-3.5 h-3.5 text-emerald-500" />
@@ -93,11 +109,17 @@ const DeepDiveCard: React.FC<{ question: string; answer: string }> = ({ question
             )}
           </button>
           <button
-            onClick={() => downloadDeepDivePdf(question, answer)}
-            className={`p-1.5 rounded-md ${T.btnGhost} border-0 transition`}
+            onClick={handleSavePdf}
+            disabled={isSavingPdf}
+            className={`p-1.5 rounded-md ${T.btnGhost} border-0 transition disabled:opacity-50`}
             title="PDFで保存"
+            aria-label="PDFで保存"
           >
-            <Printer className="w-3.5 h-3.5" />
+            {isSavingPdf ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-brand" />
+            ) : (
+              <Printer className="w-3.5 h-3.5" />
+            )}
           </button>
         </div>
       </div>
@@ -117,8 +139,9 @@ const AnalysisBlock: React.FC<{
   results: AIResults;
   onDrillDown?: (idea: Idea, index: number) => void;
   drillingDownId?: string | null;
+  diving?: boolean;
   index?: number;
-}> = ({ results, onDrillDown, drillingDownId, index = 0 }) => (
+}> = ({ results, onDrillDown, drillingDownId, diving = false, index = 0 }) => (
   <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
     <div className={`${T.card} p-5`} data-tour="result-understanding">
       {results.keyIssue && (
@@ -148,13 +171,18 @@ const AnalysisBlock: React.FC<{
 
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3" data-tour="result-cards">
       {results.ideas.map((idea, i) => (
-        <ResultCard
+        <div
           key={`${idea.title}-${i}-${index}`}
-          idea={idea}
-          index={i}
-          onDrillDown={onDrillDown}
-          drillingDownId={drillingDownId}
-        />
+          className={idea.subIdeas?.length ? 'col-span-full' : ''}
+        >
+          <ResultCard
+            idea={idea}
+            index={i}
+            onDrillDown={onDrillDown}
+            drillingDownId={drillingDownId}
+            diving={diving}
+          />
+        </div>
       ))}
     </div>
   </div>
@@ -256,6 +284,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
               onClick={onShowPreview}
               className={`p-1.5 rounded-lg ${T.btnGhost}`}
               title="レポートプレビュー"
+              aria-label="レポートプレビュー"
             >
               <Eye className="w-3.5 h-3.5" />
             </button>
@@ -265,6 +294,8 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
               <button
                 onClick={() => setShowDlMenu((s) => !s)}
                 className={`flex items-center gap-0.5 p-1.5 rounded-lg ${T.btnGhost}`}
+                title="結果をダウンロード"
+                aria-label="結果をダウンロード"
               >
                 <Download className="w-3.5 h-3.5" />
                 <ChevronDown className="w-2.5 h-2.5 opacity-50" />
@@ -299,6 +330,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
           results={results}
           onDrillDown={onDrillDown}
           drillingDownId={drillingDownId}
+          diving={diving}
           index={0}
         />
       </section>
@@ -320,6 +352,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
                     results={r.results}
                     onDrillDown={onDrillDown}
                     drillingDownId={drillingDownId}
+                    diving={diving}
                     index={i + 1}
                   />
                 ) : (
@@ -365,7 +398,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
               <button
                 key={i}
                 onClick={() => onDeepDive(q)}
-                disabled={diving}
+                disabled={diving || !!drillingDownId}
                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border ${T.btnGhost} hover:border-brand-light dark:hover:border-brand-light/50 hover:text-brand dark:hover:text-brand-light disabled:opacity-30 transition`}
               >
                 <ChevronRight className="w-3 h-3" />

@@ -11,6 +11,7 @@ interface ResultCardProps {
   index: number;
   onDrillDown?: (idea: Idea, index: number) => void;
   drillingDownId?: string | null;
+  diving?: boolean;
   depth?: number;
 }
 
@@ -19,6 +20,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({
   index,
   onDrillDown,
   drillingDownId,
+  diving = false,
   depth = 0,
 }) => {
   const isDrilling = drillingDownId === `${idea.title}-${index}`;
@@ -40,7 +42,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({
           {onDrillDown && !hasSubs && (
             <button
               onClick={() => onDrillDown(idea, index)}
-              disabled={!!drillingDownId}
+              disabled={!!drillingDownId || diving}
               className={`p-1 rounded bg-brand-50 dark:bg-brand-light/20 text-brand dark:text-white opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-30 cursor-pointer`}
               title="このアイデアを深掘り"
               {...(index === 0 && depth === 0 ? { 'data-tour': 'result-drilldown' } : {})}
@@ -83,22 +85,25 @@ export const ResultCard: React.FC<ResultCardProps> = ({
         {idea.feasibility && <FeasibilityBar f={idea.feasibility} />}
       </div>
 
-      {/* Sub-ideas (Recursive) */}
+      {/* Sub-ideas (一段のみ) */}
       {hasSubs && (
-        <div className="ml-6 pl-4 border-l-2 border-brand-50 dark:border-brand-light/30 space-y-3">
-          <div className="text-[10px] font-bold text-brand dark:text-brand-light tracking-wider mb-1">
+        <div className="mt-3 ml-4 pl-3 border-l-2 border-brand-50 dark:border-brand-light/30">
+          <div className="text-[10px] font-bold text-brand dark:text-brand-light tracking-wider mb-2">
             サブプラン
           </div>
-          {idea.subIdeas!.map((sub, i) => (
-            <ResultCard
-              key={`${sub.title}-${i}`}
-              idea={sub}
-              index={i}
-              depth={depth + 1}
-              onDrillDown={depth < 2 ? onDrillDown : undefined} // 深度制限
-              drillingDownId={drillingDownId}
-            />
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {idea.subIdeas!.map((sub, i) => (
+              <ResultCard
+                key={`${sub.title}-${i}`}
+                idea={sub}
+                index={i}
+                depth={depth + 1}
+                onDrillDown={depth < 1 ? onDrillDown : undefined}
+                drillingDownId={drillingDownId}
+                diving={diving}
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>

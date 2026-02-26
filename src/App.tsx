@@ -227,6 +227,14 @@ export default function App() {
     return () => document.removeEventListener('keydown', handler);
   }, [showLogs, showPrev, showResultsTour, showTour, showHelp, showCfg]);
 
+  // LLM接続エラー時に設定パネルを自動で開く
+  useEffect(() => {
+    if (error && /接続できません|APIキー|認証|401|403/i.test(error)) {
+      setShowCfg(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [error]);
+
   // Progress simulation during loading
   useEffect(() => {
     if (!loading) {
@@ -447,9 +455,20 @@ export default function App() {
               {error && (
                 <div className="mb-3 p-2.5 rounded-lg bg-red-50 dark:bg-red-900/15 border border-red-200 dark:border-red-700/40 flex items-start gap-2">
                   <AlertCircle className="w-3.5 h-3.5 text-red-500 mt-0.5 shrink-0" />
-                  <p className="text-red-700 dark:text-red-300 text-xs whitespace-pre-wrap">
-                    {error}
-                  </p>
+                  <div className="text-red-700 dark:text-red-300 text-xs whitespace-pre-wrap">
+                    <p>{error}</p>
+                    {/接続できません|APIキー|認証|401|403/i.test(error) && (
+                      <button
+                        onClick={() => {
+                          setShowCfg(true);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className="mt-1.5 text-xs font-medium text-brand dark:text-brand-light underline hover:no-underline"
+                      >
+                        設定パネルを開く
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
 

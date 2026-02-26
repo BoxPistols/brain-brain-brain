@@ -302,6 +302,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 );
               })}
             </div>
+            <p
+              className={`mt-1.5 text-[10px] ${modelId === AUTO_MODEL_ID ? 'text-emerald-600 dark:text-emerald-400' : T.t3}`}
+            >
+              {modelId === AUTO_MODEL_ID
+                ? 'タスクに応じて最適なモデルを自動選択します（おすすめ）'
+                : '迷ったら「Auto」がおすすめです'}
+            </p>
             {(sessionCost > 0 || lastUsedModel) && (
               <div className={`mt-2 flex items-center gap-3 text-[10px] ${T.t3}`}>
                 {sessionCost > 0 && <span>セッション累計: ¥{sessionCost.toFixed(2)}</span>}
@@ -353,6 +360,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               : isProMode(apiKey)
                 ? 'OpenAI直接接続'
                 : 'サーバープロキシ経由'}
+          </p>
+        </div>
+
+        {/* Privacy note */}
+        <div className={`pt-2 border-t ${T.div}`}>
+          <p className={`text-[10px] ${T.t3} leading-relaxed`}>
+            すべてのデータはお使いのブラウザ内（localStorage）にのみ保存されます。外部サーバーやデータベースへの送信はありません。ただし、AI分析の実行時には入力内容がAPIプロバイダーに送信されます。
           </p>
         </div>
 
