@@ -82,13 +82,13 @@ export const testConn = async (modelId: string, apiKey = ''): Promise<string> =>
   if (!r.ok) {
     let body = '';
     try {
-      const text = await r.text();
-      const parsed = JSON.parse(text);
-      body = parsed?.error?.message || parsed?.error || text;
+      body = await r.text();
+      const parsed = JSON.parse(body);
+      body = String(parsed?.error?.message || parsed?.error || body);
     } catch {
-      /* ignore */
+      // body retains raw text
     }
-    throw new Error(friendlyError(r.status, String(body).slice(0, 300)));
+    throw new Error(friendlyError(r.status, body.slice(0, 300)));
   }
   const d = await r.json();
   return d.model || resolvedId;

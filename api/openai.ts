@@ -128,7 +128,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(200).json(data);
   } catch (e) {
-    const isTimeout = e instanceof DOMException && e.name === 'AbortError';
+    const isTimeout = e instanceof Error && e.name === 'AbortError';
     const msg = isTimeout
       ? 'OpenAI APIがタイムアウトしました。分析深度を下げるか、入力を短くしてから再度お試しください。'
       : `OpenAI接続エラー: ${e instanceof Error ? e.message : String(e)}`;
