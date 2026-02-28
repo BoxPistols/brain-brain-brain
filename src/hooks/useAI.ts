@@ -770,7 +770,7 @@ ${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}${ddCiCtx ? 
 
         const userMsg: ChatMessage = {
           role: 'user',
-          content: `【質問】${q}\n\nMarkdown形式（見出し・テーブル・箇条書き活用）で詳細回答してください。JSONやコードブロックは使わず、プレーンなMarkdownテキストで回答してください。`,
+          content: `【質問】${q}\n\nMarkdown形式（見出し・テーブル・箇条書き活用）で詳細回答してください。JSONオブジェクトや\`\`\`json / \`\`\`で囲んだラッパーは使わず、Markdownのまま回答してください。`,
         };
 
         // 会話履歴を活用
