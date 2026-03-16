@@ -1,5 +1,16 @@
 import React from 'react';
-import { TrendingUp, Users, Trophy, Zap, Rocket, Heart } from 'lucide-react';
+import {
+  TrendingUp,
+  Users,
+  Trophy,
+  Zap,
+  Rocket,
+  Heart,
+  GitBranch,
+  Palette,
+  Workflow,
+  Target,
+} from 'lucide-react';
 import { PurposeCluster } from '../../constants/prompts';
 import { T } from '../../constants/theme';
 
@@ -10,6 +21,10 @@ const ICONS: Record<string, React.ReactNode> = {
   efficiency: <Zap className="w-4 h-4" />,
   'new-biz': <Rocket className="w-4 h-4" />,
   'team-cx': <Heart className="w-4 h-4" />,
+  'dev-delivery': <GitBranch className="w-4 h-4" />,
+  'design-ops': <Palette className="w-4 h-4" />,
+  'unblock-flow': <Workflow className="w-4 h-4" />,
+  'my-mission': <Target className="w-4 h-4" />,
 };
 
 interface Props {

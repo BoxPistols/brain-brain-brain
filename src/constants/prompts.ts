@@ -447,6 +447,34 @@ export const PURPOSE_CLUSTERS: PurposeCluster[] = [
     sessionType: 'cx',
     goals: ['顧客満足度（NPS）向上', 'リピート率・継続率向上'],
   },
+  {
+    id: 'dev-delivery',
+    label: '開発チームの生産性を上げる',
+    sublabel: 'デプロイ頻度・チーム自律性・技術負債',
+    sessionType: 'dev-org',
+    goals: ['デプロイ頻度の向上', 'チーム間依存の解消'],
+  },
+  {
+    id: 'design-ops',
+    label: 'デザイン組織を強化する',
+    sublabel: 'レビュー効率・デザインシステム・協業',
+    sessionType: 'design-org',
+    goals: ['デザインレビューサイクルの短縮', 'デザイナー×エンジニア協業効率化'],
+  },
+  {
+    id: 'unblock-flow',
+    label: 'タスクの流れを加速する',
+    sublabel: 'ボトルネック解消・WIP削減・合意形成',
+    sessionType: 'task-flow',
+    goals: ['タスク完了リードタイムの短縮', 'ステークホルダー合意形成の迅速化'],
+  },
+  {
+    id: 'my-mission',
+    label: '自分のミッションを完遂する',
+    sublabel: 'OKR分解・工数設計・周囲との連動',
+    sessionType: 'personal-mission',
+    goals: ['ミッション完了率の向上', 'ブロッカー排除・自律的な進行'],
+  },
 ];
 
 const HR_CLUSTER_GOALS: Record<string, string[]> = {
