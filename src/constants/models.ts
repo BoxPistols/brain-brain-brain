@@ -12,6 +12,17 @@ const friendlyError = (status: number, body: string): string => {
     return 'APIキーの権限が不足しています。右上の設定パネルからキーを確認してください。';
   if (status === 404)
     return `選択中のAIモデルが利用できません。設定パネルから別のモデルを選んでください。${body ? `（${body.slice(0, 80)}）` : ''}`;
+  if (status === 400) {
+    // OpenAI の実際のエラー内容を表示して原因特定を助ける
+    let detail = '';
+    try {
+      const parsed = JSON.parse(body);
+      detail = parsed?.error?.message || body.slice(0, 200);
+    } catch {
+      detail = body.slice(0, 200);
+    }
+    return `リクエストエラー（400）: ${detail}`;
+  }
   if (status === 500 || status === 502 || status === 503)
     return 'AIサービスが一時的に混み合っています。1〜2分後に再度お試しください。';
   return `通信エラーが発生しました。インターネット接続を確認し、再度お試しください。（${status}）`;
