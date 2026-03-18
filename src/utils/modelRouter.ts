@@ -20,8 +20,8 @@ export function estimateTokens(messages: ChatMessage[]): number {
   return messages.reduce((sum, m) => sum + Math.ceil(m.content.length / 2), 0);
 }
 
-const NANO = 'gpt-5-nano';
-const MINI = 'gpt-5-mini';
+const NANO = 'gpt-5.4-nano';
+const MINI = 'gpt-5.4-mini';
 
 /**
  * Auto モード時のモデル自動選択

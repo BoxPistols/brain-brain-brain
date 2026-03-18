@@ -13,13 +13,7 @@ import {
   Monitor,
   RefreshCw,
 } from 'lucide-react';
-import {
-  MODELS,
-  AUTO_MODEL_ID,
-  isProMode,
-  isLocalProvider,
-  PROVIDER_DEFAULTS,
-} from '../../constants/models';
+import { MODELS, isProMode, isLocalProvider, PROVIDER_DEFAULTS } from '../../constants/models';
 import { ConnStatus, LLMProvider } from '../../types';
 import { T } from '../../constants/theme';
 import { HelpModal } from './HelpModal';
@@ -271,20 +265,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <p className={`text-xs font-medium ${T.t2} mb-1.5`}>モデル</p>
             <div className="flex gap-1.5 flex-wrap">
               {MODELS.map((m) => {
-                const isAuto = m.id === AUTO_MODEL_ID;
                 const isSelected = modelId === m.id;
-                let cls: string;
-                if (isSelected && isAuto) {
-                  cls =
-                    'bg-emerald-600 dark:bg-emerald-700 border-emerald-500 dark:border-emerald-500 text-white font-medium';
-                } else if (isSelected) {
-                  cls =
-                    'bg-slate-800 dark:bg-slate-700 border-slate-600 dark:border-slate-500 text-slate-100 font-medium';
-                } else if (isAuto) {
-                  cls = `${T.btnGhost} border-emerald-200 dark:border-emerald-700/60`;
-                } else {
-                  cls = `${T.btnGhost} border-slate-200 dark:border-slate-700/60`;
-                }
+                const cls = isSelected
+                  ? 'bg-slate-800 dark:bg-slate-700 border-slate-600 dark:border-slate-500 text-slate-100 font-medium'
+                  : `${T.btnGhost} border-slate-200 dark:border-slate-700/60`;
                 return (
                   <button
                     key={m.id}
@@ -302,13 +286,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 );
               })}
             </div>
-            <p
-              className={`mt-1.5 text-[10px] ${modelId === AUTO_MODEL_ID ? 'text-emerald-600 dark:text-emerald-400' : T.t3}`}
-            >
-              {modelId === AUTO_MODEL_ID
-                ? 'タスクに応じて最適なモデルを自動選択します（おすすめ）'
-                : '迷ったら「Auto」がおすすめです'}
-            </p>
+            <p className={`mt-1.5 text-[10px] ${T.t3}`}>選択したモデルは自動で保存されます</p>
             {(sessionCost > 0 || lastUsedModel) && (
               <div className={`mt-2 flex items-center gap-3 text-[10px] ${T.t3}`}>
                 {sessionCost > 0 && <span>セッション累計: ¥{sessionCost.toFixed(2)}</span>}

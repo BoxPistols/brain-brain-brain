@@ -25,10 +25,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** APIキーなし、Autoモデル、残り回数表示 */
+/** APIキーなし、デフォルトモデル、残り回数表示 */
 export const FreeMode: Story = {
   args: {
-    modelId: 'auto',
+    modelId: 'gpt-5.4-nano',
     connStatus: { status: 'idle', msg: '' },
     apiKey: '',
     sessionCost: 0,
@@ -40,11 +40,11 @@ export const FreeMode: Story = {
 /** APIキーあり、コスト表示 */
 export const ProMode: Story = {
   args: {
-    modelId: 'auto',
+    modelId: 'gpt-5.4-nano',
     connStatus: { status: 'ok', msg: '接続成功' },
     apiKey: 'sk-test-key-1234',
     sessionCost: 2.45,
-    lastUsedModel: 'gpt-5-nano',
+    lastUsedModel: 'gpt-5.4-nano',
     freeRemaining: null,
   },
 };
@@ -52,11 +52,11 @@ export const ProMode: Story = {
 /** Free mode 残り少ない */
 export const WithRateLimit: Story = {
   args: {
-    modelId: 'auto',
+    modelId: 'gpt-5.4-nano',
     connStatus: { status: 'idle', msg: '' },
     apiKey: '',
     sessionCost: 0,
-    lastUsedModel: 'gpt-5-nano',
+    lastUsedModel: 'gpt-5.4-nano',
     freeRemaining: { remaining: 3, limit: 50, resetAt: Date.now() + 3600_000 },
   },
 };

@@ -34,7 +34,7 @@ type Story = StoryObj<typeof meta>;
 export const FreeMode: Story = {
   args: {
     proMode: false,
-    modelLabel: 'Auto',
+    modelLabel: '5.4 Nano',
     connStatus: { status: 'idle', msg: '' },
     isDark: false,
     lastUsedModel: null,
@@ -46,22 +46,22 @@ export const FreeMode: Story = {
 export const ProMode: Story = {
   args: {
     proMode: true,
-    modelLabel: 'Auto',
+    modelLabel: '5.4 Nano',
     connStatus: { status: 'ok', msg: '接続成功' },
     isDark: false,
-    lastUsedModel: 'gpt-5-mini',
+    lastUsedModel: 'gpt-5.4-mini',
     freeRemaining: null,
   },
 };
 
-/** Auto → 5-nano 表示 */
-export const WithAutoResolved: Story = {
+/** 5.4 Nano 表示 */
+export const WithNanoModel: Story = {
   args: {
     proMode: true,
-    modelLabel: 'Auto',
+    modelLabel: '5.4 Nano',
     connStatus: { status: 'ok', msg: '接続成功' },
     isDark: true,
-    lastUsedModel: 'gpt-5-nano',
+    lastUsedModel: 'gpt-5.4-nano',
     freeRemaining: null,
   },
 };
