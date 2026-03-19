@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 const STORAGE_KEY = 'panelRatio';
 const MIN = 20;
 const MAX = 80;
-const DEFAULT = 40;
+const DEFAULT = 35;
 
 export const PRESETS = {
   leftFocus: 70,

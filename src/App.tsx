@@ -350,7 +350,7 @@ export default function App() {
 
   return (
     <div className={T.page}>
-      <div className="max-w-screen-2xl mx-auto px-4 py-4 md:px-8 md:py-6">
+      <div className="max-w-[1920px] mx-auto px-4 py-4 md:px-6 md:py-6 xl:px-10">
         {/* ── Header ── */}
         <HeaderBar
           proMode={proMode}
@@ -403,7 +403,7 @@ export default function App() {
             className="w-full lg:sticky lg:top-4 lg:shrink-0 lg:pr-2"
             style={{ flex: `0 0 ${ratio}%` }}
           >
-            <div className={`${T.card} p-4`}>
+            <div className={`${T.card} p-4 xl:p-5`}>
               <ProjectForm
                 form={form}
                 setForm={setForm}
