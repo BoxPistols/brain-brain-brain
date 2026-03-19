@@ -170,7 +170,23 @@ export function extractMarkdown(raw: string): string {
       const obj = JSON.parse(text);
       if (typeof obj === 'object' && obj !== null) {
         const md = obj.markdown || obj.content || obj.answer || obj.text;
-        if (typeof md === 'string') text = md;
+        if (typeof md === 'string') {
+          text = md;
+        } else if (Array.isArray(obj.questions)) {
+          // {"questions": [{id, markdown: "..."}]} 形式のフォールバック
+          const parts = obj.questions
+            .map((q: Record<string, unknown>) =>
+              typeof q.markdown === 'string'
+                ? q.markdown
+                : typeof q.content === 'string'
+                  ? q.content
+                  : typeof q.text === 'string'
+                    ? q.text
+                    : '',
+            )
+            .filter(Boolean);
+          if (parts.length > 0) text = parts.join('\n\n---\n\n');
+        }
       }
     } catch {
       // JSONパース失敗 → そのまま使う
