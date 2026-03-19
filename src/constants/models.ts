@@ -1,7 +1,10 @@
 import { ModelInfo, ChatMessage, LLMProvider } from '../types';
 
-/** APIキーがPro mode（ユーザー所有）か判定 */
-export const isProMode = (apiKey: string): boolean => apiKey.trim().startsWith('sk-');
+/** APIキーがPro mode（ユーザー所有）か判定。OpenAI キーは sk- で始まり 20 文字以上 */
+export const isProMode = (apiKey: string): boolean => {
+  const k = apiKey.trim();
+  return k.startsWith('sk-') && k.length >= 20;
+};
 
 const friendlyError = (status: number, body: string): string => {
   if (status === 429)
