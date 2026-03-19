@@ -19,8 +19,14 @@ export default defineConfig(({ mode }) => {
           rewrite: (path) => path.replace(/^\/api\/openai/, '/v1/chat/completions'),
           configure: (proxy) => {
             proxy.on('proxyReq', (proxyReq) => {
-              if (env.OPENAI_API_KEY)
+              // Pro モード: ユーザーの API キーを優先
+              const userKey = proxyReq.getHeader('x-api-key') as string | undefined;
+              if (userKey) {
+                proxyReq.setHeader('Authorization', `Bearer ${userKey}`);
+                proxyReq.removeHeader('x-api-key');
+              } else if (env.OPENAI_API_KEY) {
                 proxyReq.setHeader('Authorization', `Bearer ${env.OPENAI_API_KEY}`);
+              }
             });
           },
         },

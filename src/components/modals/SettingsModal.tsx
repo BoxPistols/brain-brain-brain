@@ -193,12 +193,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </button>
               </div>
             </div>
-            {isProMode(apiKey) && (
+            {isProMode(apiKey) ? (
               <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-400">
                 ✓ プロモード有効 — フル機能・高深度分析が使えます
               </p>
-            )}
-            {!isProMode(apiKey) && (
+            ) : apiKey.trim().length > 0 ? (
+              <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
+                ⚠ APIキーの形式が正しくありません（sk-...
+                で始まる20文字以上のキーを入力してください）
+              </p>
+            ) : (
               <p className={`mt-1 text-xs ${T.t3}`}>
                 入力するとプロモードに切り替わり、全機能が使えます
               </p>
