@@ -13,7 +13,13 @@ import {
   Monitor,
   RefreshCw,
 } from 'lucide-react';
-import { MODELS, isProMode, isLocalProvider, PROVIDER_DEFAULTS } from '../../constants/models';
+import {
+  MODELS,
+  DEFAULT_MODEL_ID,
+  isProMode,
+  isLocalProvider,
+  PROVIDER_DEFAULTS,
+} from '../../constants/models';
 import { ConnStatus, LLMProvider } from '../../types';
 import { T } from '../../constants/theme';
 import { HelpModal } from './HelpModal';
@@ -265,14 +271,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <p className={`text-xs font-medium ${T.t2} mb-1.5`}>モデル</p>
             <div className="flex gap-1.5 flex-wrap">
               {MODELS.map((m) => {
+                const isProOnly = m.id !== DEFAULT_MODEL_ID;
+                const locked = isProOnly && !proMode;
                 const isSelected = modelId === m.id;
-                const cls = isSelected
-                  ? 'bg-slate-800 dark:bg-slate-700 border-slate-600 dark:border-slate-500 text-slate-100 font-medium'
-                  : `${T.btnGhost} border-slate-200 dark:border-slate-700/60`;
+                const cls = locked
+                  ? 'opacity-50 cursor-not-allowed border-slate-200 dark:border-slate-700/60 bg-slate-100 dark:bg-slate-800/40 text-slate-400 dark:text-slate-500'
+                  : isSelected
+                    ? 'bg-slate-800 dark:bg-slate-700 border-slate-600 dark:border-slate-500 text-slate-100 font-medium'
+                    : `${T.btnGhost} border-slate-200 dark:border-slate-700/60`;
                 return (
                   <button
                     key={m.id}
+                    disabled={locked}
+                    title={locked ? 'APIキーを入力するとProモードで利用できます' : undefined}
                     onClick={() => {
+                      if (locked) return;
                       setModelId(m.id);
                       setConnStatus({ status: 'idle', msg: '' });
                     }}
@@ -282,11 +295,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     <span className={isSelected ? 'opacity-70 font-normal' : `${T.t3} font-normal`}>
                       {m.cost} · {m.t}
                     </span>
+                    {locked && <span className="ml-1 text-[9px] opacity-60">Pro</span>}
                   </button>
                 );
               })}
             </div>
-            <p className={`mt-1.5 text-[10px] ${T.t3}`}>選択したモデルは自動で保存されます</p>
+            <p className={`mt-1.5 text-[10px] ${T.t3}`}>
+              {proMode
+                ? '選択したモデルは自動で保存されます'
+                : 'APIキーを入力すると上位モデルが選択可能になります'}
+            </p>
             {(sessionCost > 0 || lastUsedModel) && (
               <div className={`mt-2 flex items-center gap-3 text-[10px] ${T.t3}`}>
                 {sessionCost > 0 && <span>セッション累計: ¥{sessionCost.toFixed(2)}</span>}

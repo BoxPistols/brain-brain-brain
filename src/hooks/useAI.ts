@@ -148,7 +148,9 @@ export const useAI = () => {
   ): Promise<{ content: string; resolvedModel: string }> => {
     const isLocal = isLocalProvider(provider);
     const pro = isLocal || isProMode(apiKey);
-    const currentModel = isLocal ? localModel || modelId : modelId;
+    // Free モードでは nano に強制（mini は Pro 専用）
+    const rawModel = isLocal ? localModel || modelId : modelId;
+    const currentModel = !pro && rawModel !== DEFAULT_MODEL_ID ? DEFAULT_MODEL_ID : rawModel;
     const decision = selectModel(currentModel, routerInput, pro, isLocal);
     const resolvedId = decision.modelId;
 
