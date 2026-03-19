@@ -121,12 +121,9 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         )}
         <div
           className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border ${T.cardFlat} ${T.t2}`}
-          title={`使用モデル: ${modelLabel}${lastUsedModel ? ` → ${lastUsedModel}` : ''}`}
+          title={`使用モデル: ${modelLabel}${lastUsedModel && lastUsedModel !== modelLabel ? `（最終: ${lastUsedModel}）` : ''}`}
         >
           <span className={T.accentTxt}>◆</span> {modelLabel}
-          {modelLabel === 'Auto' && lastUsedModel && (
-            <span className={`${T.t3} text-[10px]`}>→ {lastUsedModel.replace('gpt-', '')}</span>
-          )}
           {!proMode &&
             freeRemaining &&
             (() => {

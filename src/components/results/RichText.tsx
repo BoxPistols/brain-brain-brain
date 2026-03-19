@@ -79,7 +79,7 @@ export const RichText: React.FC<RichTextProps> = React.memo(({ text }) => {
     const hdr = tableRows[0],
       body = tableRows.slice(2);
     elements.push(
-      <div key={`tbl-${i}`} className="overflow-x-auto my-2">
+      <div key={`tbl-${i}`} className="overflow-x-auto my-4">
         <table className="w-full text-xs border-collapse">
           <thead>
             <tr>
@@ -89,7 +89,7 @@ export const RichText: React.FC<RichTextProps> = React.memo(({ text }) => {
                 .map((c, ci) => (
                   <th
                     key={ci}
-                    className="px-2 py-1.5 text-left bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-slate-700 dark:text-slate-300 font-semibold"
+                    className="px-3 py-2 text-left bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-slate-700 dark:text-slate-300 font-semibold"
                   >
                     {c.trim()}
                   </th>
@@ -105,7 +105,7 @@ export const RichText: React.FC<RichTextProps> = React.memo(({ text }) => {
                   .map((c, ci) => (
                     <td
                       key={ci}
-                      className="px-2 py-1 border border-slate-200 dark:border-slate-700/60 text-slate-600 dark:text-slate-400"
+                      className="px-3 py-1.5 border border-slate-200 dark:border-slate-700/60 text-slate-600 dark:text-slate-400"
                     >
                       {ri(c.trim())}
                     </td>
@@ -134,7 +134,7 @@ export const RichText: React.FC<RichTextProps> = React.memo(({ text }) => {
     }
     if (ln.startsWith('### '))
       elements.push(
-        <h4 key={i} className="text-sm font-semibold text-slate-800 dark:text-slate-200 mt-3 mb-1">
+        <h4 key={i} className="text-sm font-semibold text-slate-800 dark:text-slate-200 mt-5 mb-2">
           {ri(ln.slice(4))}
         </h4>,
       );
@@ -142,24 +142,24 @@ export const RichText: React.FC<RichTextProps> = React.memo(({ text }) => {
       elements.push(
         <h3
           key={i}
-          className="text-base font-bold text-slate-900 dark:text-slate-100 mt-4 mb-1.5 border-b border-slate-200 dark:border-slate-700/60 pb-1"
+          className="text-base font-bold text-slate-900 dark:text-slate-100 mt-6 mb-2.5 border-b border-slate-200 dark:border-slate-700/60 pb-1.5"
         >
           {ri(ln.slice(3))}
         </h3>,
       );
     else if (ln.startsWith('# '))
       elements.push(
-        <h2 key={i} className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-4 mb-2">
+        <h2 key={i} className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-6 mb-3">
           {ri(ln.slice(2))}
         </h2>,
       );
     else if (ln.startsWith('---'))
-      elements.push(<hr key={i} className="border-slate-200 dark:border-slate-700/60 my-3" />);
+      elements.push(<hr key={i} className="border-slate-200 dark:border-slate-700/60 my-4" />);
     else if (ln.match(/^[-*]\s/))
       elements.push(
         <div
           key={i}
-          className="flex gap-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed ml-2"
+          className="flex gap-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed ml-3"
         >
           <span className="text-slate-400 dark:text-slate-500 shrink-0 mt-0.5">•</span>
           <span>{ri(ln.replace(/^[-*]\s/, ''))}</span>
@@ -169,7 +169,7 @@ export const RichText: React.FC<RichTextProps> = React.memo(({ text }) => {
       elements.push(
         <div
           key={i}
-          className="flex gap-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed ml-2"
+          className="flex gap-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed ml-3"
         >
           <span className="text-slate-400 dark:text-slate-500 shrink-0 font-medium">
             {ln.match(/^(\d+)\./)?.[1] || ''}.
@@ -177,7 +177,7 @@ export const RichText: React.FC<RichTextProps> = React.memo(({ text }) => {
           <span>{ri(ln.replace(/^\d+\.\s/, ''))}</span>
         </div>,
       );
-    else if (ln.trim() === '') elements.push(<div key={i} className="h-1.5" />);
+    else if (ln.trim() === '') elements.push(<div key={i} className="h-3" />);
     else
       elements.push(
         <p key={i} className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -187,5 +187,5 @@ export const RichText: React.FC<RichTextProps> = React.memo(({ text }) => {
     i++;
   }
   if (inTable) flushTable();
-  return <div className="space-y-0.5">{elements}</div>;
+  return <div className="space-y-1.5">{elements}</div>;
 });

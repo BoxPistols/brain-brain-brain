@@ -1,7 +1,10 @@
 import { ModelInfo, ChatMessage, LLMProvider } from '../types';
 
-/** APIキーがPro mode（ユーザー所有）か判定 */
-export const isProMode = (apiKey: string): boolean => apiKey.trim().startsWith('sk-');
+/** APIキーがPro mode（ユーザー所有）か判定。OpenAI キーは sk- で始まり 20 文字以上 */
+export const isProMode = (apiKey: string): boolean => {
+  const k = apiKey.trim();
+  return k.startsWith('sk-') && k.length >= 20;
+};
 
 const friendlyError = (status: number, body: string): string => {
   if (status === 429)
@@ -30,7 +33,8 @@ const friendlyError = (status: number, body: string): string => {
 };
 
 export const AUTO_MODEL_ID = 'auto';
-export const DEFAULT_MODEL_ID = AUTO_MODEL_ID;
+export const DEFAULT_MODEL_ID = 'gpt-5.4-nano';
+export const MODEL_STORAGE_KEY = 'ai-brainstorm-model';
 
 const API_ENDPOINT = '/api/openai';
 
@@ -52,19 +56,14 @@ export const PROVIDER_DEFAULTS: Record<
 export const isLocalProvider = (p: LLMProvider): boolean => p !== 'openai';
 
 export const MODELS: ModelInfo[] = [
-  { id: AUTO_MODEL_ID, label: 'Auto', t: '自動選択', cost: '$~$$' },
-  { id: 'gpt-5-nano', label: '5 Nano', t: '最速', cost: '$' },
-  { id: 'gpt-5-mini', label: '5 Mini', t: 'バランス', cost: '$$' },
-  { id: 'gpt-4.1-mini', label: '4.1 Mini', t: 'コスパ', cost: '$' },
-  { id: 'gpt-4.1-nano', label: '4.1 Nano', t: '最安', cost: '$' },
+  { id: 'gpt-5.4-nano', label: '5.4 Nano', t: '最速・低コスト', cost: '$' },
+  { id: 'gpt-5.4-mini', label: '5.4 Mini', t: '高精度', cost: '$$' },
 ];
 
 /** モデル別コスト単価 (JPY / 1M tokens) */
 export const MODEL_COSTS: Record<string, { inputPerM: number; outputPerM: number }> = {
-  'gpt-5-nano': { inputPerM: 10, outputPerM: 40 },
-  'gpt-5-mini': { inputPerM: 50, outputPerM: 200 },
-  'gpt-4.1-mini': { inputPerM: 40, outputPerM: 160 },
-  'gpt-4.1-nano': { inputPerM: 10, outputPerM: 45 },
+  'gpt-5.4-nano': { inputPerM: 10, outputPerM: 40 },
+  'gpt-5.4-mini': { inputPerM: 50, outputPerM: 200 },
 };
 
 /** API呼び出し結果（usage トークン数 + rate limit 情報を含む） */
@@ -75,7 +74,7 @@ export interface APICallResult {
 }
 
 export const testConn = async (modelId: string, apiKey = ''): Promise<string> => {
-  const resolvedId = modelId === AUTO_MODEL_ID ? 'gpt-5-nano' : modelId;
+  const resolvedId = modelId === AUTO_MODEL_ID ? DEFAULT_MODEL_ID : modelId;
   const usesCompletionTokens = resolvedId.startsWith('gpt-5') || resolvedId.startsWith('o');
   const tokenParam = usesCompletionTokens ? { max_completion_tokens: 100 } : { max_tokens: 100 };
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };

@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import {
   MODELS,
-  AUTO_MODEL_ID,
+  DEFAULT_MODEL_ID,
   isProMode,
   isLocalProvider,
   PROVIDER_DEFAULTS,
@@ -193,12 +193,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </button>
               </div>
             </div>
-            {isProMode(apiKey) && (
+            {isProMode(apiKey) ? (
               <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-400">
                 ✓ プロモード有効 — フル機能・高深度分析が使えます
               </p>
-            )}
-            {!isProMode(apiKey) && (
+            ) : apiKey.trim().length > 0 ? (
+              <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
+                ⚠ APIキーの形式が正しくありません（sk-...
+                で始まる20文字以上のキーを入力してください）
+              </p>
+            ) : (
               <p className={`mt-1 text-xs ${T.t3}`}>
                 入力するとプロモードに切り替わり、全機能が使えます
               </p>
@@ -271,24 +275,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <p className={`text-xs font-medium ${T.t2} mb-1.5`}>モデル</p>
             <div className="flex gap-1.5 flex-wrap">
               {MODELS.map((m) => {
-                const isAuto = m.id === AUTO_MODEL_ID;
+                const isProOnly = m.id !== DEFAULT_MODEL_ID;
+                const locked = isProOnly && !proMode;
                 const isSelected = modelId === m.id;
-                let cls: string;
-                if (isSelected && isAuto) {
-                  cls =
-                    'bg-emerald-600 dark:bg-emerald-700 border-emerald-500 dark:border-emerald-500 text-white font-medium';
-                } else if (isSelected) {
-                  cls =
-                    'bg-slate-800 dark:bg-slate-700 border-slate-600 dark:border-slate-500 text-slate-100 font-medium';
-                } else if (isAuto) {
-                  cls = `${T.btnGhost} border-emerald-200 dark:border-emerald-700/60`;
-                } else {
-                  cls = `${T.btnGhost} border-slate-200 dark:border-slate-700/60`;
-                }
+                const cls = locked
+                  ? 'opacity-50 cursor-not-allowed border-slate-200 dark:border-slate-700/60 bg-slate-100 dark:bg-slate-800/40 text-slate-400 dark:text-slate-500'
+                  : isSelected
+                    ? 'bg-slate-800 dark:bg-slate-700 border-slate-600 dark:border-slate-500 text-slate-100 font-medium'
+                    : `${T.btnGhost} border-slate-200 dark:border-slate-700/60`;
                 return (
                   <button
                     key={m.id}
+                    disabled={locked}
+                    title={locked ? 'APIキーを入力するとProモードで利用できます' : undefined}
                     onClick={() => {
+                      if (locked) return;
                       setModelId(m.id);
                       setConnStatus({ status: 'idle', msg: '' });
                     }}
@@ -298,16 +299,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     <span className={isSelected ? 'opacity-70 font-normal' : `${T.t3} font-normal`}>
                       {m.cost} · {m.t}
                     </span>
+                    {locked && <span className="ml-1 text-[9px] opacity-60">Pro</span>}
                   </button>
                 );
               })}
             </div>
-            <p
-              className={`mt-1.5 text-[10px] ${modelId === AUTO_MODEL_ID ? 'text-emerald-600 dark:text-emerald-400' : T.t3}`}
-            >
-              {modelId === AUTO_MODEL_ID
-                ? 'タスクに応じて最適なモデルを自動選択します（おすすめ）'
-                : '迷ったら「Auto」がおすすめです'}
+            <p className={`mt-1.5 text-[10px] ${T.t3}`}>
+              {proMode
+                ? '選択したモデルは自動で保存されます'
+                : 'APIキーを入力すると上位モデルが選択可能になります'}
             </p>
             {(sessionCost > 0 || lastUsedModel) && (
               <div className={`mt-2 flex items-center gap-3 text-[10px] ${T.t3}`}>

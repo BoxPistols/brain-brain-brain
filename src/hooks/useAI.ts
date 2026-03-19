@@ -9,6 +9,8 @@ import {
   testConn,
   testConnLocal,
   DEFAULT_MODEL_ID,
+  MODEL_STORAGE_KEY,
+  MODELS,
   isProMode,
   isLocalProvider,
 } from '../constants/models';
@@ -52,7 +54,23 @@ function buildCompetitiveIntelContext(form: BrainstormForm): string {
 }
 
 export const useAI = () => {
-  const [modelId, setModelId] = useState(DEFAULT_MODEL_ID);
+  const [modelId, setModelIdState] = useState(() => {
+    try {
+      const saved = localStorage.getItem(MODEL_STORAGE_KEY);
+      if (saved && MODELS.some((m) => m.id === saved)) return saved;
+    } catch {
+      /* ignore */
+    }
+    return DEFAULT_MODEL_ID;
+  });
+  const setModelId = useCallback((id: string) => {
+    setModelIdState(id);
+    try {
+      localStorage.setItem(MODEL_STORAGE_KEY, id);
+    } catch {
+      /* ignore */
+    }
+  }, []);
   const [connStatus, setConnStatus] = useState<ConnStatus>({ status: 'idle', msg: '' });
 
   const [loading, setLoading] = useState(false);
@@ -130,7 +148,9 @@ export const useAI = () => {
   ): Promise<{ content: string; resolvedModel: string }> => {
     const isLocal = isLocalProvider(provider);
     const pro = isLocal || isProMode(apiKey);
-    const currentModel = isLocal ? localModel || modelId : modelId;
+    // Free モードでは nano に強制（mini は Pro 専用）
+    const rawModel = isLocal ? localModel || modelId : modelId;
+    const currentModel = !pro && rawModel !== DEFAULT_MODEL_ID ? DEFAULT_MODEL_ID : rawModel;
     const decision = selectModel(currentModel, routerInput, pro, isLocal);
     const resolvedId = decision.modelId;
 
