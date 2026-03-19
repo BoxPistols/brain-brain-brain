@@ -7,6 +7,10 @@ export type SessionType =
   | 'ops'
   | 'dx'
   | 'design-system'
+  | 'dev-org'
+  | 'design-org'
+  | 'task-flow'
+  | 'personal-mission'
   | 'other';
 export type Priority = 'High' | 'Medium' | 'Low';
 export type Effort = 'High' | 'Medium' | 'Low';
