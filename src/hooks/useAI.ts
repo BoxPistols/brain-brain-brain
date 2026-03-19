@@ -225,6 +225,22 @@ export const useAI = () => {
         role: 'あなたは、ブランド一貫性とコミュニケーション品質の向上を専門とするブランドコンサルタントです。複数の媒体・接点を横断したメッセージ統一と、制作プロセスの効率化・外注品質管理を両立する施策を設計します。',
         lens: 'ブランド一貫性・制作コスト・承認効率・メッセージ統一。分析フレーム: ブランドアーキテクチャ・タッチポイント一貫性',
       },
+      'dev-org': {
+        role: 'あなたは、開発組織設計と開発プロセス改善を専門とするエンジニアリングマネジメントコンサルタントです。Team Topologies（Stream-aligned / Platform / Enabling / Complicated-subsystem）のフレームワークを用い、チーム境界とドメイン境界の整合性、CI/CDパイプライン、テスト戦略、インシデント対応体制、インフラコスト最適化、セキュリティ体制を包括的に分析し、デリバリー速度と品質を両立する組織設計を提案します。',
+        lens: 'チーム自律性・デリバリー速度・認知負荷・技術的卓越性・コスト効率。分析フレーム: Team Topologies・DORA指標（デプロイ頻度/リードタイム/MTTR/変更失敗率）・FinOps',
+      },
+      'design-org': {
+        role: 'あなたは、デザイン組織の構築・再編を専門とするDesignOpsコンサルタントです。デザインプロセスの効率化、レビューフローの標準化、デザイナーとエンジニアの協業モデル設計、リサーチ知見の組織浸透、デザインシステムのガバナンスを統合的に設計します。DesignOps Maturity Model を用い、現状のステージを特定して次のレベルへの移行計画を提案します。',
+        lens: 'デザイン品質・レビュー速度・デザイナー生産性・組織浸透度。分析フレーム: DesignOps Maturity Model・Design System Governance',
+      },
+      'task-flow': {
+        role: 'あなたは、プロジェクト実行とタスクフロー最適化を専門とするデリバリーマネジメントコンサルタントです。フロー効率（Flow Efficiency）の観点からボトルネックを特定し、WIP制限・依存関係の可視化・ステークホルダー間の合意形成加速を設計します。カンバンメソッド・TOC（制約理論）・バリューストリームマッピングを用い、待ち時間の削減と完了率の向上を実現する施策を提案します。',
+        lens: 'フロー効率・リードタイム・WIP・ブロッカー率・ステークホルダー合意速度。分析フレーム: カンバン・TOC（制約理論）・バリューストリームマッピング',
+      },
+      'personal-mission': {
+        role: 'あなたは、個人の目標達成と時間設計を専門とするパフォーマンスコーチ兼タスク設計コンサルタントです。ユーザーの個人ミッションを構造化し、OKR分解→週次アクション→日次タスクレベルまで落とし込んだ実行計画を設計します。周囲のステークホルダー（上司・同僚・他部門）の稼働状況と優先順位を踏まえ、「いつ・誰に・何を依頼/共有すべきか」を含むリアルなアクションプランを提案します。',
+        lens: 'ミッション達成率・集中時間確保率・依存解消速度・成果可視性。分析フレーム: OKR分解・時間ポートフォリオ・ステークホルダーマッピング',
+      },
       other: {
         role: 'あなたは、経営戦略の立案と意思決定支援を専門とする戦略コンサルタントです。定性的な顧客の声・組織の実態・市場データを統合分析し、最も重要な課題（イシュー）を特定して、論理（ロジック）と実行可能性の両面から具体的な行動計画を提案します。',
         lens: '戦略的優先順位・実行可能性・ステークホルダー合意・短期成果と中長期投資のバランス。分析フレーム: イシューツリー・3C分析・SWOT→クロスSWOT',
@@ -232,6 +248,17 @@ export const useAI = () => {
     };
 
     const rd = ROLE_DEFS[form.sessionType] ?? ROLE_DEFS['other'];
+
+    // ── プレイヤーフェーズ向け出力要件 ──
+    const PLAYER_TYPES = new Set(['dev-org', 'design-org', 'task-flow', 'personal-mission']);
+    const isPlayerPhase = PLAYER_TYPES.has(form.sessionType);
+    const playerOutputReqs = isPlayerPhase
+      ? `\n【出力要件（必須）】各アイデアの description には以下を全て含めること:
+- 具体的な ToDo リスト（3-5 ステップ、各ステップに工数見積もり: ${form.sessionType === 'personal-mission' ? '時間' : '人日'}単位）
+- ステークホルダーマップ（誰が関与し、どう動くべきか）
+- 周囲の稼働への影響シミュレーション（この施策で誰の何が変わるか）
+- ブロッカー発生時の代替アクション・エスカレーションパス`
+      : '';
 
     // ── HR ドメイン知識注入 ──
     const issueTexts = form.issues.filter((x) => x.text.trim()).map((x) => x.text);
@@ -356,7 +383,7 @@ S（事実）→ C（なぜダメか。標準施策で解決しない構造的�
     if (proMode) {
       return `【あなたの役割】
 ${roleDescription}
-${deepExpert}
+${deepExpert}${playerOutputReqs}
 
 【前提条件】
 ${commonConditions}。
@@ -372,7 +399,7 @@ ${hrContext ? `\n${hrContext}` : ''}${compIntel ? `\n【競合・データ情報
 【出力形式】JSONのみ・コードブロック不要:
 {"understanding":"${dmap.understanding}",${hrJson}"ideas":[${dc.ideas}個: {"title":"8語以内の行動起点タイトル","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High","feasibility":{"total":0-100総合,"resource":0-100リソース充足度,"techDifficulty":0-100技術的容易性(高=容易),"orgAcceptance":0-100組織受容性}}],"suggestions":["深掘り質問を5個。抽象的な方向性の質問ではなく、(1)次に取得すべき具体的データを指定する質問 (2)仮説の検証に必要な情報を問う質問 (3)意思決定に直結する判断軸を問う質問 を優先すること"]}`;
     } else {
-      return `ビジネスコンサルとして建設的に分析。${rd.lens}の観点。${hrContext ? ` ${hrContext}` : ''}${compIntel ? ` [データ] ${compIntel.replace(/\n/g, ' ')}${hasCompetitors ? ' 【必須】各競合企業について事業概要・強み・弱みを understanding 内に含めること' : ''}` : ''}
+      return `ビジネスコンサルとして建設的に分析。${rd.lens}の観点。${hrContext ? ` ${hrContext}` : ''}${playerOutputReqs ? ` ${playerOutputReqs.trim()}` : ''}${compIntel ? ` [データ] ${compIntel.replace(/\n/g, ' ')}${hasCompetitors ? ' 【必須】各競合企業について事業概要・強み・弱みを understanding 内に含めること' : ''}` : ''}
 対象: ${form.productService} / 目標: ${form.teamGoals}${issueStr ? ` / 課題: ${issueStr}` : ''}
 JSONのみ回答:
 {"understanding":"${dmap.understanding}",${hrJson}"ideas":[${dc.ideas}個: {"title":"6語以内","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High","feasibility":{"total":0-100,"resource":0-100,"techDifficulty":0-100,"orgAcceptance":0-100}}],"suggestions":["深掘り質問を4個"]}`;
