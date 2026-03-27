@@ -14,6 +14,14 @@ export const TYPES: Record<string, string> = {
   'design-org': 'デザイン組織・プロセス設計',
   'task-flow': 'タスクフロー・実行設計',
   'personal-mission': '個人ミッション・アクション設計',
+  'arch-design': 'アーキテクチャ設計・技術戦略',
+  'test-quality': 'テスト戦略・品質設計',
+  'devops-delivery': 'DevOps・デリバリー基盤',
+  'frontend-eng': 'フロントエンド・UI基盤設計',
+  'ux-research': 'UXリサーチ・ユーザビリティ評価',
+  accessibility: 'アクセシビリティ・インクルーシブデザイン',
+  'interaction-design': 'インタラクションデザイン・プロトタイピング',
+  'design-handoff': 'デザイン-エンジニアリング協業',
   other: '経営戦略・その他',
 };
 
@@ -142,6 +150,78 @@ export const ISSUE_TPL: Record<string, string[]> = {
     'アウトプットの品質と速度のトレードオフ',
     '成果の可視化・アピール不足',
     'バーンアウト・持続可能性の懸念',
+  ],
+  'arch-design': [
+    'ドメイン境界が曖昧でモジュール分割が進まない',
+    'レイヤー間の依存方向が逆転している',
+    'マイクロサービス分割の判断基準が不明確',
+    '技術選定の意思決定が属人的で記録がない',
+    'ドメインモデルと実装コードの乖離',
+    'アーキテクチャ決定のレビュー体制がない',
+    '非機能要件（可用性・拡張性）の設計が後回し',
+  ],
+  'test-quality': [
+    'テストピラミッドのバランスが崩れている',
+    'Flakyテスト（不安定テスト）が放置されている',
+    'テストカバレッジが低くリグレッション不安',
+    'テスト環境・テストデータの管理が煩雑',
+    'TDDが定着せず後付けテストが中心',
+    '品質ゲート（リリース基準）が未定義',
+    'E2Eテストの実行時間が長くCI/CDを阻害',
+  ],
+  'devops-delivery': [
+    'CI/CDパイプラインが遅く不安定',
+    'デプロイの手動作業・手順書依存',
+    '監視・アラート設計が不十分で障害検知が遅い',
+    'インフラのIaC化が進んでいない',
+    'ロールバック手順が未整備',
+    'オブザーバビリティ（ログ・メトリクス・トレース）の欠如',
+    'SLI/SLO未定義で可用性目標が曖昧',
+  ],
+  'frontend-eng': [
+    'コンポーネント設計が統一されずコード重複が多い',
+    'Core Web Vitals（LCP・FID・CLS）が基準未達',
+    'バンドルサイズ肥大化による初期表示の遅延',
+    '状態管理が複雑化しバグの温床になっている',
+    'アクセシビリティ対応が後回しになっている',
+    'デザインシステムとの乖離が拡大',
+    'レスポンシブ対応・クロスブラウザの品質低下',
+  ],
+  'ux-research': [
+    'ユーザーリサーチの頻度が不十分',
+    'ユーザビリティテストの知見が活用されていない',
+    'ペルソナ・ジャーニーマップが古く実態と乖離',
+    'ニールセンヒューリスティクス違反が放置されている',
+    'タスク完了率・SUSスコアが低い',
+    'リサーチ結果からデザイン改善への接続が弱い',
+    '定量データと定性インサイトの統合ができていない',
+  ],
+  accessibility: [
+    'WCAG 2.1 AA基準への準拠率が低い',
+    'スクリーンリーダー対応が不十分',
+    'キーボードナビゲーションが機能しない箇所がある',
+    'カラーコントラスト比が基準を満たしていない',
+    'フォームのエラー表示・ラベル付けが不適切',
+    '動的コンテンツのARIA属性が欠落',
+    'アクセシビリティテストの自動化ができていない',
+  ],
+  'interaction-design': [
+    'マイクロインタラクションが未設計でフィードバック不足',
+    'アニメーションの一貫性がなくUXが散漫',
+    'プロトタイプ検証のサイクルが長すぎる',
+    'トランジション設計のガイドラインがない',
+    'モーション酔い・過剰アニメーションへの配慮不足',
+    'インタラクションパターンの再利用ができていない',
+    'プロトタイプと実装の乖離が大きい',
+  ],
+  'design-handoff': [
+    'ハンドオフ時の仕様記述が不十分で手戻りが多い',
+    'デザイントークンとコードの同期が取れていない',
+    'Storybookとデザインファイルの乖離',
+    'デザインQAのプロセスが未確立',
+    'レスポンシブ仕様の伝達漏れ',
+    'インタラクション仕様が口頭伝達で記録がない',
+    'コンポーネント命名規則がデザインと開発で不一致',
   ],
   other: [
     '収益構造の課題',
@@ -532,6 +612,49 @@ export const EXAMPLE_PRODUCTS: Record<string, string[]> = {
     '新規事業立ち上げミッション',
     '組織改善推進ミッション',
   ],
+  'arch-design': [
+    'ECプラットフォーム基盤',
+    'マイクロサービスAPI基盤',
+    'SaaS マルチテナント基盤',
+    'リアルタイムデータパイプライン',
+  ],
+  'test-quality': [
+    'SaaS プロダクト品質管理',
+    'ECサイトリグレッション対策',
+    'モバイルアプリ品質基盤',
+    '金融系システム品質保証',
+  ],
+  'devops-delivery': [
+    'Kubernetesプラットフォーム',
+    'マルチクラウドインフラ',
+    'SaaS CI/CD基盤',
+    'エッジコンピューティング基盤',
+  ],
+  'frontend-eng': [
+    'SaaS管理画面（React/Next.js）',
+    'ECフロントエンド（Nuxt/Vue）',
+    'モバイルWebアプリ（PWA）',
+    'データダッシュボード（D3.js）',
+  ],
+  'ux-research': ['BtoBサービス管理画面', 'ヘルスケアアプリ', 'ECサイト購買体験', '金融サービスUI'],
+  accessibility: [
+    '行政サービスポータル',
+    '教育プラットフォーム',
+    '医療情報システム',
+    '金融取引プラットフォーム',
+  ],
+  'interaction-design': [
+    'モバイルアプリ（SNS系）',
+    'ダッシュボード・分析ツール',
+    'SaaS オンボーディング',
+    'クリエイティブツール',
+  ],
+  'design-handoff': [
+    'プロダクト開発チーム（Figma→React）',
+    'デザインシステム運用チーム',
+    'モバイルアプリ開発チーム',
+    'マルチプロダクト基盤チーム',
+  ],
   other: ['IT人材紹介 事業再設計', '人材紹介×AIエージェント', '新規市場参入戦略', 'M&A後のPMI'],
 };
 
@@ -542,15 +665,18 @@ export interface PurposeCluster {
   sublabel: string;
   sessionType: SessionType;
   goals: string[];
+  mode: 'strategy' | 'player' | 'designer';
 }
 
 export const PURPOSE_CLUSTERS: PurposeCluster[] = [
+  // ── 戦略モード ──
   {
     id: 'close-deals',
     label: '成約・売上を伸ばす',
     sublabel: '成約件数UP・単価向上・商談化率改善',
     sessionType: 'ops',
     goals: ['商談化率・成約率改善', '一人当たり生産性向上'],
+    mode: 'strategy',
   },
   {
     id: 'get-leads',
@@ -558,6 +684,7 @@ export const PURPOSE_CLUSTERS: PurposeCluster[] = [
     sublabel: 'スカウト返信率UP・登録数UP・認知拡大',
     sessionType: 'marketing',
     goals: ['リード獲得数の拡大', 'CAC（獲得コスト）削減'],
+    mode: 'strategy',
   },
   {
     id: 'beat-competitors',
@@ -565,6 +692,7 @@ export const PURPOSE_CLUSTERS: PurposeCluster[] = [
     sublabel: 'ポジショニング・差別化・シェア拡大',
     sessionType: 'growth',
     goals: ['売上・ARR成長率の加速', '市場シェア拡大'],
+    mode: 'strategy',
   },
   {
     id: 'efficiency',
@@ -572,6 +700,7 @@ export const PURPOSE_CLUSTERS: PurposeCluster[] = [
     sublabel: 'ムダ削減・CRM活用・AI自動化',
     sessionType: 'dx',
     goals: ['業務プロセスのデジタル化', 'AI・自動化による工数削減'],
+    mode: 'strategy',
   },
   {
     id: 'new-biz',
@@ -579,6 +708,7 @@ export const PURPOSE_CLUSTERS: PurposeCluster[] = [
     sublabel: '新規事業・新サービス・新市場',
     sessionType: 'innovation',
     goals: ['新収益モデルの確立', '市場参入戦略の策定'],
+    mode: 'strategy',
   },
   {
     id: 'team-cx',
@@ -586,13 +716,16 @@ export const PURPOSE_CLUSTERS: PurposeCluster[] = [
     sublabel: '対応品質UP・継続率改善',
     sessionType: 'cx',
     goals: ['顧客満足度（NPS）向上', 'リピート率・継続率向上'],
+    mode: 'strategy',
   },
+  // ── プレイヤーモード ──
   {
     id: 'dev-delivery',
     label: '開発チームの生産性を上げる',
     sublabel: 'デプロイ頻度・チーム自律性・技術負債',
     sessionType: 'dev-org',
     goals: ['デプロイ頻度の向上', 'チーム間依存の解消'],
+    mode: 'player',
   },
   {
     id: 'design-ops',
@@ -600,6 +733,7 @@ export const PURPOSE_CLUSTERS: PurposeCluster[] = [
     sublabel: 'レビュー効率・デザインシステム・協業',
     sessionType: 'design-org',
     goals: ['デザインレビューサイクルの短縮', 'デザイナー×エンジニア協業効率化'],
+    mode: 'player',
   },
   {
     id: 'unblock-flow',
@@ -607,6 +741,7 @@ export const PURPOSE_CLUSTERS: PurposeCluster[] = [
     sublabel: 'ボトルネック解消・WIP削減・合意形成',
     sessionType: 'task-flow',
     goals: ['タスク完了リードタイムの短縮', 'ステークホルダー合意形成の迅速化'],
+    mode: 'player',
   },
   {
     id: 'my-mission',
@@ -614,8 +749,96 @@ export const PURPOSE_CLUSTERS: PurposeCluster[] = [
     sublabel: 'OKR分解・工数設計・周囲との連動',
     sessionType: 'personal-mission',
     goals: ['ミッション完了率の向上', 'ブロッカー排除・自律的な進行'],
+    mode: 'player',
+  },
+  {
+    id: 'arch-strategy',
+    label: 'アーキテクチャ設計を磨く',
+    sublabel: 'DDD・Clean Arch・マイクロサービス',
+    sessionType: 'arch-design',
+    goals: ['アーキテクチャ品質の向上', 'ドメインモデルと実装の整合性確保'],
+    mode: 'player',
+  },
+  {
+    id: 'test-strategy',
+    label: 'テスト戦略を確立する',
+    sublabel: 'テストピラミッド・TDD・品質ゲート',
+    sessionType: 'test-quality',
+    goals: ['テストカバレッジと品質指標の改善', 'バグ検出の早期化'],
+    mode: 'player',
+  },
+  {
+    id: 'devops-platform',
+    label: 'デリバリー基盤を強化する',
+    sublabel: 'CI/CD・SRE・オブザーバビリティ',
+    sessionType: 'devops-delivery',
+    goals: ['デプロイ自動化率の向上', 'MTTR短縮・可用性改善'],
+    mode: 'player',
+  },
+  {
+    id: 'frontend-quality',
+    label: 'フロントエンド品質を高める',
+    sublabel: 'コンポーネント設計・パフォーマンス・a11y',
+    sessionType: 'frontend-eng',
+    goals: ['Core Web Vitals改善', 'コンポーネント再利用率向上'],
+    mode: 'player',
+  },
+  // ── デザイナーモード ──
+  {
+    id: 'design-system-build',
+    label: 'デザインシステムを構築する',
+    sublabel: 'トークン・コンポーネント・ガバナンス',
+    sessionType: 'design-system',
+    goals: ['デザインシステム採用率の向上', 'UI一貫性の確保'],
+    mode: 'designer',
+  },
+  {
+    id: 'design-org-ops',
+    label: 'デザイン組織を進化させる',
+    sublabel: 'DesignOps・レビューフロー・リサーチ',
+    sessionType: 'design-org',
+    goals: ['デザインレビューサイクルの短縮', 'リサーチ知見の組織浸透'],
+    mode: 'designer',
+  },
+  {
+    id: 'ux-improve',
+    label: 'UXリサーチで改善する',
+    sublabel: 'ニールセンヒューリスティクス・ユーザーテスト',
+    sessionType: 'ux-research',
+    goals: ['タスク完了率・SUS改善', 'ユーザビリティ問題の発見・解消'],
+    mode: 'designer',
+  },
+  {
+    id: 'a11y-compliance',
+    label: 'アクセシビリティを実現する',
+    sublabel: 'WCAG準拠・インクルーシブデザイン',
+    sessionType: 'accessibility',
+    goals: ['WCAG AA準拠率の向上', '障害種別カバレッジ拡大'],
+    mode: 'designer',
+  },
+  {
+    id: 'interaction-craft',
+    label: 'インタラクションを磨く',
+    sublabel: 'マイクロインタラクション・アニメーション・プロトタイプ',
+    sessionType: 'interaction-design',
+    goals: ['インタラクション品質の向上', 'プロトタイプ検証サイクル短縮'],
+    mode: 'designer',
+  },
+  {
+    id: 'design-dev-bridge',
+    label: 'デザイン×開発を繋ぐ',
+    sublabel: 'ハンドオフ・Storybook・トークン同期',
+    sessionType: 'design-handoff',
+    goals: ['ハンドオフ手戻り率の削減', 'デザイン実装一致度の向上'],
+    mode: 'designer',
   },
 ];
+
+export const MODE_LABELS: Record<string, string> = {
+  strategy: '戦略モード',
+  player: 'プレイヤーモード',
+  designer: 'デザイナーモード',
+};
 
 const HR_CLUSTER_GOALS: Record<string, string[]> = {
   'close-deals': ['CA一人当たり成約件数+50%', '内定承諾率向上'],
@@ -747,6 +970,78 @@ export const GOAL_TEMPLATES: Record<string, string[]> = {
     '成果の可視化・ステークホルダーへの共有',
     '集中時間の確保・割り込み削減',
     '持続可能なペースの確立',
+  ],
+  'arch-design': [
+    'ドメインモデルと実装の整合性確保',
+    'モジュール結合度の低減・凝集度の向上',
+    'ADR（Architecture Decision Record）の運用定着',
+    '非機能要件（可用性・拡張性・セキュリティ）の充足',
+    'マイクロサービス分割の判断基準確立',
+    'レイヤードアーキテクチャの依存方向の正規化',
+    'アーキテクチャレビュー体制の構築',
+  ],
+  'test-quality': [
+    'テストピラミッドの適正バランス達成',
+    'テストカバレッジ目標の達成（ライン/ブランチ）',
+    'Flakyテスト撲滅・テスト信頼性の向上',
+    'TDD導入率の向上',
+    '品質ゲート（リリース基準）の確立',
+    'テスト実行時間の短縮',
+    'バグの検出フェーズ早期化（Shift Left）',
+  ],
+  'devops-delivery': [
+    'デプロイ自動化率の向上（手動ゼロ目標）',
+    'CI/CDパイプライン実行時間の短縮',
+    'MTTR（平均復旧時間）の短縮',
+    'SLI/SLO定義と可用性目標の達成',
+    'インフラのIaC化率100%',
+    'オブザーバビリティ成熟度の向上',
+    '変更失敗率の低減',
+  ],
+  'frontend-eng': [
+    'Core Web Vitals（LCP・FID・CLS）の基準達成',
+    'コンポーネント再利用率の向上',
+    'バンドルサイズの最適化',
+    'アクセシビリティスコアの向上',
+    '状態管理の複雑度低減',
+    'フロントエンドテストカバレッジの向上',
+    'デザインシステムとの整合性確保',
+  ],
+  'ux-research': [
+    'タスク完了率の改善',
+    'SUS（System Usability Scale）スコア向上',
+    'ユーザビリティ問題の検出・解消率向上',
+    'リサーチ実施頻度の安定化（月次以上）',
+    'リサーチ知見の活用率向上',
+    'ペルソナ・ジャーニーマップの定期更新',
+    'ユーザー満足度指標の改善',
+  ],
+  accessibility: [
+    'WCAG 2.1 AA準拠率の向上',
+    '自動a11yテストのCI/CD組み込み',
+    'スクリーンリーダー対応の完全化',
+    'キーボードナビゲーションの網羅',
+    'カラーコントラスト比の基準達成',
+    '障害種別ごとのカバレッジ拡大',
+    'アクセシビリティ研修・啓発の定着',
+  ],
+  'interaction-design': [
+    'インタラクション品質の標準化',
+    'マイクロインタラクション設計ガイドラインの整備',
+    'プロトタイプ検証サイクルの短縮',
+    'アニメーション・トランジションの一貫性確保',
+    'モーションデザイントークンの定義',
+    'ユーザーフィードバック体験の改善',
+    'prefers-reduced-motion対応の網羅',
+  ],
+  'design-handoff': [
+    'ハンドオフ手戻り率の削減',
+    'デザイントークン↔コードの自動同期',
+    'Storybook・デザインファイルの一致率向上',
+    'デザインQA合格率の向上',
+    'レスポンシブ仕様の伝達漏れゼロ',
+    'コンポーネント命名規則の統一',
+    'ハンドオフドキュメント作成工数の削減',
   ],
   other: [
     '収益構造の改善',
@@ -1134,6 +1429,158 @@ export const ISSUE_TEMPLATES: Record<string, IssueTemplate[]> = {
       sub: [],
     },
   ],
+  'arch-design': [
+    {
+      text: 'ドメイン境界の曖昧さとモジュール分割の停滞',
+      detail:
+        '境界づけられたコンテキストが未定義で、モジュール間の責務が重複・モデルが汚染されている',
+      sub: [
+        'ユビキタス言語がチーム内で統一されていない',
+        'コンテキストマップが存在せず依存関係が不透明',
+      ],
+    },
+    {
+      text: 'レイヤー間の依存方向の逆転',
+      detail: 'ドメイン層がインフラ層に直接依存し、テスタビリティと変更容易性が損なわれている',
+      sub: ['依存性逆転の原則（DIP）が守られていない', 'ポート&アダプター構造への移行が必要'],
+    },
+    {
+      text: '技術選定の意思決定が記録されていない',
+      detail: 'アーキテクチャ決定の経緯が口頭伝達のみで、ADR（Architecture Decision Record）がない',
+      sub: ['過去の判断を知る人が離職すると知見が消失', '同じ議論を何度も繰り返している'],
+    },
+  ],
+  'test-quality': [
+    {
+      text: 'テストピラミッドの崩壊',
+      detail: 'E2Eテストに偏重し、ユニットテストが薄い。テスト実行時間が長くフィードバックが遅い',
+      sub: [
+        'ユニットテストの書き方・方針が統一されていない',
+        'モック戦略が未確立で結合テストが脆い',
+      ],
+    },
+    {
+      text: 'Flakyテスト（不安定テスト）の蔓延',
+      detail: 'ランダムに失敗するテストが放置され、テスト結果への信頼が損なわれている',
+      sub: ['テスト環境の状態依存が多い', '非同期処理のテストが不安定'],
+    },
+    {
+      text: '品質ゲート・リリース基準の未定義',
+      detail: 'リリース可否の判断基準が属人的で、品質メトリクスに基づく客観的なゲートがない',
+      sub: ['カバレッジ閾値が未設定', 'パフォーマンス回帰テストが未導入'],
+    },
+  ],
+  'devops-delivery': [
+    {
+      text: 'CI/CDパイプラインの遅さと不安定さ',
+      detail: 'ビルド・テスト・デプロイに30分以上かかり、開発者の待ち時間と切り替えコストが大きい',
+      sub: ['キャッシュ戦略が最適化されていない', '並列実行の設計が不十分'],
+    },
+    {
+      text: '監視・アラート設計の不備',
+      detail: 'アラートのノイズが多く重要な異常を見逃す。または監視自体が不十分で検知が遅れる',
+      sub: ['SLI/SLOに基づくアラート設計がない', 'アラート疲れでオンコール担当が疲弊'],
+    },
+    {
+      text: 'オブザーバビリティの欠如',
+      detail: 'ログ・メトリクス・トレースの三本柱が揃わず、障害時の原因特定に時間がかかる',
+      sub: ['構造化ログが未導入', '分散トレーシングの仕組みがない'],
+    },
+  ],
+  'frontend-eng': [
+    {
+      text: 'コンポーネント設計の不統一とコード重複',
+      detail: '同じUIパターンが異なる実装で複数存在し、修正時の影響範囲が読めない',
+      sub: ['コンポーネント分割の粒度基準がない', 'Atomic Designなどの設計指針が未導入'],
+    },
+    {
+      text: 'Core Web Vitalsの品質低下',
+      detail: 'LCP・FID・CLSが基準値を超えており、ユーザー体験とSEO評価に悪影響',
+      sub: ['パフォーマンスバジェットが未設定', '計測・モニタリングの仕組みがない'],
+    },
+    {
+      text: '状態管理の複雑化',
+      detail: 'グローバル状態が肥大化し、どこで何が更新されるか追跡困難。バグの温床になっている',
+      sub: [
+        '状態のスコープ設計（ローカル/グローバル/サーバー）が曖昧',
+        '不要な再レンダリングが多発',
+      ],
+    },
+  ],
+  'ux-research': [
+    {
+      text: 'ユーザーリサーチの頻度・質の不足',
+      detail: 'リサーチが年1-2回のイベント型で、継続的なユーザー理解ができていない',
+      sub: ['リクルーティングの仕組みが未整備', 'リサーチの工数・予算確保が難しい'],
+    },
+    {
+      text: 'ユーザビリティ問題の放置',
+      detail:
+        'ニールセンヒューリスティクス評価で多数の問題が検出されているが優先順位が付けられていない',
+      sub: ['問題の深刻度×影響ユーザー数の評価基準がない', '改善施策がバックログに埋もれている'],
+    },
+    {
+      text: 'ペルソナ・ジャーニーマップの形骸化',
+      detail: '作成時点から更新されておらず、実際のユーザー行動と大きく乖離している',
+      sub: ['定量データとの突き合わせができていない', '新規セグメントのペルソナが未定義'],
+    },
+  ],
+  accessibility: [
+    {
+      text: 'WCAG 2.1 AA準拠率の低さ',
+      detail: '自動テストと手動監査の結果、多数の達成基準が未充足でアクセシビリティ品質が低い',
+      sub: ['達成基準の優先順位付けができていない', '修正のための工数確保が難しい'],
+    },
+    {
+      text: 'スクリーンリーダー・支援技術への対応不足',
+      detail: 'ARIA属性の欠落や不適切な使用で、支援技術ユーザーが操作できない箇所がある',
+      sub: ['ランドマーク・見出し構造が不適切', 'ライブリージョンの通知が欠落'],
+    },
+    {
+      text: 'アクセシビリティテストの自動化不足',
+      detail: 'CI/CDにa11yテストが組み込まれておらず、リグレッションが検知されない',
+      sub: ['axe-core等の自動チェックが未導入', '手動テスト手順書がない'],
+    },
+  ],
+  'interaction-design': [
+    {
+      text: 'マイクロインタラクションの未設計',
+      detail:
+        'ボタン押下・フォーム送信・状態変化時のフィードバックが不足し、操作の確信が得られない',
+      sub: ['成功/失敗/処理中の状態表現が統一されていない', 'ローディング体験が考慮されていない'],
+    },
+    {
+      text: 'アニメーション・トランジションの一貫性欠如',
+      detail: '画面遷移やコンポーネントのアニメーションが統一されず、UXが散漫に感じられる',
+      sub: ['イージング関数やデュレーションの基準がない', 'モーション酔いへの配慮が不足'],
+    },
+    {
+      text: 'プロトタイプ検証サイクルの長期化',
+      detail: 'プロトタイプの作成・テスト・反映のサイクルが遅く、仮説検証が間に合わない',
+      sub: ['ツール選定が定まっていない', 'エンジニアとの認識すり合わせに時間がかかる'],
+    },
+  ],
+  'design-handoff': [
+    {
+      text: 'ハンドオフ時の仕様漏れと手戻り',
+      detail: 'デザインから開発への引き渡し時に仕様が曖昧で、実装後の手戻りが頻発',
+      sub: [
+        'レスポンシブ仕様の伝達が不十分',
+        'エッジケース（空状態・エラー・ローディング）の設計漏れ',
+      ],
+    },
+    {
+      text: 'デザイントークンとコードの不同期',
+      detail:
+        'FigmaのデザイントークンとCSS変数/Tailwind設定が一致しておらず、色やスペーシングがズレる',
+      sub: ['トークンの命名規則が統一されていない', '変更時の同期フローが手動'],
+    },
+    {
+      text: 'デザインQAプロセスの未確立',
+      detail: '実装後のデザイン検収が仕組み化されておらず、品質基準もない',
+      sub: ['QA担当・タイミング・基準が未定義', 'デザインレビューツールが未導入'],
+    },
+  ],
   other: [
     {
       text: '市場縮小・業界構造の変化',
@@ -1248,6 +1695,62 @@ export const SUGGEST: Record<string, string[]> = {
     'スキルギャップを最短で埋める学習計画は？',
     '割り込みタスクを制御しつつ信頼を維持するには？',
     '成果を適切なタイミングでステークホルダーに共有するには？',
+  ],
+  'arch-design': [
+    'ドメイン境界の特定と境界づけられたコンテキストの設計は？',
+    'モノリス→マイクロサービス移行の段階的アプローチは？',
+    'ADRを組織に定着させる運用フローは？',
+    '技術選定の評価マトリクスと判断基準の作り方は？',
+    'Clean ArchitectureとDDDを既存コードに段階導入するには？',
+  ],
+  'test-quality': [
+    'テストピラミッドの理想的なバランスと実現方法は？',
+    'TDDを組織に段階的に導入するアプローチは？',
+    'Flakyテスト撲滅のための具体的な手法は？',
+    '品質ゲートの設計と運用の進め方は？',
+    'テスト実行時間を短縮するための戦略は？',
+  ],
+  'devops-delivery': [
+    'CI/CDパイプラインの速度と信頼性を両立するには？',
+    'SLI/SLO設計のベストプラクティスは？',
+    'オブザーバビリティの三本柱の段階導入は？',
+    'インシデント対応のランブック整備と訓練方法は？',
+    'インフラコスト最適化のアプローチは？',
+  ],
+  'frontend-eng': [
+    'Core Web Vitalsを改善する優先順位と具体策は？',
+    'コンポーネント設計の粒度基準とディレクトリ構成は？',
+    'バンドルサイズ削減のための分析と対策は？',
+    '状態管理のスコープ設計（ローカル/グローバル/サーバー）は？',
+    'フロントエンドのテスト戦略（ユニット/統合/E2E）は？',
+  ],
+  'ux-research': [
+    'ニールセンヒューリスティクス評価の効率的な実施方法は？',
+    '継続的リサーチの仕組みと頻度の設計は？',
+    'リサーチ知見を全チームに浸透させるナレッジ管理は？',
+    'ユーザビリティ問題の優先順位付けフレームワークは？',
+    '定量データと定性インサイトを統合する分析方法は？',
+  ],
+  accessibility: [
+    'WCAG 2.1 AA準拠の優先順位と段階的アプローチは？',
+    'スクリーンリーダー対応の具体的なチェックリストは？',
+    'a11yテストをCI/CDに組み込む方法は？',
+    'チーム全体のアクセシビリティ意識を高める研修設計は？',
+    'ARIA属性の正しい使い方とよくあるアンチパターンは？',
+  ],
+  'interaction-design': [
+    'マイクロインタラクション設計のフレームワークは？',
+    'アニメーション・トランジションのガイドライン策定方法は？',
+    'モーション酔い対策とprefers-reduced-motion対応は？',
+    'プロトタイプツール選定と検証サイクル短縮の方法は？',
+    'インタラクションパターンのライブラリ化と再利用は？',
+  ],
+  'design-handoff': [
+    'ハンドオフ手戻りを減らすための仕様記述のベストプラクティスは？',
+    'デザイントークンのFigma→コード自動同期の仕組みは？',
+    'StorybookとFigmaの一致度を保つ運用フローは？',
+    'デザインQAプロセスの設計と定着方法は？',
+    'コンポーネント命名規則のデザイン×開発統一アプローチは？',
   ],
   other: [
     '現状の強みを活かした差別化ポジションの設計は？',
@@ -1416,6 +1919,57 @@ export const KPI_SUGGESTIONS: Record<string, { label: string; placeholder: strin
     { label: '週あたり集中時間', placeholder: '例: 15時間/40時間' },
     { label: '割り込み頻度', placeholder: '例: 日3-4回' },
     { label: 'ブロック待ち時間', placeholder: '例: 週5時間' },
+  ],
+  'arch-design': [
+    { label: 'モジュール間結合度', placeholder: '例: 循環依存5箇所' },
+    { label: 'ADR蓄積数', placeholder: '例: 12件' },
+    { label: 'ドメインモデル更新頻度', placeholder: '例: 月1回' },
+    { label: '非機能要件充足率', placeholder: '例: 60%' },
+  ],
+  'test-quality': [
+    { label: 'テストカバレッジ（ライン）', placeholder: '例: 45%' },
+    { label: 'Flakyテスト件数', placeholder: '例: 15件' },
+    { label: 'テスト実行時間', placeholder: '例: 18分' },
+    { label: 'リリース後バグ件数（月）', placeholder: '例: 8件' },
+    { label: 'TDD導入率', placeholder: '例: 20%' },
+  ],
+  'devops-delivery': [
+    { label: 'デプロイ頻度', placeholder: '例: 週2回' },
+    { label: 'リードタイム（コミット→本番）', placeholder: '例: 5日' },
+    { label: 'MTTR（平均復旧時間）', placeholder: '例: 2時間' },
+    { label: '変更失敗率', placeholder: '例: 15%' },
+    { label: 'CI/CDパイプライン実行時間', placeholder: '例: 25分' },
+  ],
+  'frontend-eng': [
+    { label: 'LCP（Largest Contentful Paint）', placeholder: '例: 3.2秒' },
+    { label: 'CLS（Cumulative Layout Shift）', placeholder: '例: 0.18' },
+    { label: 'バンドルサイズ（gzip後）', placeholder: '例: 450KB' },
+    { label: 'コンポーネント再利用率', placeholder: '例: 40%' },
+    { label: 'Lighthouseスコア', placeholder: '例: 72' },
+  ],
+  'ux-research': [
+    { label: 'SUS（System Usability Scale）', placeholder: '例: 62点' },
+    { label: 'タスク完了率', placeholder: '例: 75%' },
+    { label: 'リサーチ実施頻度', placeholder: '例: 四半期1回' },
+    { label: 'ユーザビリティ問題検出数（直近）', placeholder: '例: 23件' },
+  ],
+  accessibility: [
+    { label: 'WCAG AA準拠率', placeholder: '例: 55%' },
+    { label: 'axe-core自動テスト違反数', placeholder: '例: 42件' },
+    { label: 'キーボードナビゲーション対応率', placeholder: '例: 70%' },
+    { label: 'スクリーンリーダー対応ページ率', placeholder: '例: 30%' },
+  ],
+  'interaction-design': [
+    { label: 'インタラクション設計カバレッジ', placeholder: '例: 40%' },
+    { label: 'プロトタイプ検証サイクル', placeholder: '例: 2週間' },
+    { label: 'モーショントークン定義率', placeholder: '例: 20%' },
+  ],
+  'design-handoff': [
+    { label: 'ハンドオフ手戻り率', placeholder: '例: 35%' },
+    { label: 'デザイントークン同期率', placeholder: '例: 50%' },
+    { label: 'Storybook↔Figma一致率', placeholder: '例: 60%' },
+    { label: 'デザインQA合格率', placeholder: '例: 70%' },
+    { label: 'ハンドオフ所要時間', placeholder: '例: 3日' },
   ],
   other: [
     { label: '売上高', placeholder: '例: 年5億円' },

@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react';
 import { isHRContext, getHRDomainContext } from '../constants/domainContext';
+import { isEngineeringContext, getEngineeringDomainContext } from '../constants/engineeringContext';
+import { isDesignContext, getDesignDomainContext } from '../constants/designContext';
 import { parseAIJson, extractMarkdown } from '../utils/parseAIJson';
 import { BrainstormForm, AIResults, ChatMessage, ConnStatus, Idea, LLMProvider } from '../types';
 import {
@@ -243,6 +245,40 @@ export const useAI = () => {
         role: 'あなたは、個人の目標達成と時間設計を専門とするパフォーマンスコーチ兼タスク設計コンサルタントです。ユーザーの個人ミッションを構造化し、OKR分解→週次アクション→日次タスクレベルまで落とし込んだ実行計画を設計します。周囲のステークホルダー（上司・同僚・他部門）の稼働状況と優先順位を踏まえ、「いつ・誰に・何を依頼/共有すべきか」を含むリアルなアクションプランを提案します。',
         lens: 'ミッション達成率・集中時間確保率・依存解消速度・成果可視性。分析フレーム: OKR分解・時間ポートフォリオ・ステークホルダーマッピング',
       },
+      // ── プレイヤーモード（エンジニアリング4種） ──
+      'arch-design': {
+        role: 'あなたは、ソフトウェアアーキテクチャ設計と技術戦略の策定を専門とするシニアアーキテクトです。DDD（ドメイン駆動設計）・Clean Architecture・マイクロサービスアーキテクチャ・イベント駆動設計に深い知見を持ち、ドメインモデルと実装の整合性、レイヤー間の依存方向、境界づけられたコンテキストの設計を通じて、拡張性・保守性・テスタビリティに優れたアーキテクチャを提案します。',
+        lens: 'ドメインモデル整合性・モジュール凝集度/結合度・依存方向・拡張性・テスタビリティ。分析フレーム: DDD Strategic/Tactical Design・SOLID原則・ADR',
+      },
+      'test-quality': {
+        role: 'あなたは、ソフトウェア品質戦略とテストエンジニアリングを専門とするQAアーキテクトです。テストピラミッド・TDD・BDD・品質ゲート設計・Flakyテスト撲滅・テスト自動化戦略に深い知見を持ち、「品質を作り込む」プロセス設計と、リリース品質を客観的に判断できる品質メトリクス体系を提案します。',
+        lens: 'テストカバレッジ・テスト信頼性・フィードバック速度・バグ検出フェーズ・品質メトリクス。分析フレーム: テストピラミッド・Shift Left・品質ゲートモデル',
+      },
+      'devops-delivery': {
+        role: 'あなたは、DevOps・SRE・プラットフォームエンジニアリングを専門とするデリバリー基盤アーキテクトです。CI/CDパイプライン設計・IaC・オブザーバビリティ（ログ・メトリクス・トレース）・SLI/SLO設計・インシデント管理に深い知見を持ち、DORA指標の改善を通じてデリバリー速度と信頼性を両立するプラットフォームを提案します。',
+        lens: 'DORA4指標・SLI/SLO・パイプライン速度・オブザーバビリティ成熟度・インフラコスト。分析フレーム: DORA・SRE原則・FinOps・CI/CD成熟度モデル',
+      },
+      'frontend-eng': {
+        role: 'あなたは、フロントエンドアーキテクチャとUI基盤設計を専門とするフロントエンドアーキテクトです。コンポーネント設計（Atomic Design/Feature-Sliced Design）・パフォーマンス最適化（Core Web Vitals）・状態管理設計・アクセシビリティ・デザインシステム連携に深い知見を持ち、再利用性・パフォーマンス・開発者体験に優れたフロントエンド基盤を提案します。',
+        lens: 'Core Web Vitals・コンポーネント再利用率・バンドルサイズ・アクセシビリティスコア・DX（開発者体験）。分析フレーム: Web Vitals・Lighthouse・コンポーネント設計原則',
+      },
+      // ── デザイナーモード（デザイン4種） ──
+      'ux-research': {
+        role: 'あなたは、UXリサーチとユーザビリティ評価を専門とするシニアUXリサーチャーです。ニールセンの10ヒューリスティクス・ユーザーテスト設計・SUS（System Usability Scale）・ジャーニーマップ分析・定性/定量データ統合に深い知見を持ち、エビデンスに基づくUX改善施策と、リサーチ知見を組織に浸透させるプロセスを提案します。',
+        lens: 'タスク完了率・SUSスコア・ヒューリスティクス違反数・リサーチ頻度・知見活用率。分析フレーム: ニールセンヒューリスティクス・UX成熟度モデル・RITE法',
+      },
+      accessibility: {
+        role: 'あなたは、アクセシビリティとインクルーシブデザインを専門とするa11yコンサルタントです。WCAG 2.1/2.2・WAI-ARIA・支援技術（スクリーンリーダー・スイッチデバイス等）・自動/手動テスト手法に深い知見を持ち、法的要件の充足だけでなく「全てのユーザーが等しく利用できる」製品体験を実現する施策を提案します。',
+        lens: 'WCAG準拠率・POUR原則充足度・支援技術互換性・障害種別カバレッジ。分析フレーム: WCAG POUR・障害影響マトリクス・a11y成熟度モデル',
+      },
+      'interaction-design': {
+        role: 'あなたは、インタラクションデザインとモーションデザインを専門とするシニアインタラクションデザイナーです。マイクロインタラクション設計・トランジション設計・プロトタイピング・フィードバック体験設計に深い知見を持ち、ユーザーの操作確信感と心地よさを高めるインタラクション体系を提案します。',
+        lens: 'フィードバック品質・トランジション一貫性・プロトタイプ検証速度・モーション酔い配慮。分析フレーム: Dan Saffer Microinteraction Model・Disney Animation Principles・RAIL',
+      },
+      'design-handoff': {
+        role: 'あなたは、デザインとエンジニアリングの協業プロセス設計を専門とするDesignOps/DevOpsブリッジコンサルタントです。ハンドオフ仕様設計・デザイントークン同期・Storybook/Code Connect運用・デザインQAプロセスに深い知見を持ち、「デザインの意図が100%実装に反映される」協業体制を提案します。',
+        lens: 'ハンドオフ手戻り率・トークン同期率・Storybook↔デザイン一致率・デザインQA合格率。分析フレーム: Design-Dev Handoff Maturity・Token Pipeline・Code Connect',
+      },
       other: {
         role: 'あなたは、経営戦略の立案と意思決定支援を専門とする戦略コンサルタントです。定性的な顧客の声・組織の実態・市場データを統合分析し、最も重要な課題（イシュー）を特定して、論理（ロジック）と実行可能性の両面から具体的な行動計画を提案します。',
         lens: '戦略的優先順位・実行可能性・ステークホルダー合意・短期成果と中長期投資のバランス。分析フレーム: イシューツリー・3C分析・SWOT→クロスSWOT',
@@ -251,21 +287,81 @@ export const useAI = () => {
 
     const rd = ROLE_DEFS[form.sessionType] ?? ROLE_DEFS['other'];
 
-    // ── プレイヤーフェーズ向け出力要件 ──
-    const PLAYER_TYPES = new Set(['dev-org', 'design-org', 'task-flow', 'personal-mission']);
+    // ── モードベース判定 ──
+    const PLAYER_TYPES = new Set([
+      'dev-org',
+      'design-org',
+      'task-flow',
+      'personal-mission',
+      'arch-design',
+      'test-quality',
+      'devops-delivery',
+      'frontend-eng',
+    ]);
+    const ENGINEERING_PLAYER_TYPES = new Set([
+      'arch-design',
+      'test-quality',
+      'devops-delivery',
+      'frontend-eng',
+    ]);
+    const DESIGNER_TYPES = new Set([
+      'ux-research',
+      'accessibility',
+      'interaction-design',
+      'design-handoff',
+    ]);
     const isPlayerPhase = PLAYER_TYPES.has(form.sessionType);
-    const playerOutputReqs = isPlayerPhase
-      ? `\n【出力要件（必須）】各アイデアの description には以下を全て含めること:
+    const isEngineeringPlayer = ENGINEERING_PLAYER_TYPES.has(form.sessionType);
+    const isDesignerPhase = DESIGNER_TYPES.has(form.sessionType);
+
+    // ── プレイヤーフェーズ向け出力要件 ──
+    let playerOutputReqs = '';
+    if (isPlayerPhase) {
+      playerOutputReqs = `\n【出力要件（必須）】各アイデアの description には以下を全て含めること:
 - 具体的な ToDo リスト（3-5 ステップ、各ステップに工数見積もり: ${form.sessionType === 'personal-mission' ? '時間' : '人日'}単位）
 - ステークホルダーマップ（誰が関与し、どう動くべきか）
 - 周囲の稼働への影響シミュレーション（この施策で誰の何が変わるか）
-- ブロッカー発生時の代替アクション・エスカレーションパス`
-      : '';
+- ブロッカー発生時の代替アクション・エスカレーションパス`;
+      if (isEngineeringPlayer) {
+        playerOutputReqs += `\n- 技術判断マトリクス（選択肢比較表: 選択肢名 / メリット / デメリット / 推奨度）
+- ADR要約（Status / Context / Decision / Consequences）
+- リスク評価（発生確率×影響度のマトリクス）
+- 移行パス（Phase 1→2→3 + 各フェーズの完了基準）`;
+        const engSpecific: Record<string, string> = {
+          'arch-design':
+            '- ドメインモデル影響分析（変更が及ぼす境界づけられたコンテキストへの影響）',
+          'test-quality': '- テストピラミッド影響分析（施策がユニット/統合/E2E各層に与える変化）',
+          'devops-delivery':
+            '- DORA指標影響予測（施策がデプロイ頻度/リードタイム/MTTR/変更失敗率に与える効果）',
+          'frontend-eng':
+            '- パフォーマンスバジェット影響分析（施策がLCP/FID/CLS/バンドルサイズに与える変化）',
+        };
+        if (engSpecific[form.sessionType]) playerOutputReqs += '\n' + engSpecific[form.sessionType];
+      }
+    }
+    if (isDesignerPhase) {
+      playerOutputReqs = `\n【出力要件（必須）】各アイデアの description には以下を全て含めること:
+- 関連するNielsenヒューリスティクス/Norman原則の番号と名称
+- Before→After のUI改善例（具体的な画面・操作フローの変化）
+- ユーザビリティ指標への期待効果（タスク完了率・エラー率・SUS等）
+- 実施優先度の根拠（影響ユーザー数×問題深刻度）
+- デザインレビューチェックポイント（この施策の品質を確認する基準）`;
+      if (form.sessionType === 'accessibility') {
+        playerOutputReqs += `\n- WCAG達成基準番号と適合レベル（例: 1.4.3 AA）
+- 影響する障害種別（視覚/聴覚/運動/認知）
+- テスト方法（自動テスト/手動テスト/支援技術テスト）`;
+      }
+    }
 
-    // ── HR ドメイン知識注入 ──
+    // ── ドメイン知識注入 ──
     const issueTexts = form.issues.filter((x) => x.text.trim()).map((x) => x.text);
     const hrDetected = isHRContext(form.productService, issueTexts);
     const hrContext = hrDetected ? getHRDomainContext(proMode) : '';
+    const engDetected =
+      isEngineeringPlayer || isEngineeringContext(form.productService, issueTexts);
+    const engContext = engDetected ? getEngineeringDomainContext(proMode) : '';
+    const designDetected = isDesignerPhase || isDesignContext(form.productService, issueTexts);
+    const designContext = designDetected ? getDesignDomainContext(proMode) : '';
 
     // ── 競合・データ情報 ──
     const compIntel = buildCompetitiveIntelContext(form);
@@ -392,7 +488,7 @@ ${commonConditions}。
 
 【分析の視点】
 ${rd.lens}
-${hrContext ? `\n${hrContext}` : ''}${compIntel ? `\n【競合・データ情報】\n${compIntel}\n` : ''}${hasCompetitors && dep >= 3 ? `\n【競合戦略分析の指示】\n- 競合の事業モデル・強み・弱みをあなたの知識範囲内で推定し understanding に含めよ\n- 競合が構造的に手薄な領域（ニッチ市場・未対応セグメント・サービスギャップ）を特定し ideas に反映せよ\n- 「競合と同じ土俵で戦う施策」より「競合が真似できない独自領域を作る施策」を優先せよ\n- ランチェスター戦略の観点: ユーザーが市場リーダーでなければ一点集中・局地戦を優先提案せよ\n` : ''}
+${hrContext ? `\n${hrContext}` : ''}${engContext ? `\n${engContext}` : ''}${designContext ? `\n${designContext}` : ''}${compIntel ? `\n【競合・データ情報】\n${compIntel}\n` : ''}${hasCompetitors && dep >= 3 ? `\n【競合戦略分析の指示】\n- 競合の事業モデル・強み・弱みをあなたの知識範囲内で推定し understanding に含めよ\n- 競合が構造的に手薄な領域（ニッチ市場・未対応セグメント・サービスギャップ）を特定し ideas に反映せよ\n- 「競合と同じ土俵で戦う施策」より「競合が真似できない独自領域を作る施策」を優先せよ\n- ランチェスター戦略の観点: ユーザーが市場リーダーでなければ一点集中・局地戦を優先提案せよ\n` : ''}
 【分析対象】
 プロジェクト: ${pn} / プロダクト・サービス: ${form.productService}
 チーム目標: ${form.teamGoals}${issueStr ? `\n現状課題: ${issueStr}` : ''}
@@ -401,7 +497,7 @@ ${hrContext ? `\n${hrContext}` : ''}${compIntel ? `\n【競合・データ情報
 【出力形式】JSONのみ・コードブロック不要:
 {"understanding":"${dmap.understanding}",${hrJson}"ideas":[${dc.ideas}個: {"title":"8語以内の行動起点タイトル","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High","feasibility":{"total":0-100総合,"resource":0-100リソース充足度,"techDifficulty":0-100技術的容易性(高=容易),"orgAcceptance":0-100組織受容性}}],"suggestions":["深掘り質問を5個。抽象的な方向性の質問ではなく、(1)次に取得すべき具体的データを指定する質問 (2)仮説の検証に必要な情報を問う質問 (3)意思決定に直結する判断軸を問う質問 を優先すること"]}`;
     } else {
-      return `ビジネスコンサルとして建設的に分析。${rd.lens}の観点。${hrContext ? ` ${hrContext}` : ''}${playerOutputReqs ? ` ${playerOutputReqs.trim()}` : ''}${compIntel ? ` [データ] ${compIntel.replace(/\n/g, ' ')}${hasCompetitors ? ' 【必須】各競合企業について事業概要・強み・弱みを understanding 内に含めること' : ''}` : ''}
+      return `ビジネスコンサルとして建設的に分析。${rd.lens}の観点。${hrContext ? ` ${hrContext}` : ''}${engContext ? ` ${engContext}` : ''}${designContext ? ` ${designContext}` : ''}${playerOutputReqs ? ` ${playerOutputReqs.trim()}` : ''}${compIntel ? ` [データ] ${compIntel.replace(/\n/g, ' ')}${hasCompetitors ? ' 【必須】各競合企業について事業概要・強み・弱みを understanding 内に含めること' : ''}` : ''}
 対象: ${form.productService} / 目標: ${form.teamGoals}${issueStr ? ` / 課題: ${issueStr}` : ''}
 JSONのみ回答:
 {"understanding":"${dmap.understanding}",${hrJson}"ideas":[${dc.ideas}個: {"title":"6語以内","description":"${dmap.desc}","priority":"High/Medium/Low","effort":"Low/Medium/High","impact":"Low/Medium/High","feasibility":{"total":0-100,"resource":0-100,"techDifficulty":0-100,"orgAcceptance":0-100}}],"suggestions":["深掘り質問を4個"]}`;

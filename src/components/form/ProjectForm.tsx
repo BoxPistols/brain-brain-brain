@@ -8,7 +8,7 @@ import {
   ChevronUp,
   Target,
 } from 'lucide-react';
-import { BrainstormForm, IssueTemplate, SessionType } from '../../types';
+import { BrainstormForm, BrainstormMode, IssueTemplate, SessionType } from '../../types';
 import {
   TYPES,
   FREE_DEPTH,
@@ -24,6 +24,7 @@ import { T } from '../../constants/theme';
 import { IssueRow } from './IssueRow';
 import { CompetitiveIntelSection } from './CompetitiveIntelSection';
 import { PurposeCards } from './PurposeCards';
+import { ModeSwitcher } from './ModeSwitcher';
 
 interface ProjectFormProps {
   form: BrainstormForm;
@@ -32,6 +33,9 @@ interface ProjectFormProps {
   setDep: (d: number) => void;
   proMode: boolean;
   showValidation?: boolean;
+  mode: BrainstormMode;
+  onModeChange: (mode: BrainstormMode) => void;
+  modeSessionTypes: Record<string, string>;
 }
 
 export const ProjectForm: React.FC<ProjectFormProps> = ({
@@ -41,6 +45,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
   setDep,
   proMode,
   showValidation = false,
+  mode,
+  onModeChange,
+  modeSessionTypes,
 }) => {
   const depTable = proMode ? PRO_DEPTH : FREE_DEPTH;
   const [issueTemplateOpen, setIssueTemplateOpen] = useState(false);
@@ -160,6 +167,15 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
   return (
     <>
+      {/* Mode Switcher */}
+      <ModeSwitcher
+        mode={mode}
+        onChange={(m) => {
+          setSelectedClusterId(null);
+          onModeChange(m);
+        }}
+      />
+
       {/* Project + Product */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
         <div className="relative">
@@ -222,6 +238,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           clusters={enrichedClusters}
           selectedId={selectedClusterId}
           onSelect={onClusterSelect}
+          mode={mode}
         />
 
         {/* セッションタイプ（カード選択時は折りたたみ） */}
@@ -248,7 +265,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                 className={`${T.inp} mt-1`}
                 style={{ backgroundImage: 'none' }}
               >
-                {Object.entries(TYPES).map(([v, l]) => (
+                {Object.entries(modeSessionTypes).map(([v, l]) => (
                   <option key={v} value={v}>
                     {l}
                   </option>
@@ -292,7 +309,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                 className={T.inp}
                 style={{ backgroundImage: 'none' }}
               >
-                {Object.entries(TYPES).map(([v, l]) => (
+                {Object.entries(modeSessionTypes).map(([v, l]) => (
                   <option key={v} value={v}>
                     {l}
                   </option>

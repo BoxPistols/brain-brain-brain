@@ -1,3 +1,5 @@
+export type BrainstormMode = 'strategy' | 'player' | 'designer';
+
 export type SessionType =
   | 'product'
   | 'marketing'
@@ -11,6 +13,14 @@ export type SessionType =
   | 'design-org'
   | 'task-flow'
   | 'personal-mission'
+  | 'arch-design'
+  | 'test-quality'
+  | 'devops-delivery'
+  | 'frontend-eng'
+  | 'ux-research'
+  | 'accessibility'
+  | 'interaction-design'
+  | 'design-handoff'
   | 'other';
 export type Priority = 'High' | 'Medium' | 'Low';
 export type Effort = 'High' | 'Medium' | 'Low';
@@ -93,6 +103,7 @@ export interface LogEntry {
   projectName: string;
   model: string;
   depth: number;
+  mode?: BrainstormMode;
   form: BrainstormForm;
   query?: string;
   results?: AIResults;

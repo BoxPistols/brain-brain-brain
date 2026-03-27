@@ -31,6 +31,7 @@ export const useLogs = () => {
       q: string,
       modelName: string,
       depth: number,
+      mode?: string,
     ) => {
       if (stgSettings.logMode === 'off') return;
 
@@ -40,6 +41,7 @@ export const useLogs = () => {
         projectName: pn,
         model: modelName,
         depth,
+        ...(mode ? { mode: mode as LogEntry['mode'] } : {}),
         form: f,
         ...(stgSettings.logMode === 'all' ? { query: q, results: res } : { results: res }),
       };
