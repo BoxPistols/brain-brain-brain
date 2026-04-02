@@ -25,6 +25,12 @@ import { downloadDeepDivePdf } from '../../utils/report';
 
 type DlFormat = 'md' | 'txt' | 'csv' | 'pdf' | 'pdfDl' | 'pptx' | 'pptxHc';
 
+const RESULTS_TITLE: Record<string, string> = {
+  strategy: 'AI 戦略分析',
+  player: 'AI 実行プラン',
+  designer: 'AI デザイン施策',
+};
+
 interface ResultsPaneProps {
   loading: boolean;
   results: AIResults | null;
@@ -230,11 +236,6 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
   progress = 0,
   mode = 'strategy',
 }) => {
-  const RESULTS_TITLE: Record<string, string> = {
-    strategy: 'AI 戦略分析',
-    player: 'AI 実行プラン',
-    designer: 'AI デザイン施策',
-  };
   const [showDlMenu, setShowDlMenu] = useState(false);
   const dlRef = useRef<HTMLDivElement>(null);
   const endRef = useRef<HTMLDivElement>(null);

@@ -233,7 +233,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
       {/* 目的ファーストカード */}
       <div className="mb-3" data-tour="session-type">
-        <label className={`block text-xs font-medium ${T.t2} mb-1.5`}>何を達成したいですか？</label>
+        <label className={`block text-sm font-semibold ${T.t1} mb-2 mt-1`}>
+          何を達成したいですか？
+        </label>
         <PurposeCards
           clusters={enrichedClusters}
           selectedId={selectedClusterId}
@@ -321,10 +323,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
       </div>
 
       {/* Goals + Depth */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3 mt-1">
         <div className="md:col-span-2" data-tour="team-goals">
-          <label htmlFor="teamGoals" className={`block text-xs font-medium ${T.t2} mb-1`}>
-            チーム目標 *
+          <label htmlFor="teamGoals" className={`block text-sm font-semibold ${T.t1} mb-1.5`}>
+            チーム目標 <span className={`text-xs font-normal ${T.t3}`}>*</span>
           </label>
           <textarea
             id="teamGoals"
@@ -381,8 +383,8 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           </div>
         </div>
         <div data-tour="depth">
-          <label className={`block text-xs font-medium ${T.t2} mb-1 flex items-center gap-1`}>
-            <SlidersHorizontal className="w-3 h-3" />
+          <label className={`block text-sm font-semibold ${T.t1} mb-1.5 flex items-center gap-1`}>
+            <SlidersHorizontal className="w-3.5 h-3.5" />
             分析深度
           </label>
           <div className="space-y-1">
@@ -427,9 +429,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
       </div>
 
       {/* Issues */}
-      <div className="mb-3">
-        <label className={`block text-xs font-medium ${T.t2} mb-1.5 flex items-center gap-1`}>
-          <Layers className="w-3 h-3" />
+      <div className="mb-3 mt-1">
+        <label className={`block text-sm font-semibold ${T.t1} mb-2 flex items-center gap-1`}>
+          <Layers className="w-3.5 h-3.5" />
           現状課題
         </label>
         <div className="space-y-1.5">
