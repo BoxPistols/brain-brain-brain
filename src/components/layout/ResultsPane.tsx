@@ -17,13 +17,19 @@ import {
   Clipboard,
   Check,
 } from 'lucide-react';
-import { AIResults, Idea } from '../../types';
+import { AIResults, Idea, BrainstormMode } from '../../types';
 import { T } from '../../constants/theme';
 import { ResultCard } from '../results/ResultCard';
 import { RichText } from '../results/RichText';
 import { downloadDeepDivePdf } from '../../utils/report';
 
 type DlFormat = 'md' | 'txt' | 'csv' | 'pdf' | 'pdfDl' | 'pptx' | 'pptxHc';
+
+const RESULTS_TITLE: Record<string, string> = {
+  strategy: 'AI 戦略分析',
+  player: 'AI 実行プラン',
+  designer: 'AI デザイン施策',
+};
 
 interface ResultsPaneProps {
   loading: boolean;
@@ -45,6 +51,7 @@ interface ResultsPaneProps {
   onDrillDown?: (idea: Idea, index: number) => void;
   drillingDownId?: string | null;
   progress?: number;
+  mode?: BrainstormMode;
 }
 
 const LoadingSkeleton: React.FC<{ progress?: number }> = ({ progress = 0 }) => (
@@ -227,6 +234,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
   onDrillDown,
   drillingDownId,
   progress = 0,
+  mode = 'strategy',
 }) => {
   const [showDlMenu, setShowDlMenu] = useState(false);
   const dlRef = useRef<HTMLDivElement>(null);
@@ -289,9 +297,17 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
     <div className="space-y-6">
       {/* Header / Tools */}
       <div className="flex items-center justify-between sticky top-0 z-20 bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-md py-2 -mx-2 px-2 rounded-lg border-b border-slate-200 dark:border-slate-800">
-        <h3 className={`text-xs font-semibold ${T.accentTxt} flex items-center gap-1.5`}>
+        <h3
+          className={`text-xs font-semibold flex items-center gap-1.5 ${
+            mode === 'player'
+              ? 'text-mode-player dark:text-mode-player-light'
+              : mode === 'designer'
+                ? 'text-mode-designer dark:text-mode-designer-light'
+                : T.accentTxt
+          }`}
+        >
           <Target className="w-3.5 h-3.5" />
-          AI 戦略分析
+          {RESULTS_TITLE[mode] || 'AI 戦略分析'}
           {isSeedData && (
             <span className="ml-1 px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700/40">
               Demo

@@ -1,9 +1,16 @@
 import { useState, useMemo, useCallback } from 'react';
-import { BrainstormForm, AIResults } from '../types';
+import { BrainstormForm, BrainstormMode, AIResults, SessionType } from '../types';
 import { nextSeed, getSeedByIndex, MOCK_SCENARIOS } from '../constants/mockData';
-import { TYPES, getDeepDiveSuggestions } from '../constants/prompts';
+import { TYPES, getDeepDiveSuggestions, PURPOSE_CLUSTERS } from '../constants/prompts';
 import { autoN } from '../utils/formatters';
 import { isProMode } from '../constants/models';
+
+/** モード別のデフォルト sessionType */
+const MODE_DEFAULT_SESSION: Record<BrainstormMode, SessionType> = {
+  strategy: 'product',
+  player: 'dev-org',
+  designer: 'ux-research',
+};
 
 const initialFormState: BrainstormForm = {
   projectName: '',
@@ -21,6 +28,40 @@ export const useBrainstormForm = () => {
   const [dep, setDep] = useState(2);
   const [form, setForm] = useState<BrainstormForm>(initialFormState);
   const [usedName, setUsedName] = useState('');
+  const [mode, setModeState] = useState<BrainstormMode>(() => {
+    try {
+      const saved = localStorage.getItem('ai-brainstorm-mode') as BrainstormMode;
+      if (saved && ['strategy', 'player', 'designer'].includes(saved)) return saved;
+    } catch {
+      /* ignore */
+    }
+    return 'strategy';
+  });
+
+  const setMode = useCallback((next: BrainstormMode) => {
+    setModeState(next);
+    localStorage.setItem('ai-brainstorm-mode', next);
+    // モード切替時: デフォルト sessionType にリセット、フォーム一部クリア
+    setForm((prev) => ({
+      ...prev,
+      sessionType: MODE_DEFAULT_SESSION[next] as SessionType,
+      teamGoals: '',
+      issues: [{ text: '', detail: '', sub: [] }],
+    }));
+  }, []);
+
+  /** モードに応じたセッション種別だけ返す（ドロップダウン用） */
+  const modeSessionTypes = useMemo(() => {
+    const modeTypes = new Set<string>(
+      PURPOSE_CLUSTERS.filter((c) => c.mode === mode).map((c) => c.sessionType as string),
+    );
+    // other は常に含める
+    modeTypes.add('other');
+    return Object.fromEntries(Object.entries(TYPES).filter(([k]) => modeTypes.has(k))) as Record<
+      string,
+      string
+    >;
+  }, [mode]);
 
   const sesLabel = useMemo(
     () =>
@@ -74,6 +115,9 @@ export const useBrainstormForm = () => {
     setForm,
     dep,
     setDep,
+    mode,
+    setMode,
+    modeSessionTypes,
     usedName,
     setUsedName,
     sesLabel,

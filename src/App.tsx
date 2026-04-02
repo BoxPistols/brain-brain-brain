@@ -71,6 +71,9 @@ export default function App() {
     setForm,
     dep,
     setDep,
+    mode,
+    setMode,
+    modeSessionTypes,
     usedName,
     setUsedName,
     sesLabel,
@@ -326,7 +329,7 @@ export default function App() {
       sesLabel,
       issueStr,
       (res, prompt) => {
-        if (stgSettings.autoSave) saveLog(pn, form, res, prompt, modelLabel, dep);
+        if (stgSettings.autoSave) saveLog(pn, form, res, prompt, modelLabel, dep, mode);
       },
       apiKey,
       provider,
@@ -339,7 +342,7 @@ export default function App() {
   const handleRefine = () => {
     refine(
       (res, text) => {
-        if (stgSettings.autoSave) saveLog(usedName, form, res, text, modelLabel, dep);
+        if (stgSettings.autoSave) saveLog(usedName, form, res, text, modelLabel, dep, mode);
       },
       apiKey,
       provider,
@@ -411,6 +414,9 @@ export default function App() {
                 setDep={setDep}
                 proMode={proMode}
                 showValidation={showValidation}
+                mode={mode}
+                onModeChange={setMode}
+                modeSessionTypes={modeSessionTypes}
               />
 
               {costWarning && (
@@ -495,7 +501,13 @@ export default function App() {
                     disabled={loading}
                     title="Cmd/Ctrl+Enter"
                     data-tour="generate"
-                    className={`relative flex items-center gap-1.5 px-5 py-2 rounded-lg font-semibold text-sm ${T.btnAccent} disabled:opacity-90 transition-all overflow-hidden`}
+                    className={`relative flex items-center gap-1.5 px-5 py-2 rounded-lg font-semibold text-sm text-white shadow-sm disabled:opacity-90 transition-all overflow-hidden ${
+                      mode === 'player'
+                        ? 'bg-mode-player hover:bg-mode-player-dark shadow-mode-player/20'
+                        : mode === 'designer'
+                          ? 'bg-mode-designer hover:bg-mode-designer-dark shadow-mode-designer/20'
+                          : `${T.btnAccent}`
+                    }`}
                   >
                     {loading && (
                       <div className="absolute inset-0 bg-white/10">
@@ -514,7 +526,11 @@ export default function App() {
                       ) : (
                         <>
                           <Sparkles className="w-4 h-4" />
-                          戦略アイデア生成
+                          {mode === 'player'
+                            ? '実行プラン生成'
+                            : mode === 'designer'
+                              ? 'デザイン施策生成'
+                              : '戦略アイデア生成'}
                         </>
                       )}
                     </span>
@@ -543,6 +559,7 @@ export default function App() {
               error={error}
               progress={progress}
               isSeedData={isSeedData}
+              mode={mode}
               displaySuggestions={displaySuggestions}
               diving={diving}
               diveProgress={diveProgress}

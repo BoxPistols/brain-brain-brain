@@ -8,7 +8,7 @@ import {
   ChevronUp,
   Target,
 } from 'lucide-react';
-import { BrainstormForm, IssueTemplate, SessionType } from '../../types';
+import { BrainstormForm, BrainstormMode, IssueTemplate, SessionType } from '../../types';
 import {
   TYPES,
   FREE_DEPTH,
@@ -24,6 +24,7 @@ import { T } from '../../constants/theme';
 import { IssueRow } from './IssueRow';
 import { CompetitiveIntelSection } from './CompetitiveIntelSection';
 import { PurposeCards } from './PurposeCards';
+import { ModeSwitcher } from './ModeSwitcher';
 
 interface ProjectFormProps {
   form: BrainstormForm;
@@ -32,6 +33,9 @@ interface ProjectFormProps {
   setDep: (d: number) => void;
   proMode: boolean;
   showValidation?: boolean;
+  mode: BrainstormMode;
+  onModeChange: (mode: BrainstormMode) => void;
+  modeSessionTypes: Record<string, string>;
 }
 
 export const ProjectForm: React.FC<ProjectFormProps> = ({
@@ -41,6 +45,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
   setDep,
   proMode,
   showValidation = false,
+  mode,
+  onModeChange,
+  modeSessionTypes,
 }) => {
   const depTable = proMode ? PRO_DEPTH : FREE_DEPTH;
   const [issueTemplateOpen, setIssueTemplateOpen] = useState(false);
@@ -160,6 +167,15 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
   return (
     <>
+      {/* Mode Switcher */}
+      <ModeSwitcher
+        mode={mode}
+        onChange={(m) => {
+          setSelectedClusterId(null);
+          onModeChange(m);
+        }}
+      />
+
       {/* Project + Product */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
         <div className="relative">
@@ -217,11 +233,14 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
 
       {/* 目的ファーストカード */}
       <div className="mb-3" data-tour="session-type">
-        <label className={`block text-xs font-medium ${T.t2} mb-1.5`}>何を達成したいですか？</label>
+        <label className={`block text-sm font-semibold ${T.t1} mb-2 mt-1`}>
+          何を達成したいですか？
+        </label>
         <PurposeCards
           clusters={enrichedClusters}
           selectedId={selectedClusterId}
           onSelect={onClusterSelect}
+          mode={mode}
         />
 
         {/* セッションタイプ（カード選択時は折りたたみ） */}
@@ -248,7 +267,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                 className={`${T.inp} mt-1`}
                 style={{ backgroundImage: 'none' }}
               >
-                {Object.entries(TYPES).map(([v, l]) => (
+                {Object.entries(modeSessionTypes).map(([v, l]) => (
                   <option key={v} value={v}>
                     {l}
                   </option>
@@ -292,7 +311,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                 className={T.inp}
                 style={{ backgroundImage: 'none' }}
               >
-                {Object.entries(TYPES).map(([v, l]) => (
+                {Object.entries(modeSessionTypes).map(([v, l]) => (
                   <option key={v} value={v}>
                     {l}
                   </option>
@@ -304,10 +323,10 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
       </div>
 
       {/* Goals + Depth */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3 mt-1">
         <div className="md:col-span-2" data-tour="team-goals">
-          <label htmlFor="teamGoals" className={`block text-xs font-medium ${T.t2} mb-1`}>
-            チーム目標 *
+          <label htmlFor="teamGoals" className={`block text-sm font-semibold ${T.t1} mb-1.5`}>
+            チーム目標 <span className={`text-xs font-normal ${T.t3}`}>*</span>
           </label>
           <textarea
             id="teamGoals"
@@ -364,8 +383,8 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           </div>
         </div>
         <div data-tour="depth">
-          <label className={`block text-xs font-medium ${T.t2} mb-1 flex items-center gap-1`}>
-            <SlidersHorizontal className="w-3 h-3" />
+          <label className={`block text-sm font-semibold ${T.t1} mb-1.5 flex items-center gap-1`}>
+            <SlidersHorizontal className="w-3.5 h-3.5" />
             分析深度
           </label>
           <div className="space-y-1">
@@ -410,9 +429,9 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
       </div>
 
       {/* Issues */}
-      <div className="mb-3">
-        <label className={`block text-xs font-medium ${T.t2} mb-1.5 flex items-center gap-1`}>
-          <Layers className="w-3 h-3" />
+      <div className="mb-3 mt-1">
+        <label className={`block text-sm font-semibold ${T.t1} mb-2 flex items-center gap-1`}>
+          <Layers className="w-3.5 h-3.5" />
           現状課題
         </label>
         <div className="space-y-1.5">

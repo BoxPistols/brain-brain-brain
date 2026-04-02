@@ -25,8 +25,10 @@ AI Strategic Brainstorm は、IT人材紹介エージェント企業（営業・
 App.tsx
 ├── HeaderBar          — タイトル、モデル選択、テーマ切替、設定ボタン
 ├── ProjectForm        — 入力フォーム（セッション種別、目標、課題、深度）
+│   ├── ModeSwitcher   — 3モード切替（戦略/プレイヤー/デザイナー）
+│   ├── PurposeCards   — モード別クラスターカード選択
 │   └── IssueRow       — 動的な課題行（テキスト + 詳細 + サブ課題）
-├── ResultsPane        — AI分析結果表示
+├── ResultsPane        — AI分析結果表示（モード別タイトル）
 │   ├── AnalysisBlock  — 状況分析 + 最重要イシュー
 │   ├── ResultCard[]   — アイデアカード（優先度/工数/インパクト/実現可能性）
 │   │   └── FeasibilityBar — 4D 実現可能性バー
@@ -74,8 +76,8 @@ parseAIJson() → AIResults
 
 | Hook | ファイル | 責務 |
 |------|---------|------|
-| `useAI` | `src/hooks/useAI.ts` | AI 生成・リファイン・深掘り・ドリルダウン |
-| `useBrainstormForm` | `src/hooks/useBrainstormForm.ts` | フォーム状態・サジェスション・シードデータ |
+| `useAI` | `src/hooks/useAI.ts` | AI 生成・リファイン・深掘り・ドリルダウン・モード別プロンプト |
+| `useBrainstormForm` | `src/hooks/useBrainstormForm.ts` | フォーム状態・モード管理・サジェスション・シードデータ |
 | `useLogs` | `src/hooks/useLogs.ts` | セッション履歴の CRUD + localStorage |
 | `useTheme` | `src/hooks/useTheme.ts` | ダーク/ライトモード切替 |
 | `usePanelResize` | `src/hooks/usePanelResize.ts` | スプリットパネル比率管理 |
@@ -119,6 +121,7 @@ parseAIJson() → AIResults
 | `ai-brainstorm-endpoint` | localStorage | ローカルLLMエンドポイントURL |
 | `ai-brainstorm-local-model` | localStorage | ローカルLLMモデルID |
 | `theme` | localStorage | ダーク/ライト設定 |
+| `ai-brainstorm-mode` | localStorage | BrainstormMode（strategy/player/designer） |
 | `ai-brainstorm-visited` | localStorage | 初回訪問フラグ |
 
 ## ディレクトリ構造
@@ -132,7 +135,7 @@ src/
 │   ├── modals/        — モーダル（Settings, Log, Preview, Help）
 │   └── support/       — サポートウィジェット
 ├── hooks/             — カスタム Hooks
-├── constants/         — 定数・プロンプト・モデル定義・テーマ・モックデータ
+├── constants/         — 定数・プロンプト・モデル定義・テーマ・ドメインコンテキスト・モックデータ
 ├── types/             — TypeScript 型定義
 └── utils/             — ユーティリティ（JSON パース、レポート生成、フォーマッタ）
 ```
