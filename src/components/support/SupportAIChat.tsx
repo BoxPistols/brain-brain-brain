@@ -4,7 +4,7 @@ import { T } from '../../constants/theme';
 import { callAI, callAIWithKey, isProMode } from '../../constants/models';
 import { SUPPORT_SYSTEM_PROMPT } from './supportData';
 
-const SUPPORT_MODEL = 'gpt-5.4-nano';
+const SUPPORT_MODEL = 'gpt-5.6-luna';
 
 interface Message {
   role: 'user' | 'assistant';

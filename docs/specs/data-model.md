@@ -195,7 +195,7 @@ LLMプロバイダーを表す文字列リテラル型。
 
 | フィールド | 型 | 説明 |
 |-----------|---|------|
-| `id` | `string` | モデルID（例: `gpt-5-nano`） |
+| `id` | `string` | モデルID（例: `gpt-5.6-luna`） |
 | `label` | `string` | 表示名 |
 | `t` | `number` | max_tokens |
 | `cost` | `string` | コスト目安（`$` / `$$` / `$$$`） |

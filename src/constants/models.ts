@@ -33,7 +33,7 @@ const friendlyError = (status: number, body: string): string => {
 };
 
 export const AUTO_MODEL_ID = 'auto';
-export const DEFAULT_MODEL_ID = 'gpt-5.4-nano';
+export const DEFAULT_MODEL_ID = 'gpt-5.6-luna';
 export const MODEL_STORAGE_KEY = 'ai-brainstorm-model';
 
 const API_ENDPOINT = '/api/openai';
@@ -56,14 +56,16 @@ export const PROVIDER_DEFAULTS: Record<
 export const isLocalProvider = (p: LLMProvider): boolean => p !== 'openai';
 
 export const MODELS: ModelInfo[] = [
-  { id: 'gpt-5.4-nano', label: '5.4 Nano', t: '最速・低コスト', cost: '$' },
-  { id: 'gpt-5.4-mini', label: '5.4 Mini', t: '高精度', cost: '$$' },
+  // gpt-5.4系（nano / mini）は提供終了し gpt-5.6-luna に統合された
+  { id: 'gpt-5.6-luna', label: '5.6 Luna', t: '最速・低コスト', cost: '$' },
 ];
 
-/** モデル別コスト単価 (JPY / 1M tokens) */
+/**
+ * モデル別コスト単価 (JPY / 1M tokens)
+ * OpenAI 公式の 入力 $0.20 / 出力 $1.20 per 1M を 150円/USD で換算
+ */
 export const MODEL_COSTS: Record<string, { inputPerM: number; outputPerM: number }> = {
-  'gpt-5.4-nano': { inputPerM: 10, outputPerM: 40 },
-  'gpt-5.4-mini': { inputPerM: 50, outputPerM: 200 },
+  'gpt-5.6-luna': { inputPerM: 30, outputPerM: 180 },
 };
 
 /** API呼び出し結果（usage トークン数 + rate limit 情報を含む） */

@@ -20,8 +20,10 @@ export function estimateTokens(messages: ChatMessage[]): number {
   return messages.reduce((sum, m) => sum + Math.ceil(m.content.length / 2), 0);
 }
 
-const NANO = 'gpt-5.4-nano';
-const MINI = 'gpt-5.4-mini';
+// 5.6 世代は nano/mini の階層が無く luna 1本のため、両方とも同じ ID を指す。
+// 将来 sol / terra を採用する場合に備えて分岐の構造は残す
+const NANO = 'gpt-5.6-luna';
+const MINI = 'gpt-5.6-luna';
 
 /**
  * Auto モード時のモデル自動選択
