@@ -136,8 +136,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
         {/* Cost note */}
         <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-900/15 border border-amber-200 dark:border-amber-700/40">
           <p className="text-xs text-amber-700 dark:text-amber-300">
-            💡 <strong>コストの目安:</strong> gpt-5.4-nanoなら1回あたり約0.5〜1円程度です。
-            gpt-5.4-miniでも1回あたり数円程度です。
+            💡 <strong>コストの目安:</strong> gpt-5.6-lunaなら1回あたり約0.5〜1円程度です。
           </p>
         </div>
 

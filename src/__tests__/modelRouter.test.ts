@@ -19,43 +19,43 @@ const baseForm: BrainstormForm = {
 describe('selectModel', () => {
   it('手動選択（auto以外）はそのまま返す', () => {
     const input: ModelRouterInput = { taskType: 'generate', depth: 1 };
-    const result = selectModel('gpt-5.4-mini', input, true);
-    expect(result.modelId).toBe('gpt-5.4-mini');
+    const result = selectModel('gpt-5.6-luna', input, true);
+    expect(result.modelId).toBe('gpt-5.6-luna');
     expect(result.reason).toBe('手動選択');
   });
 
-  it('Free mode + auto → 常に gpt-5.4-nano', () => {
+  it('Free mode + auto → 常に gpt-5.6-luna', () => {
     const input: ModelRouterInput = { taskType: 'generate', depth: 4, form: baseForm };
     const result = selectModel(AUTO_MODEL_ID, input, false);
-    expect(result.modelId).toBe('gpt-5.4-nano');
+    expect(result.modelId).toBe('gpt-5.6-luna');
   });
 
-  it('Pro + depth 1 + シンプル入力 → gpt-5.4-nano', () => {
+  it('Pro + depth 1 + シンプル入力 → gpt-5.6-luna', () => {
     const input: ModelRouterInput = { taskType: 'generate', depth: 1, form: baseForm };
     const result = selectModel(AUTO_MODEL_ID, input, true);
-    expect(result.modelId).toBe('gpt-5.4-nano');
+    expect(result.modelId).toBe('gpt-5.6-luna');
   });
 
-  it('Pro + depth 2 + シンプル入力 → gpt-5.4-nano', () => {
+  it('Pro + depth 2 + シンプル入力 → gpt-5.6-luna', () => {
     const input: ModelRouterInput = { taskType: 'generate', depth: 2, form: baseForm };
     const result = selectModel(AUTO_MODEL_ID, input, true);
-    expect(result.modelId).toBe('gpt-5.4-nano');
+    expect(result.modelId).toBe('gpt-5.6-luna');
   });
 
-  it('Pro + depth 3 → gpt-5.4-mini', () => {
+  it('Pro + depth 3 → gpt-5.6-luna', () => {
     const input: ModelRouterInput = { taskType: 'generate', depth: 3, form: baseForm };
     const result = selectModel(AUTO_MODEL_ID, input, true);
-    expect(result.modelId).toBe('gpt-5.4-mini');
+    expect(result.modelId).toBe('gpt-5.6-luna');
     expect(result.reason).toContain('深度3');
   });
 
-  it('Pro + depth 4 → gpt-5.4-mini', () => {
+  it('Pro + depth 4 → gpt-5.6-luna', () => {
     const input: ModelRouterInput = { taskType: 'generate', depth: 4, form: baseForm };
     const result = selectModel(AUTO_MODEL_ID, input, true);
-    expect(result.modelId).toBe('gpt-5.4-mini');
+    expect(result.modelId).toBe('gpt-5.6-luna');
   });
 
-  it('Pro + 課題3件 + 長い目標 → gpt-5.4-mini', () => {
+  it('Pro + 課題3件 + 長い目標 → gpt-5.6-luna', () => {
     const form: BrainstormForm = {
       ...baseForm,
       teamGoals:
@@ -68,32 +68,32 @@ describe('selectModel', () => {
     };
     const input: ModelRouterInput = { taskType: 'generate', depth: 2, form };
     const result = selectModel(AUTO_MODEL_ID, input, true);
-    expect(result.modelId).toBe('gpt-5.4-mini');
+    expect(result.modelId).toBe('gpt-5.6-luna');
     expect(result.reason).toContain('課題');
   });
 
-  it('Pro + 競合データあり → gpt-5.4-mini', () => {
+  it('Pro + 競合データあり → gpt-5.6-luna', () => {
     const form: BrainstormForm = {
       ...baseForm,
       competitors: [{ name: '競合A', url: 'https://example.com', note: '' }],
     };
     const input: ModelRouterInput = { taskType: 'generate', depth: 1, form };
     const result = selectModel(AUTO_MODEL_ID, input, true);
-    expect(result.modelId).toBe('gpt-5.4-mini');
+    expect(result.modelId).toBe('gpt-5.6-luna');
     expect(result.reason).toContain('競合');
   });
 
-  it('Pro + KPIデータあり → gpt-5.4-mini', () => {
+  it('Pro + KPIデータあり → gpt-5.6-luna', () => {
     const form: BrainstormForm = {
       ...baseForm,
       kpis: [{ label: '成約率', value: '15%' }],
     };
     const input: ModelRouterInput = { taskType: 'generate', depth: 1, form };
     const result = selectModel(AUTO_MODEL_ID, input, true);
-    expect(result.modelId).toBe('gpt-5.4-mini');
+    expect(result.modelId).toBe('gpt-5.6-luna');
   });
 
-  it('Pro + トークン2000超 → gpt-5.4-mini', () => {
+  it('Pro + トークン2000超 → gpt-5.6-luna', () => {
     const longText = 'あ'.repeat(4100); // 4100文字 / 2 = 2050トークン
     const input: ModelRouterInput = {
       taskType: 'deepDive',
@@ -101,7 +101,7 @@ describe('selectModel', () => {
       messages: [{ role: 'user', content: longText }],
     };
     const result = selectModel(AUTO_MODEL_ID, input, true);
-    expect(result.modelId).toBe('gpt-5.4-mini');
+    expect(result.modelId).toBe('gpt-5.6-luna');
     expect(result.reason).toContain('トークン');
   });
 });
