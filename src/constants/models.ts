@@ -33,7 +33,7 @@ const friendlyError = (status: number, body: string): string => {
 };
 
 export const AUTO_MODEL_ID = 'auto';
-export const DEFAULT_MODEL_ID = 'gpt-5.6-luna';
+export const DEFAULT_MODEL_ID = 'gpt-6-luna';
 export const MODEL_STORAGE_KEY = 'ai-brainstorm-model';
 
 const API_ENDPOINT = '/api/openai';
@@ -57,15 +57,16 @@ export const isLocalProvider = (p: LLMProvider): boolean => p !== 'openai';
 
 export const MODELS: ModelInfo[] = [
   // gpt-5.4系（nano / mini）は提供終了し gpt-5.6-luna に統合された
-  { id: 'gpt-5.6-luna', label: '5.6 Luna', t: '最速・低コスト', cost: '$' },
+  // gpt-5.6-lunaはgpt-6-lunaへ移行した
+  { id: 'gpt-6-luna', label: '6 Luna', t: '最速・低コスト', cost: '$' },
 ];
 
 /**
  * モデル別コスト単価 (JPY / 1M tokens)
- * OpenAI 公式の 入力 $0.20 / 出力 $1.20 per 1M を 150円/USD で換算
+ * OpenAI公式の入力$0.10 / 出力$0.50 per 1Mを150円/USDで換算
  */
 export const MODEL_COSTS: Record<string, { inputPerM: number; outputPerM: number }> = {
-  'gpt-5.6-luna': { inputPerM: 30, outputPerM: 180 },
+  'gpt-6-luna': { inputPerM: 15, outputPerM: 75 },
 };
 
 /** API呼び出し結果（usage トークン数 + rate limit 情報を含む） */
@@ -77,7 +78,9 @@ export interface APICallResult {
 
 export const testConn = async (modelId: string, apiKey = ''): Promise<string> => {
   const resolvedId = modelId === AUTO_MODEL_ID ? DEFAULT_MODEL_ID : modelId;
-  const usesCompletionTokens = resolvedId.startsWith('gpt-5') || resolvedId.startsWith('o');
+  // gpt-6系もmax_completion_tokens必須・temperature非対応のためgpt-5系と同じ経路に通す
+  const usesCompletionTokens =
+    resolvedId.startsWith('gpt-5') || resolvedId.startsWith('gpt-6') || resolvedId.startsWith('o');
   const tokenParam = usesCompletionTokens ? { max_completion_tokens: 100 } : { max_tokens: 100 };
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (isProMode(apiKey)) headers['x-api-key'] = apiKey.trim();
@@ -113,7 +116,9 @@ const callAPI = async (
   jsonMode: boolean,
   apiKey?: string,
 ): Promise<APICallResult> => {
-  const usesCompletionTokens = modelId.startsWith('gpt-5') || modelId.startsWith('o');
+  // gpt-6系もmax_completion_tokens必須・temperature非対応のためgpt-5系と同じ経路に通す
+  const usesCompletionTokens =
+    modelId.startsWith('gpt-5') || modelId.startsWith('gpt-6') || modelId.startsWith('o');
   const tokenParam = usesCompletionTokens
     ? { max_completion_tokens: maxTokens }
     : { max_tokens: maxTokens };

@@ -34,7 +34,7 @@ type Story = StoryObj<typeof meta>;
 export const FreeMode: Story = {
   args: {
     proMode: false,
-    modelLabel: '5.6 Luna',
+    modelLabel: '6 Luna',
     connStatus: { status: 'idle', msg: '' },
     isDark: false,
     lastUsedModel: null,
@@ -46,22 +46,22 @@ export const FreeMode: Story = {
 export const ProMode: Story = {
   args: {
     proMode: true,
-    modelLabel: '5.6 Luna',
+    modelLabel: '6 Luna',
     connStatus: { status: 'ok', msg: '接続成功' },
     isDark: false,
-    lastUsedModel: 'gpt-5.6-luna',
+    lastUsedModel: 'gpt-6-luna',
     freeRemaining: null,
   },
 };
 
-/** 5.6 Luna 表示 */
+/** 6 Luna 表示 */
 export const WithNanoModel: Story = {
   args: {
     proMode: true,
-    modelLabel: '5.6 Luna',
+    modelLabel: '6 Luna',
     connStatus: { status: 'ok', msg: '接続成功' },
     isDark: true,
-    lastUsedModel: 'gpt-5.6-luna',
+    lastUsedModel: 'gpt-6-luna',
     freeRemaining: null,
   },
 };

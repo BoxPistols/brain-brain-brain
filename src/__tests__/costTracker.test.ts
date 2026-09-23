@@ -30,10 +30,10 @@ const localStorageMock = (() => {
 vi.stubGlobal('localStorage', localStorageMock);
 
 describe('calculateCostJpy', () => {
-  it('gpt-5.6-luna のコストを正しく計算する', () => {
-    // input: 1000 tokens × 30/1M = 0.03, output: 500 tokens × 180/1M = 0.09
-    const cost = calculateCostJpy('gpt-5.6-luna', 1000, 500);
-    expect(cost).toBeCloseTo(0.12, 4);
+  it('gpt-6-luna のコストを正しく計算する', () => {
+    // input: 1000 tokens × 15/1M = 0.015, output: 500 tokens × 75/1M = 0.0375
+    const cost = calculateCostJpy('gpt-6-luna', 1000, 500);
+    expect(cost).toBeCloseTo(0.0525, 4);
   });
 
   it('未知のモデルは 0 を返す', () => {
@@ -48,14 +48,14 @@ describe('addUsage / getSessionTotal / getCycleTotal', () => {
 
   it('addUsage でセッション・サイクル累計が増加する', () => {
     const before = getSessionTotal();
-    const cost = addUsage({ modelId: 'gpt-5.6-luna', promptTokens: 1000, completionTokens: 500 });
+    const cost = addUsage({ modelId: 'gpt-6-luna', promptTokens: 1000, completionTokens: 500 });
     expect(cost).toBeGreaterThan(0);
     expect(getSessionTotal()).toBeGreaterThan(before);
     expect(getCycleTotal()).toBeGreaterThan(0);
   });
 
   it('resetCycle でサイクル累計のみリセットされる', () => {
-    addUsage({ modelId: 'gpt-5.6-luna', promptTokens: 1000, completionTokens: 500 });
+    addUsage({ modelId: 'gpt-6-luna', promptTokens: 1000, completionTokens: 500 });
     const sessionBefore = getSessionTotal();
     resetCycle();
     expect(getCycleTotal()).toBe(0);
@@ -77,9 +77,9 @@ describe('checkBudget', () => {
   });
 
   it('サイクル累計が ¥5 超で warn を返す', () => {
-    // サイクル累計を ¥5 超にする: gpt-5.6-luna × 大量トークン
+    // サイクル累計を ¥5 超にする: gpt-6-luna × 大量トークン
     for (let i = 0; i < 50; i++) {
-      addUsage({ modelId: 'gpt-5.6-luna', promptTokens: 5000, completionTokens: 2000 });
+      addUsage({ modelId: 'gpt-6-luna', promptTokens: 5000, completionTokens: 2000 });
     }
     const warning = checkBudget(0.1, true);
     expect(warning).not.toBeNull();
